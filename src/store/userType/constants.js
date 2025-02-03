@@ -1,0 +1,2 @@
+export const USERTYPE_SET = 'USERTYPE_SET'
+export const USERTYPE_RESET = 'USERTYPE_RESET'
