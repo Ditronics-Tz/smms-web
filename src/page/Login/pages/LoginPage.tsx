@@ -129,7 +129,7 @@ const LoginPage = ({
         };
 
         return axios({
-            url: 'http://127.0.0.1:8000//login/',
+            url: 'http://127.0.0.1:8000//auth/login/',
             method: "POST",
             timeout: 10000,
             headers: {
