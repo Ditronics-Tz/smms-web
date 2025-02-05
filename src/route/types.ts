@@ -6,8 +6,9 @@ export const NAVIGATE_TO_LOGINPAGE = '/login';
 // Dashboard
 export const NAVIGATE_TO_DASHBOARD = '/';
 
-// Staffs
-export const NAVIGATE_TO_STAFFPAGE = '/staffs';
+// Student
+export const NAVIGATE_TO_STUDENTPAGE = '/student-manage';
+export const NAVIGATE_TO_STUDENTDETAILSPAGE = '/student-details'
 
 // Agents
 export const NAVIGATE_TO_AGENTSPAGE = '/agents';

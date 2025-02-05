@@ -4,11 +4,11 @@ import Stack from '@mui/joy/Stack';
 import CssBaseline from '@mui/joy/CssBaseline'
 import Header from './Header';
 import Typography from '@mui/joy/Typography';
-import SideBar from './SideBar';
 import { ToastContainer } from 'react-toastify';
 import { CssVarsProvider } from '@mui/joy';
 import { useLocation, Outlet } from 'react-router-dom';
 import theme from '../../utils/theme'
+import SideBar from './SideBar';
 
 const Main = () => {
 
@@ -19,7 +19,7 @@ const Main = () => {
 
                 {/* Drawer side bar */}
                 <SideBar />
-                {/* <ToastContainer /> */}
+                
                 {/* Header */}
                 <Header />
 

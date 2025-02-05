@@ -3,12 +3,7 @@ import { useDispatch, connect } from "react-redux";
 import { toast } from "react-toastify";
 import { STATUS } from "../../constant";
 import React, { Fragment, useEffect, useState } from "react";
-import { fetchProfileReset } from "../../store/actions";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import {
-  passwordChangeReset,
-  passwordChangeRequest,
-} from "../../store/actions";
+
 import GlobalStyles from "@mui/joy/GlobalStyles";
 import Sheet from "@mui/joy/Sheet";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -28,11 +23,12 @@ import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
 import { toggleSidebar } from "../../utils/sideBarutils";
-import { userLogoutRequest, resetUserType } from "../../store/actions";
+import { logoutRequest } from "../../store/actions";
 import { useColorScheme } from "@mui/joy/styles";
 import { NAVIGATE_TO_DASHBOARD, NAVIGATE_TO_LOGINPAGE, NAVIGATE_TO_PROFILEPAGE } from "../../route/types";
 import image from "../../constant/image";
-import { Lock } from "@mui/icons-material";
+import { DarkMode, LightMode, Lock, Notifications, Settings } from "@mui/icons-material";
+import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import {
   Button,
   CircularProgress,
@@ -45,73 +41,84 @@ import {
   Modal,
   ModalClose,
   ModalDialog,
+  Switch,
 } from "@mui/joy";
 import { useTranslation } from "react-i18next";
 import LanguageMenu from "../molecules/LanguageMenu";
+import { doLogout } from "../../service/auth";
 // import ColorSchemeToggle from '../../utils/ColorSchemeToggle';
 
 function ColorSchemeToggle() {
   const { mode, setMode } = useColorScheme();
   const [mounted, setMounted] = React.useState(false);
+  const { t } = useTranslation();
   React.useEffect(() => {
     setMounted(true);
   }, []);
   if (!mounted) {
-    return <IconButton size="sm" variant="outlined" color="primary" />;
+    return <IconButton size="sm" variant="outlined" color="success" />;
   }
   return (
-    <Tooltip title="Change theme" variant="outlined">
-      <IconButton
-        id="toggle-mode"
-        size="sm"
-        variant="plain"
-        color="neutral"
-        sx={{ alignSelf: "center" }}
-        onClick={() => {
-          if (mode === "light") {
-            setMode("dark");
-          } else {
-            setMode("light");
-          }
-        }}>
-        {mode === "light" ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
-      </IconButton>
-    </Tooltip>
+    <Switch
+      checked={mode == "dark"}
+      id="toogle-mode"
+      startDecorator={mode === "light" ? t("header.switchDark") : t("header.switchLight")}
+      onChange={() => {
+        if (mode === 'light') {
+          setMode('dark');
+        } else {
+          setMode('light');
+        }
+      }}
+      size="lg"
+      slotProps={{
+        input: { 'aria-label': 'Dark mode' },
+        thumb: {
+          children: mode === "light" ? <LightMode /> : <DarkMode />,
+        },
+      }
+      }
+      sx={{ '--Switch-thumbSize': '16px', width: '100%', pl: 1.5 }}
+    />
   );
 }
 
 const Header = ({
-  // profileResult,
-  // profileStatus,
-  // userLoginResult,
-  // passwordChangeStatus,
-  // passwordChangeResult,
-  // passwordChangeErrorMessage,
+  loginStatus,
+  loginResult,
+  loginErrorMessage,
+  accessToken
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
   const [refresh, setRefresh] = useState(false)
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("");
 
-  const [oldPass, setOldPass] = useState("");
-  const [newPass, setNewPass] = useState("");
-  const [confirmPass, setConfirmPass] = useState("");
-  const [isData, setIsData] = useState(false);
-  const [error, setError] = useState("");
-  const [name, setName] = useState("Godlisten Honest");
-  const [trustIndex, setTrustIndex] = useState("");
+  const [notList, setNotList] = React.useState([]);
+  const [notLoad, setNotLoad] = React.useState(false);
+  const [notError, setNotError] = React.useState("");
 
-  const [open, setOpen] = useState(false);
-
+  useEffect(() => {
+    if (loginResult != null || loginResult != undefined) {
+      setName(loginResult.user.first_name + " " + loginResult.user.last_name)
+      setRole(loginResult.user.role)
+    }
+  }, [loginResult])
 
   const logOut = () => {
-    navigate(NAVIGATE_TO_LOGINPAGE)
-    // setTimeout(() => {
-    //   dispatch(resetUserType());
-    // }, 2000);
-    // dispatch(userLogoutRequest());
+    const data = {
+      "refresh": loginResult.refresh
+    }
+    doLogout(data)
+    dispatch(logoutRequest());
   };
+
+  useEffect(() => {
+    console.log("Refresh screen")
+  }, [refresh])
 
   return (
     <Fragment>
@@ -177,7 +184,7 @@ const Header = ({
           {/* web name */}
           <Link to={NAVIGATE_TO_DASHBOARD} style={{ textDecoration: 'none' }}>
             <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1, alignItems: "center" }}>
-              <Typography level="title-md" sx={{fontFamily: 'roboto'}}>{t("intro.appName")}</Typography>
+              <Typography level="title-md" sx={{ fontFamily: 'roboto' }}>{t("intro.appName")}</Typography>
               {/* <ColorSchemeToggle sx={{ ml: 'auto' }} /> */}
             </Box>
           </Link>
@@ -192,11 +199,77 @@ const Header = ({
             alignItems: "center",
           }}>
 
-          {/* Change theme */}
-          <ColorSchemeToggle />
-
           {/* language */}
           <LanguageMenu change={() => setRefresh(!refresh)} />
+
+          {/* notifications */}
+          <Dropdown>
+            <MenuButton
+              variant="plain"
+              size="sm"
+              sx={{ maxWidth: '32px', maxHeight: '32px', borderRadius: '9999999px' }}>
+              <IconButton
+                id="toggle-mode"
+                size="sm"
+                variant="plain"
+                color="success"
+                sx={{ alignSelf: 'center' }}
+                onClick={null}
+              >
+                <Notifications />
+              </IconButton>
+            </MenuButton>
+            <Menu
+              placement="bottom"
+              size="sm"
+              sx={{
+                zIndex: '99999',
+                width: { xs: "90%", sm: "60%", md: '40%' },
+                justifyContent: 'center',
+                alignItems: 'center',
+                p: 1,
+                gap: 1,
+                '--ListItem-radius': 'var(--joy-radius-sm)',
+              }}>
+
+              {/* notification header */}
+              <Box sx={{
+                display: 'flex',
+                gap: 1,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <Notifications />
+                <Typography level='title-md'> {t("header.notification")}</Typography>
+              </Box>
+              <ListDivider />
+
+              {notLoad ?
+                <CircularProgress size='lg' thickness={3} sx={{ alignSelf: 'center' }} />
+                : (
+                  notList.length > 0 ? notList.map((item, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignSelf: 'flex-start',
+                        p: 0.7,
+                        borderLeft: 2.5,
+                        borderBottom: 0.6,
+                        borderColor: 'green',
+                        gap: 0.5
+                      }}>
+                      <Typography level='title-sm'>{item.title}</Typography>
+                      <Typography level='body-sm'>{item.message}</Typography>
+                      {/* <Divider /> */}
+                    </Box>
+                  )) :
+                    <Typography level='title-md' sx={{ p: 1, backgroundColor: 'lightgray', borderRadius: 'md' }}>{notError}</Typography>
+                )}
+            </Menu>
+          </Dropdown>
 
           {/* --------------- Dropdown menu toggle  ---------- */}
           <Dropdown>
@@ -250,12 +323,34 @@ const Header = ({
                       <Typography level="title-sm" textColor="text.primary">
                         {name}
                       </Typography>
+                      <Typography level="body-sm">
+                        {role}
+                      </Typography>
                     </Box>
                   </Box>
                 </Link>
               </MenuItem>
 
-              <Divider />
+              <ListDivider />
+
+              {/* change theme */}
+              <ColorSchemeToggle />
+
+              {/* profile and settings */}
+              <MenuItem
+                component="a"
+                href={'#'}>
+                <Settings />
+                {t("header.setting")}
+              </MenuItem>
+
+              {/* support */}
+              <MenuItem
+                component="a"
+                href={'#'}>
+                <HelpRoundedIcon />
+                {t("header.support")}
+              </MenuItem>
 
               {/* ------------- logout button ----------------- */}
               <MenuItem component="a" href="#" onClick={logOut}>
@@ -271,28 +366,21 @@ const Header = ({
 };
 
 //mapping Redux store states to props
-const mapStateToProps = ({ profile, authAmb, password }) => {
-  const { otpResult: userLoginResult } = authAmb;
-
+const mapStateToProps = ({ auth }) => {
   const {
-    passwordChangeStatus: passwordChangeStatus,
-    passwordChangeResult: passwordChangeResult,
-    passwordChangeErrorMessage: passwordChangeErrorMessage,
-  } = password;
-
-  const { profileResult: profileResult, profileStatus: profileStatus } =
-    profile;
+    loginStatus,
+    loginResult,
+    loginErrorMessage,
+    accessToken
+  } = auth;
 
   return {
-    userLoginResult,
-    profileResult,
-    profileStatus,
-    passwordChangeStatus,
-    passwordChangeResult,
-    passwordChangeErrorMessage,
+    loginStatus,
+    loginResult,
+    loginErrorMessage,
+    accessToken
   };
 };
 
 //connecting Redux store to sidebar component
-// export default connect(mapStateToProps, {})(Header);
-export default Header
+export default connect(mapStateToProps, {})(Header);

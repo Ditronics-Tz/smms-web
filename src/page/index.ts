@@ -1,7 +1,7 @@
 import { Dashboard } from "./Dashboard";
 import { LoginPage } from "./Login";
 import Error404Page from "./ErrorsPages/404Error";
-import { StaffPage } from "./Staff";
+import { StudentPage, StudentDetailsPage } from "./Student";
 import { SupportPage, InfoPage } from "./Support";
 import { ProfilePage } from "./Profile";
 import { AgentPage } from "./Agents";
@@ -12,7 +12,8 @@ import { ApiAccessPage, ApiUsagePage, LogsPage } from "./Intergration";
 export {
     Dashboard,
     LoginPage,
-    StaffPage,
+    StudentPage,
+    StudentDetailsPage,
     SupportPage,
     ProfilePage,
     TransactionPage,

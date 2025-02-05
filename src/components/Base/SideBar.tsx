@@ -3,63 +3,32 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import GlobalStyles from "@mui/joy/GlobalStyles";
 import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
-import Button from "@mui/joy/Button";
-import Card from "@mui/joy/Card";
-import Chip from "@mui/joy/Chip";
 import Divider from "@mui/joy/Divider";
 import IconButton from "@mui/joy/IconButton";
-import Input from "@mui/joy/Input";
-import LinearProgress from "@mui/joy/LinearProgress";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
 import ListItemButton, { listItemButtonClasses } from "@mui/joy/ListItemButton";
 import ListItemContent from "@mui/joy/ListItemContent";
 import Typography from "@mui/joy/Typography";
 import Sheet from "@mui/joy/Sheet";
-import Stack from "@mui/joy/Stack";
 
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import WalletRoundedIcom from "@mui/icons-material/WalletRounded";
-import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
-import TransferRoundIcon from "@mui/icons-material/TransferWithinAStationRounded";
-import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
-import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
-import QuestionAnswerRoundedIcon from "@mui/icons-material/QuestionAnswerRounded";
-import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
-import SupportRoundedIcon from "@mui/icons-material/SupportRounded";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-import BrightnessAutoRoundedIcon from "@mui/icons-material/BrightnessAutoRounded";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import InfoRoundIcon from "@mui/icons-material/InfoRounded";
 import CurrentExchangeRoundIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 
 // import ColorSchemeToggle from '../../utils/ColorSchemeToggle';
 import { closeSidebar } from "../../utils";
 import image from "../../constant/image";
-import { userLogoutRequest, resetUserType } from "../../store/actions";
+import { logoutRequest } from "../../store/actions";
 import {
-  NAVIGATE_TO_LOGINPAGE,
   NAVIGATE_TO_DASHBOARD,
-  NAVIGATE_TO_SUPPORTPAGE,
-  NAVIGATE_TO_STAFFPAGE,
+  NAVIGATE_TO_STUDENTPAGE,
   NAVIGATE_TO_AGENTSPAGE,
   NAVIGATE_TO_TRANSACTIONPAGE,
-  NAVIGATE_TO_ACCOUNTSPAGE,
-  NAVIGATE_TO_APIACCESSPAGE,
-  NAVIGATE_TO_APIUSAGEPAGE,
-  NAVIGATE_TO_LOGSPAGE,
-  NAVIGATE_TO_INFOPAGE,
 } from "../../route/types";
 import { connect, useDispatch } from "react-redux";
-import {
-  ambassadorLoanListRequest,
-  pendingLoanRequest,
-  payPlanListrequest
-} from "../../store/actions";
-import { DashboardOutlined, FolderOutlined, GroupAddOutlined, InfoOutlined, KeyboardArrowDown, LinkOutlined, ManageAccountsOutlined, Person2Rounded, PersonAddAlt1Outlined, PersonOutlined, ReceiptLong, RoofingOutlined, SpeedOutlined, SupportAgentOutlined, SupportOutlined } from "@mui/icons-material";
+
+import { BadgeOutlined, EditNotificationsOutlined, Face6Outlined, FolderOutlined, GroupsOutlined, ManageAccountsOutlined, MoveToInboxOutlined, Person2Outlined, RestaurantOutlined, ScheduleOutlined, SpeedOutlined, SupervisorAccountOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { ListDivider } from "@mui/joy";
 
@@ -122,8 +91,8 @@ const ListItemComponent = ({ route, action, props, path }) => {
       }}
       onClick={navTo}>
       <Box
-        width={30}
-        height={30}
+        width={20}
+        height={27}
         sx={styles.icon}>
         {props.icon}
       </Box>
@@ -158,8 +127,8 @@ const DropdowmList = ({ children, props, path }) => {
               backgroundColor: path ? "#FFFFFF30" : "transparent",
             }}>
             <Box
-              width={30}
-              height={30}
+              width={20}
+              height={27}
               sx={styles.icon}>
               {props.icon}
             </Box>
@@ -179,17 +148,27 @@ const DropdowmList = ({ children, props, path }) => {
   );
 };
 
-const Sidebar = () => {
+const Sidebar = ({
+  loginResult
+}) => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   const logOut = () => {
-    navigate(NAVIGATE_TO_LOGINPAGE)
-    // dispatch(userLogoutRequest());
-    // dispatch(resetUserType());
+    dispatch(logoutRequest());
   }
+
+  const [userRole, setUserRoles] = React.useState("")
+  const [isAdmin, setIsAdmin] = React.useState(false)
+
+  React.useEffect(() => {
+    if (loginResult != null && loginResult != undefined) {
+      setUserRoles(loginResult.user.role)
+      setIsAdmin(loginResult.user.is_superuser)
+    }
+  }, [loginResult])
 
   //MAIN
   return (
@@ -199,9 +178,9 @@ const Sidebar = () => {
       <GlobalStyles
         styles={(theme) => ({
           ":root": {
-            "--Sidebar-width": "220px",
+            "--Sidebar-width": "240px",
             [theme.breakpoints.up("lg")]: {
-              "--Sidebar-width": "240px",
+              "--Sidebar-width": "260px",
             },
           },
         })}
@@ -250,65 +229,144 @@ const Sidebar = () => {
             path={location.pathname === NAVIGATE_TO_DASHBOARD}
             action={() => null}
             props={{
-              title: 'Dashboard',
+              title: t('sidebar.dashboard'),
               icon: <SpeedOutlined />
             }}
           />
 
-          <DropdowmList
-            path={location.pathname === NAVIGATE_TO_STAFFPAGE || location.pathname === NAVIGATE_TO_AGENTSPAGE}
-            props={{
-              title: 'Intergration',
-              icon: <LinkOutlined />,
-
-            }}>
-
-            {/* Staff */}
-            <ListItemComponent
-              route={NAVIGATE_TO_STAFFPAGE}
-              path={location.pathname === NAVIGATE_TO_STAFFPAGE}
-              action={() => null}
+          {/* ---- Manage User ----- */}
+          {userRole === 'admin' &&
+            <DropdowmList
+              path={location.pathname === NAVIGATE_TO_STUDENTPAGE || location.pathname === NAVIGATE_TO_AGENTSPAGE}
               props={{
-                title: 'Manage Staffs',
-                icon: <ManageAccountsOutlined />
-              }}
-            />
+                title: t("sidebar.manageUser"),
+                icon: <GroupsOutlined />,
 
-            {/* Agents */}
-            <ListItemComponent
-              route={NAVIGATE_TO_AGENTSPAGE}
-              path={location.pathname === NAVIGATE_TO_AGENTSPAGE}
-              action={() => null}
+              }}>
+
+              {/* Admins */}
+              {isAdmin && <ListItemComponent
+                route={'#'}
+                path={null}
+                action={() => null}
+                props={{
+                  title: t("sidebar.manageAdmins"),
+                  icon: <ManageAccountsOutlined />
+                }}
+              />}
+
+              {/* Students */}
+              <ListItemComponent
+                route={NAVIGATE_TO_STUDENTPAGE}
+                path={location.pathname === NAVIGATE_TO_STUDENTPAGE}
+                action={() => null}
+                props={{
+                  title: t("sidebar.manageStudents"),
+                  icon: <Face6Outlined />
+                }}
+              />
+
+              {/* Parents */}
+              <ListItemComponent
+                route={'#'}
+                path={null}
+                action={() => null}
+                props={{
+                  title: t("sidebar.manageParents"),
+                  icon: <SupervisorAccountOutlined />
+                }}
+              />
+
+              {/* Operators */}
+              <ListItemComponent
+                route={'#'}
+                path={null}
+                action={() => null}
+                props={{
+                  title: t("sidebar.manageOperators"),
+                  icon: <Person2Outlined />
+                }}
+              />
+
+            </DropdowmList>}
+
+          {/* ------ Manage Resources ------- */}
+          {userRole == 'admin' &&
+            <DropdowmList
+              path={null}
               props={{
-                title: "Manage Agents",
-                icon: <ManageAccountsOutlined />
-              }}
-            />
+                title: t("sidebar.manageResources"),
+                icon: <FolderOutlined />,
 
-          </DropdowmList>
+              }}>
+              {/* cards */}
+              <ListItemComponent
+                route={'#'}
+                path={null}
+                action={() => null}
+                props={{
+                  title: t("sidebar.manageCards"),
+                  icon: <BadgeOutlined />
+                }}
+              />
+
+              {/* items */}
+              <ListItemComponent
+                route={'#'}
+                path={null}
+                action={() => null}
+                props={{
+                  title: t("sidebar.manageItems"),
+                  icon: <RestaurantOutlined />
+                }}
+              />
+            </DropdowmList>}
 
           {/* Transactions */}
+          {userRole == 'admin' && 
           <ListItemComponent
             route={NAVIGATE_TO_TRANSACTIONPAGE}
             path={location.pathname === NAVIGATE_TO_TRANSACTIONPAGE}
             action={() => null}
             props={{
-              title: "Transactions",
+              title: t("sidebar.transaction"),
               icon: <CurrentExchangeRoundIcon />
             }}
-          />
+          />}
 
-          {/* Accounts */}
+          {/* Sessions */}
+          {userRole == 'operator' && 
           <ListItemComponent
-            route={NAVIGATE_TO_ACCOUNTSPAGE}
-            path={location.pathname === NAVIGATE_TO_ACCOUNTSPAGE}
+            route={'#'}
+            path={null}
             action={() => null}
             props={{
-              title: 'Accounts',
-              icon: <FolderOutlined />
+              title: t("sidebar.session"),
+              icon: <ScheduleOutlined />
             }}
-          />
+          />}
 
+          {/* Bank deposit */}
+          {userRole == 'admin'&& <ListItemComponent
+            route={'#'}
+            path={null}
+            action={() => null}
+            props={{
+              title: t("sidebar.bankDeposit"),
+              icon: <MoveToInboxOutlined />
+            }}
+          />}
+
+          {/* Notifications */}
+          {isAdmin && <ListItemComponent
+            route={'#'}
+            path={null}
+            action={() => null}
+            props={{
+              title: t("sidebar.notifications"),
+              icon: <EditNotificationsOutlined />
+            }}
+          />}
 
           <Divider sx={{ my: "10px" }} />
 
@@ -402,25 +460,12 @@ const styles = {
   }
 }
 
-//mapping Redux store states to props
-const mapStateToProps = ({ authAmb, resource }) => {
-  const { otpResult: loginResults } = authAmb;
-
-  //extracting properties from the resource object in the Redux store's state
-  const {
-    ambassadorLoanResult: ambassadorLoanResult,
-    ambassadorLoanStatus: ambassadorLoanStatus,
-    ambassadorLoanErrorMessage: ambassadorLoanErrorMessage,
-  } = resource;
+const mapStateToProps = ({ auth }) => {
+  const { loginResult } = auth
 
   return {
-    loginResults,
-    ambassadorLoanResult,
-    ambassadorLoanStatus,
-    ambassadorLoanErrorMessage,
-  };
-};
+    loginResult
+  }
+}
 
-//connecting Redux store to sidebar component
-// export default connect(mapStateToProps, {})(Sidebar);
-export default Sidebar
+export default connect(mapStateToProps, {})(Sidebar);

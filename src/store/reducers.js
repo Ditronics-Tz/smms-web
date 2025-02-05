@@ -1,23 +1,14 @@
 import { combineReducers } from "redux";
 
-import authReducer from "./ambassador/authAmb/reducers";
-import resourceReducer from "./ambassador/resource/reducers";
-import profileReducer from "./ambassador/profile/reducers";
-import transactioReducer from "./ambassador/transaction/reducers";
-import passwordReducer from "./ambassador/password/reducers";
+import authReducer from "./auth/reducers";
+import userReducer from "./user/reducers";
 
-import userTypeReducer from './userType/reducer'
 import { ACTION_RESET_APP_STATE } from '../constant';
 
 const appReducers = combineReducers({
-    // ambassodor reducers
-    authAmb: authReducer,
-    resource: resourceReducer,
-    profile: profileReducer,
-    transaction: transactioReducer,
-    password: passwordReducer,
+    auth: authReducer,
 
-    user: userTypeReducer
+    user: userReducer
 });
 
 const rootReducer = (state, action) => {

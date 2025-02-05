@@ -1,10 +1,10 @@
 import React, { Fragment, useEffect } from "react";
 import { Typography, Box, Card, Grid } from "@mui/joy";
 import { toast } from 'react-toastify';
-import { Main, PageTitle } from "../../../components";
+import { LoadingView, Main, PageTitle } from "../../../components";
 import { CardContent } from "@mui/material";
 import { Folder, GroupOutlined, PaidOutlined, Person } from "@mui/icons-material";
-import { NAVIGATE_TO_ACCOUNTSPAGE, NAVIGATE_TO_AGENTSPAGE, NAVIGATE_TO_STAFFPAGE, NAVIGATE_TO_TRANSACTIONPAGE } from "../../../route/types";
+import { NAVIGATE_TO_ACCOUNTSPAGE, NAVIGATE_TO_AGENTSPAGE, NAVIGATE_TO_STUDENTPAGE, NAVIGATE_TO_TRANSACTIONPAGE } from "../../../route/types";
 import { Link, useLocation } from "react-router-dom";
 
 const Dashboard = () => {
@@ -17,7 +17,7 @@ const Dashboard = () => {
             icon: <GroupOutlined sx={{ color: 'black', fontSize: '30px' }} />,
             iconBgColor: 'greenyellow',
             number: "57",
-            action: NAVIGATE_TO_STAFFPAGE
+            action: NAVIGATE_TO_STUDENTPAGE
         },
         {
             title: 'Total Agents',
@@ -45,7 +45,9 @@ const Dashboard = () => {
 
     return (
         <Box>
-            <PageTitle title={'Dashboard - '+ name || "" } />
+            <PageTitle title={'Dashboard' } />
+
+            {/* <LoadingView loading={true}/> */}
 
             {/* card counts */}
             <Grid container

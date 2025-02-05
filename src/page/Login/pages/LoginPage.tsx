@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect, useDispatch } from "react-redux";
 import {
-    userLoginRequest, userLoginReset,
-
-    ambassadorOTPRequest, ambassadorOTPReset
+    loginRequest, loginReset,
 } from "../../../store/actions"
 
 import { CssVarsProvider } from '@mui/joy/styles';
@@ -44,13 +42,10 @@ interface SignInFormElement extends HTMLFormElement {
 }
 
 const LoginPage = ({
-    // ambLoginStatus,
-    // ambLoginResult,
-    // ambLoginErrorMessage,
-
-    // ambOtpStatus,
-    // ambOtpResult,
-    // ambOtpErrorMessage,
+    loginStatus,
+    loginResult,
+    loginErrorMessage,
+    accessToken,
 }) => {
 
     const navigate = useNavigate();
@@ -64,85 +59,45 @@ const LoginPage = ({
     const [OTP, setOTP] = useState('')
     const [username, setUsername] = useState('')
 
-
-
-    // FUNCTION TO VERIFY OTP FROM  BACKEND
-    const verifyOTP = (event) => {
-        event.preventDefault();
-        if (OTP) {
-            setLoadOTP(true)
-            dispatch(ambassadorOTPRequest(username, OTP))
-
-        } else {
-            toast.error('Please enter OTP to verify')
+    useEffect(() => {
+        if (loginStatus === STATUS.SUCCESS) {
+            navigate(NAVIGATE_TO_DASHBOARD, { replace: true });
         }
+        else if (loginStatus === STATUS.ERROR) {
+            toast.error(loginErrorMessage)
+            dispatch(loginReset());
+        }
+    }, [loginStatus])
 
-    }
+    useEffect(() => {
+        console.log("Refresh screen")
+    }, [refresh])
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const formElements = event.currentTarget.elements;
         const data = {
-            email: formElements.email.value,
-            password: formElements.password.value,
+            'username': formElements.email.value,
+            'password': formElements.password.value,
         };
         console.log(data)
-        if (data.email != "" && data.password != "") {
-            // navigate(NAVIGATE_TO_DASHBOARD)
-            fetchLogin(data)
-            setUsername(data.email)
+        if (data.username != "" && data.password != "") {
+            dispatch(loginRequest(data))
 
         } else {
             toast.error(t("login.emptyErr"));
         }
     }
 
-    const fetchLogin = async (data) => {
-
-        const onSuccess = (response) => {
-            console.debug('Request Successful!', response.data);
-            navigate(NAVIGATE_TO_DASHBOARD, {
-                state: {
-                    name: response.data.user.first_name
-                }
-            })
-            return response;
-        };
-
-        const onError = (error) => {
-            console.log('Request Failed:', error.config);
-            console.debug(error);
-            if (error.response) {
-                console.log('Status:', error.response.status);
-                console.log('Data:', error.response.data);
-                console.log('Headers:', error.response.headers);
-
-                toast.error(error.response.data.message);
-
-                return error.response
-
-            } else {
-                console.log('Error Message:', error.message);
-
-                return error.message
-            }
-        };
-
-        return axios({
-            url: 'http://127.0.0.1:8000//auth/login/',
-            method: "POST",
-            timeout: 10000,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            data: {
-                'username': data.email,
-                'password': data.password,
-            }
-        })
-            .then(onSuccess).catch(onError);
-    };
+    const checkLoading = () => {
+        if (loginStatus === STATUS.LOADING){
+            return true
+        }
+        else {
+            return false
+        }
+    }
 
     return (
         <CssVarsProvider defaultMode="light" disableTransitionOnChange theme={theme}>
@@ -159,7 +114,7 @@ const LoginPage = ({
             />
 
             {/* loading  */}
-            {/* <LoadingView loading={checkLoading()} /> */}
+            <LoadingView loading={checkLoading()} />
 
             <Box
                 sx={styles.container}
@@ -280,7 +235,7 @@ const LoginPage = ({
                     <DialogTitle>OTP Verification</DialogTitle>
                     <DialogContent>Please enter OTP that has been sent to your email.</DialogContent>
                     <form
-                        onSubmit={verifyOTP}
+                        onSubmit={null}
                     >
                         <FormControl sx={{ pb: 1 }}>
                             {/* <FormLabel></FormLabel> */}
@@ -393,28 +348,22 @@ const styles = {
 
 }
 
-const mapStateToProps = ({ authAmb }) => {
+const mapStateToProps = ({ auth }) => {
     const {
-        userLoginStatus: ambLoginStatus,
-        userLoginResult: ambLoginResult,
-        userLoginErrorMessage: ambLoginErrorMessage,
-
-        otpStatus: ambOtpStatus,
-        otpResult: ambOtpResult,
-        otpErrorMessage: ambOtpErrorMessage
-    } = authAmb
+        loginStatus,
+        loginResult,
+        loginErrorMessage,
+        accessToken,
+    } = auth
 
 
     return {
-        ambLoginStatus,
-        ambLoginResult,
-        ambLoginErrorMessage,
-
-        ambOtpStatus,
-        ambOtpResult,
-        ambOtpErrorMessage,
+        loginStatus,
+        loginResult,
+        loginErrorMessage,
+        accessToken,
     }
 }
 
-export default LoginPage
-// export default connect(mapStateToProps, {})(LoginPage)
+// export default LoginPage
+export default connect(mapStateToProps, {})(LoginPage)
