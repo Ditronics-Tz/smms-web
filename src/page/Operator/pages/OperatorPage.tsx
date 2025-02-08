@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack, ListItemDecorator, Avatar } from "@mui/joy";
+import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack, ListItemDecorator, Avatar, MenuItem, Divider } from "@mui/joy";
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import { LoadingView, NotFoundMessage, PageTitle } from "../../../components";
@@ -8,8 +8,9 @@ import { formatDate } from "../../../utils";
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 
-import { connect, useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { DeleteOutline, PersonAddOutlined, RemoveRedEyeOutlined } from "@mui/icons-material";
@@ -23,7 +24,7 @@ import {
     createUserReset,
 } from "../../../store/actions"
 import { useTranslation } from "react-i18next";
-import { NAVIGATE_TO_STUDENTDETAILSPAGE } from "../../../route/types";
+import { NAVIGATE_TO_OPERATORDETAILSPAGE } from "../../../route/types";
 
 const MobileViewTable = ({ data, props }) => {
     const { t } = useTranslation();
@@ -45,18 +46,19 @@ const MobileViewTable = ({ data, props }) => {
                         }}
                     >
                         <ListItemContent sx={{ display: 'flex', gap: 2, alignItems: 'start' }}>
-                            <ListItemDecorator>
+                            {/* <ListItemDecorator>
                                 <Avatar size="sm" src={FILE_BASE + listItem.profile_picture} />
-                            </ListItemDecorator>
+                            </ListItemDecorator> */}
                             <div>
                                 <Typography fontWeight={600} gutterBottom>{listItem.first_name + " " + listItem.middle_name + " " + listItem.last_name}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("student.gender")}:</b> {{ 'M': t("student.male"), 'F': t("student.female") }[listItem.gender]}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("student.schoolName")}:</b> {listItem.school || ""}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("student.classRoom")}:</b> {listItem.class_room}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("operator.gender")}:</b> {{ 'M': t("operator.male"), 'F': t("operator.female") }[listItem.gender]}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("operator.email")}:</b> {listItem.email}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("operator.mobile")}:</b> {listItem.mobile_number}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("operator.schoolName")}:</b> {listItem.school}</Typography>
                                 <Dropdown>
                                     <MenuButton variant="plain" size="sm">More ...</MenuButton>
                                     <Menu placement="bottom-end" sx={{ p: 1 }}>
-                                        <Typography level="body-sm" gutterBottom><b>{t("student.joined")}:</b> {formatDate(listItem.date_joined)}</Typography>
+                                        <Typography level="body-sm" gutterBottom><b>{t("operator.joined")}:</b> {formatDate(listItem.date_joined)}</Typography>
                                     </Menu>
                                 </Dropdown>
                             </div>
@@ -88,8 +90,8 @@ const MobileViewTable = ({ data, props }) => {
                             >
                                 {'Active'}
                             </Chip> */}
-                            <ButtonGroup variant="soft" size="sm">
-                                <Button color="primary" onClick={() => props.view(listItem)}><RemoveRedEyeOutlined /></Button>
+                            <ButtonGroup variant="outlined" size="sm">
+                                <Button color="neutral" onClick={() => props.view(listItem)}><RemoveRedEyeOutlined /></Button>
                                 <Button color="danger"><DeleteOutline /></Button>
                                 {/* <Button color="warning"><BlockOutlined /></Button> */}
                             </ButtonGroup>
@@ -132,30 +134,30 @@ const DesktopViewTable = ({ data, props }) => {
                         '& tr > *:last-child': {
                             position: 'sticky',
                             right: 0,
-                            bgcolor: 'var(--TableCell-headBackground)',
+                            // bgcolor: 'var(--TableCell-headBackground)',
                         },
                     }}
                 >
                     <thead>
                         <tr style={{ textAlign: 'center' }}>
-                            <th style={{ width: 50, padding: '10px 6px' }}></th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("student.firstName")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("student.middleName")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("student.lastName")}</th>
-                            <th style={{ width: 50, padding: '10px 6px', }}>{t("student.gender")}</th>
-                            <th style={{ width: 150, padding: '10px 6px', }}>{t("student.schoolName")}</th>
-                            <th style={{ width: 60, padding: '10px 6px', }}>{t("student.classRoom")}</th>
-                            <th style={{ width: 120, padding: '10px 6px', }}>{t("student.joined")}</th>
-                            {/* <th style={{ width: 40, padding: '10px 6px', textAlign: 'center' }}>Status</th> */}
-                            <th aria-label="last" style={{ width: 100, padding: '10px 6px', }}>Actions</th>
+                            {/* <th style={{ width: 50, padding: '10px 6px' }}></th> */}
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("operator.firstName")}</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("operator.middleName")}</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("operator.lastName")}</th>
+                            <th style={{ width: 50, padding: '10px 6px', }}>{t("operator.gender")}</th>
+                            <th style={{ width: 130, padding: '10px 6px', }}>{t("operator.email")}</th>
+                            <th style={{ width: 100, padding: '10px 6px', }}>{t("operator.mobile")}</th>
+                            <th style={{ width: 100, padding: '10px 6px', }}>{t("operator.operateAt")}</th>
+                            <th style={{ width: 120, padding: '10px 6px', }}>{t("operator.joined")}</th>
+                            <th style={{ width: 80, padding: '10px 6px', }}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {data.map((row, index) => (
                             <tr key={index}>
-                                <td>
+                                {/* <td>
                                     <Avatar size="sm" src={FILE_BASE + row.profile_picture} />
-                                </td>
+                                </td> */}
                                 <td>
                                     <Typography level="body-sm">{row.first_name}</Typography>
                                 </td>
@@ -163,16 +165,19 @@ const DesktopViewTable = ({ data, props }) => {
                                     <Typography level="body-sm">{row.middle_name}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-xs">{row.last_name}</Typography>
+                                    <Typography level="body-sm">{row.last_name}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-sm">{{ 'M': t("student.male"), 'F': t("student.female") }[row.gender]}</Typography>
+                                    <Typography level="body-sm">{{ 'M': t("operator.male"), 'F': t("operator.female") }[row.gender]}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-sm">{row.school || ""}</Typography>
+                                    <Typography level="body-sm">{row.email}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-xs">{row.class_room}</Typography>
+                                    <Typography level="body-sm">{row.mobile_number}</Typography>
+                                </td>
+                                <td>
+                                    <Typography level="body-sm">{row.school}</Typography>
                                 </td>
                                 <td>
                                     <Typography level="body-sm">{formatDate(row.date_joined)}</Typography>
@@ -200,10 +205,22 @@ const DesktopViewTable = ({ data, props }) => {
                                     </Chip>
                                 </td> */}
                                 <td>
-                                    <ButtonGroup variant="solid" size="sm">
-                                        <Button title={t("student.view")} color="primary" onClick={() => props.view(row)}><RemoveRedEyeOutlined /></Button>
-                                        {/* <Button title="Delete" color="danger"><DeleteOutline /></Button> */}
-                                        <Button title={t("student.delete")} color="danger"><DeleteOutline /></Button>
+                                    {/* <Dropdown>
+                                        <MenuButton
+                                            slots={{ root: IconButton }}
+                                            slotProps={{ root: { variant: 'plain', color: 'neutral', size: 'sm' } }}
+                                        >
+                                            <MoreHorizRoundedIcon />
+                                        </MenuButton>
+                                        <Menu size="sm" sx={{ minWidth: 140 }}>
+                                            <MenuItem>{t("operator.view")}</MenuItem>
+                                            <Divider />
+                                            <MenuItem color="danger">{t("operator.delete")}</MenuItem>
+                                        </Menu>
+                                    </Dropdown> */}
+                                    <ButtonGroup variant="outlined" size="sm">
+                                        <Button title={t("operator.view")} color="neutral" onClick={() => props.view(row)}><RemoveRedEyeOutlined /></Button>
+                                        <Button title={t("operator.delete")} color="danger"><DeleteOutline /></Button>
                                     </ButtonGroup>
                                 </td>
                             </tr>
@@ -215,15 +232,15 @@ const DesktopViewTable = ({ data, props }) => {
     );
 }
 
-const StudentPage = ({
+const OperatorPage = ({
     accessToken,
+
+    schoolList,
+    schoolStatus,
 
     createStatus,
     createResult,
     createErrorMessage,
-
-    schoolList,
-    schoolStatus,
 
     listStatus,
     listResult,
@@ -234,29 +251,30 @@ const StudentPage = ({
     const { t } = useTranslation()
     const isDesktop = useMediaQuery("(min-width:600px)");
 
-    const initiateStudentData = {
-        student_id: "",
+    const initiateOperatorData = {
+        operator_id: "",
         first_name: "",
         middle_name: "",
         last_name: "",
         gender: "",
-        class_room: "",
-        school: "",
-        profile_picture: null,
+        email: "",
+        username: "",
+        mobile: "",
+        school: ""
     }
 
-    const [studentData, setStudentData] = useState(initiateStudentData);
+    const [operatorData, setOperatorData] = useState(initiateOperatorData);
 
     // ---- PAGINATION SETTINGS ----- //
     const [listData, setListData] = useState([]);
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
-    const [totalStudent, setTotalStudent] = useState(0);
+    const [totalOperator, setTotalOperator] = useState(0);
     const [nextPage, setNextPage] = useState(null);
     const [previousPage, setPreviousPage] = useState(null);
 
     const ITEMS_PER_PAGE = 50
-    const pageLength = listData.length > 0 ? Math.ceil(totalStudent / ITEMS_PER_PAGE) : 1
+    const pageLength = listData.length > 0 ? Math.ceil(totalOperator / ITEMS_PER_PAGE) : 1
 
     const [formModal, setFormModal] = useState(false)
 
@@ -265,7 +283,7 @@ const StudentPage = ({
             setListData(listResult.results);
             setNextPage(listResult.next);
             setPreviousPage(listResult.previous);
-            setTotalStudent(listResult.count);
+            setTotalOperator(listResult.count);
         }
         else if (listStatus === STATUS.ERROR) {
             toast.error(listErrorMessage);
@@ -275,8 +293,8 @@ const StudentPage = ({
         if (createStatus == STATUS.SUCCESS) {
             toast.success(createResult.message);
             setFormModal(false);
-            setStudentData(initiateStudentData);
-            dispatch(userListRequest(accessToken, { "search": search, "role": "student" }, page))
+            setOperatorData(initiateOperatorData);
+            dispatch(userListRequest(accessToken, { "search": search, "role": "operator" }, page))
             dispatch(createUserReset())
         }
         else if (createStatus === STATUS.ERROR) {
@@ -288,7 +306,7 @@ const StudentPage = ({
     useEffect(() => {
         const data = {
             'search': search,
-            'role': 'student'
+            'role': 'operator'
         }
         dispatch(userListRequest(accessToken, data, page))
     }, [page, search])
@@ -297,7 +315,7 @@ const StudentPage = ({
     const handleChange = (e) => {
         if (!e || !e.target) return;
         const { name, value } = e.target;
-        setStudentData((prevData) => ({
+        setOperatorData((prevData) => ({
             ...prevData,
             [name]: value,
         }));
@@ -306,7 +324,7 @@ const StudentPage = ({
     // Handle file input change
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        setStudentData((prevData) => ({
+        setOperatorData((prevData) => ({
             ...prevData,
             profile_picture: file,
         }));
@@ -315,23 +333,20 @@ const StudentPage = ({
     // ---- Submit function
     const handleSubmit = (event) => {
         event.preventDefault()
-        if (studentData.first_name) {
+        if (operatorData.first_name) {
             const formData = new FormData();
 
             // Append non-file data
-            // formData.append("student_id", studentData.student_id);
-            formData.append("first_name", studentData.first_name);
-            formData.append("middle_name", studentData.middle_name);
-            formData.append("last_name", studentData.last_name);
-            formData.append("gender", studentData.gender);
-            formData.append("class_room", studentData.class_room);
-            formData.append("school", studentData.school);
-            formData.append("role", "student");
-
-            // Append file only if selected
-            if (studentData.profile_picture) {
-                formData.append("profile_picture", studentData.profile_picture);
-            }
+            // formData.append("operator_id", operatorData.operator_id);
+            formData.append("first_name", operatorData.first_name);
+            formData.append("middle_name", operatorData.middle_name);
+            formData.append("last_name", operatorData.last_name);
+            formData.append("gender", operatorData.gender);
+            formData.append("email", operatorData.email);
+            formData.append("username", operatorData.username);
+            formData.append("mobile_number", operatorData.mobile);
+            formData.append("school", operatorData.school);
+            formData.append("role", "operator");
 
             dispatch(createUserRequest(accessToken, formData))
         } else {
@@ -340,8 +355,8 @@ const StudentPage = ({
     }
 
     /* -------- actions ----------- */
-    const viewStudentDetails = (details) => {
-        navigate(NAVIGATE_TO_STUDENTDETAILSPAGE, {
+    const viewOperatorDetails = (details) => {
+        navigate(NAVIGATE_TO_OPERATORDETAILSPAGE, {
             state: {
                 id: details.id
             }
@@ -364,7 +379,7 @@ const StudentPage = ({
 
     return (
         <Box>
-            <PageTitle title={t("student.title") + ` (${totalStudent})`} />
+            <PageTitle title={t("operator.title") + ` (${totalOperator})`} />
 
             <LoadingView loading={checkLoading()} />
 
@@ -385,7 +400,7 @@ const StudentPage = ({
                     color="success"
                     sx={{ width: 'auto' }}
                     onClick={openAddForm}>
-                    {t("student.add")}
+                    {t("operator.add")}
                 </Button>
 
                 <Input
@@ -396,28 +411,17 @@ const StudentPage = ({
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     startDecorator={<SearchIcon />}
-                    // endDecorator={
-                    //     <Dropdown>
-                    //         <MenuButton variant="plain">
-                    //             {/* <Typography level="body-sm">Filter</Typography> */}
-                    //             <FilterAltOutlined />
-                    //         </MenuButton>
-                    //         <Menu sx={{ minWidth: '120px', fontSize: '14px' }}>
-                    //             <MenuItem onClick={() => setFilterBy('name')} selected={filterBy == 'name'}>Name</MenuItem>
-                    //         </Menu>
-                    //     </Dropdown>
-                    // }
                     sx={{ width: { xs: 'auto', md: '30%' }, textTransform: 'capitalize' }}
                 />
             </Sheet>
 
             {listData.length > 0 ? <>
                 {/* ------ render different view depend on plafform -------- */}
-                <MobileViewTable data={listData} props={{ view: viewStudentDetails, delete: null }} />
-                <DesktopViewTable data={listData} props={{ view: viewStudentDetails, delete: null }} />
+                <MobileViewTable data={listData} props={{ view: viewOperatorDetails, delete: null }} />
+                <DesktopViewTable data={listData} props={{ view: viewOperatorDetails, delete: null }} />
 
                 {/* Pagination */}
-                {totalStudent > ITEMS_PER_PAGE
+                {totalOperator > ITEMS_PER_PAGE
                     &&
                     <Box
                         className="Pagination-laptopUp"
@@ -458,7 +462,7 @@ const StudentPage = ({
 
                         {/* for mobile to display page number */}
                         <Typography level="body-sm" mx="auto" textAlign={'center'} sx={{ display: { xs: 'flex', md: 'none' } }}>
-                            {t('init.page')} {page} of {Math.ceil(totalStudent / ITEMS_PER_PAGE)}
+                            {t('init.page')} {page} of {Math.ceil(totalOperator / ITEMS_PER_PAGE)}
                         </Typography>
                         <Box sx={{ flex: 1 }} />
 
@@ -499,37 +503,43 @@ const StudentPage = ({
                         },
                     })}>
                     <ModalClose variant="outlined" onClick={() => setFormModal(false)} />
-                    <DialogTitle>{t("student.add")}</DialogTitle>
+                    <DialogTitle>{t("operator.add")}</DialogTitle>
                     <DialogContent>{t("init.enterDetails")}</DialogContent>
                     <Stack component='form' onSubmit={handleSubmit} gap={2} sx={{ mt: 2 }}>
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
                             {/* first name */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("student.firstName")}</FormLabel>
-                                <Input type="text" name="first_name" value={studentData.first_name} onChange={handleChange} placeholder={t("init.placeholder") + t("student.firstName")} />
+                                <FormLabel>{t("operator.firstName")}</FormLabel>
+                                <Input type="text" name="first_name" value={operatorData.first_name} onChange={handleChange} placeholder={t("init.placeholder") + t("operator.firstName")} />
                             </FormControl>
 
                             {/* second name */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("student.middleName")}</FormLabel>
-                                <Input type="text" name="middle_name" value={studentData.middle_name} onChange={handleChange} placeholder={t("init.placeholder") + t("student.middleName")} />
+                                <FormLabel>{t("operator.middleName")}</FormLabel>
+                                <Input type="text" name="middle_name" value={operatorData.middle_name} onChange={handleChange} placeholder={t("init.placeholder") + t("operator.middleName")} />
                             </FormControl>
 
                             {/* last name */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("student.lastName")}</FormLabel>
-                                <Input type="text" name="last_name" value={studentData.last_name} onChange={handleChange} placeholder={t("init.placeholder") + t("student.lastName")} />
+                                <FormLabel>{t("operator.lastName")}</FormLabel>
+                                <Input type="text" name="last_name" value={operatorData.last_name} onChange={handleChange} placeholder={t("init.placeholder") + t("operator.lastName")} />
                             </FormControl>
                         </Stack>
 
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
+                            {/* username */}
+                            <FormControl sx={{ flex: 1 }} required>
+                                <FormLabel>{t("operator.username")}</FormLabel>
+                                <Input type="text" name="username" value={operatorData.username} onChange={handleChange} placeholder={t("init.placeholder") + t("operator.username")} />
+                            </FormControl>
+
                             {/* gender */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("student.gender")}</FormLabel>
-                                <Select name="gender" defaultValue={studentData.gender} value={studentData.gender}
-                                    placeholder={t("init.select") + t("student.gender")}
-                                    onChange={(e, value) => setStudentData({ ...studentData, gender: value })}>
-                                    {[{ value: 'M', label: t("student.male") }, { value: 'F', label: t("student.female") }].map((item, index) => (
+                                <FormLabel>{t("operator.gender")}</FormLabel>
+                                <Select name="gender" defaultValue={operatorData.gender} value={operatorData.gender}
+                                    placeholder={t("init.select") + t("operator.gender")}
+                                    onChange={(e, value) => setOperatorData({ ...operatorData, gender: value })}>
+                                    {[{ value: 'M', label: t("operator.male") }, { value: 'F', label: t("operator.female") }].map((item, index) => (
                                         <Option key={index} value={item.value}>{item.label}</Option>
                                     ))}
                                 </Select>
@@ -537,30 +547,31 @@ const StudentPage = ({
                         </Stack>
 
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
-                            {/* school name */}
+                            {/* email */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("student.schoolName")}</FormLabel>
-                                <Select name="school" defaultValue={studentData.school} value={studentData.school}
-                                    placeholder={t("init.select") + t("student.schoolName")}
-                                    onChange={(e, value) => setStudentData({ ...studentData, school: value })}>
-                                    {schoolStatus === STATUS.SUCCESS ? schoolList.results.map((item, index) => (
-                                        <Option key={index} value={item.id}>{item.name}</Option>
-                                    )) : <Option  value={null}>{t("school.NoList")}</Option>}
-                                </Select>
+                                <FormLabel>{t("operator.email")}</FormLabel>
+                                <Input type="email" name="email" value={operatorData.email} onChange={handleChange} placeholder={t("init.placeholder") + t("operator.email")} />
                             </FormControl>
 
                             {/* class room */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("student.classRoom")}</FormLabel>
-                                <Input type="text" name="class_room" value={studentData.class_room} onChange={handleChange} placeholder={t("init.placeholder") + t("student.classRoom")} />
+                                <FormLabel>{t("operator.mobile")}</FormLabel>
+                                <Input type="tel" name="mobile" value={operatorData.mobile} onChange={handleChange} placeholder={t("init.placeholder") + t("operator.mobile") + " Eg: 0612******"} />
                             </FormControl>
                         </Stack>
 
+                        {/* school name */}
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
-                            {/* picture */}
-                            <FormControl sx={{ flex: 1 }}>
-                                <FormLabel>{t("student.profile")}</FormLabel>
-                                <Input type="file" name="profile_picture" placeholder={t("init.select") + t("student.profile")} onChange={handleFileChange} />
+
+                            <FormControl sx={{ flex: 1 }} required>
+                                <FormLabel>{t("operator.schoolName")}</FormLabel>
+                                <Select name="school" defaultValue={operatorData.school} value={operatorData.school}
+                                    placeholder={t("init.select") + t("student.schoolName")}
+                                    onChange={(e, value) => setOperatorData({ ...operatorData, school: value })}>
+                                    {schoolStatus === STATUS.SUCCESS ? schoolList.results.map((item, index) => (
+                                        <Option key={index} value={item.id}>{item.name}</Option>
+                                    )) : <Option value={null}>{t("school.NoList")}</Option>}
+                                </Select>
                             </FormControl>
                         </Stack>
 
@@ -583,7 +594,7 @@ const mapStateToProps = ({ auth, user, school }) => {
         createUserErrorMessage: createErrorMessage,
     } = auth
 
-    const { 
+    const {
         schoolListResult: schoolList,
         schoolListStatus: schoolStatus,
     } = school
@@ -597,16 +608,16 @@ const mapStateToProps = ({ auth, user, school }) => {
     return {
         accessToken,
 
+        schoolList,
+        schoolStatus,
+
         createStatus,
         createResult,
         createErrorMessage,
-
-        schoolList,
-        schoolStatus,
 
         listStatus,
         listResult,
         listErrorMessage
     }
 }
-export default connect(mapStateToProps, {})(StudentPage)
+export default connect(mapStateToProps, {})(OperatorPage)

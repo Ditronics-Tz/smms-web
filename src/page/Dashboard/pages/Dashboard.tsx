@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { LoadingView, Main, PageTitle } from "../../../components";
 import { CardContent } from "@mui/material";
 import { Folder, GroupOutlined, PaidOutlined, Person } from "@mui/icons-material";
-import { NAVIGATE_TO_ACCOUNTSPAGE, NAVIGATE_TO_AGENTSPAGE, NAVIGATE_TO_STUDENTPAGE, NAVIGATE_TO_TRANSACTIONPAGE } from "../../../route/types";
+import {  NAVIGATE_TO_OPERATORPAGE, NAVIGATE_TO_PARENTPAGE, NAVIGATE_TO_STUDENTPAGE, NAVIGATE_TO_TRANSACTIONPAGE } from "../../../route/types";
 import { Link, useLocation } from "react-router-dom";
 
 const Dashboard = () => {
@@ -13,25 +13,25 @@ const Dashboard = () => {
 
     const cardsItems = [
         {
-            title: 'Total Staffs',
+            title: 'Total Students',
             icon: <GroupOutlined sx={{ color: 'black', fontSize: '30px' }} />,
             iconBgColor: 'greenyellow',
             number: "57",
             action: NAVIGATE_TO_STUDENTPAGE
         },
         {
-            title: 'Total Agents',
+            title: 'Total Parents',
             icon: <Person sx={{ color: 'white', fontSize: '30px' }} />,
             iconBgColor: 'blue',
             number: "10",
-            action: NAVIGATE_TO_AGENTSPAGE
+            action: NAVIGATE_TO_PARENTPAGE
         },
         {
-            title: 'Accounts',
+            title: 'Total Operators',
             icon: <Folder sx={{ color: 'white', fontSize: '30px' }} />,
             iconBgColor: 'purple',
             number: "103",
-            action: NAVIGATE_TO_ACCOUNTSPAGE
+            action: NAVIGATE_TO_OPERATORPAGE
         },
         {
             title: 'Transactions',

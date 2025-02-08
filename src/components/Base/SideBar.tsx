@@ -21,14 +21,21 @@ import { closeSidebar } from "../../utils";
 import image from "../../constant/image";
 import { logoutRequest } from "../../store/actions";
 import {
+  NAVIGATE_TO_ADMINDETAILSPAGE,
+  NAVIGATE_TO_ADMINPAGE,
   NAVIGATE_TO_DASHBOARD,
+  NAVIGATE_TO_OPERATORDETAILSPAGE,
+  NAVIGATE_TO_OPERATORPAGE,
+  NAVIGATE_TO_PARENTDETAILSPAGE,
+  NAVIGATE_TO_PARENTPAGE,
+  NAVIGATE_TO_SCHOOLPAGE,
+  NAVIGATE_TO_STUDENTDETAILSPAGE,
   NAVIGATE_TO_STUDENTPAGE,
-  NAVIGATE_TO_AGENTSPAGE,
   NAVIGATE_TO_TRANSACTIONPAGE,
 } from "../../route/types";
 import { connect, useDispatch } from "react-redux";
 
-import { BadgeOutlined, EditNotificationsOutlined, Face6Outlined, FolderOutlined, GroupsOutlined, ManageAccountsOutlined, MoveToInboxOutlined, Person2Outlined, RestaurantOutlined, ScheduleOutlined, SpeedOutlined, SupervisorAccountOutlined } from "@mui/icons-material";
+import { BadgeOutlined, EditNotificationsOutlined, Face6Outlined, FolderOutlined, GroupsOutlined, ManageAccountsOutlined, MoveToInboxOutlined, Person2Outlined, RestaurantOutlined, ScheduleOutlined, SchoolOutlined, SpeedOutlined, SupervisorAccountOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { ListDivider } from "@mui/joy";
 
@@ -237,7 +244,16 @@ const Sidebar = ({
           {/* ---- Manage User ----- */}
           {userRole === 'admin' &&
             <DropdowmList
-              path={location.pathname === NAVIGATE_TO_STUDENTPAGE || location.pathname === NAVIGATE_TO_AGENTSPAGE}
+              path={
+                location.pathname === NAVIGATE_TO_STUDENTPAGE || 
+                location.pathname === NAVIGATE_TO_STUDENTDETAILSPAGE ||
+                location.pathname === NAVIGATE_TO_ADMINPAGE || 
+                location.pathname === NAVIGATE_TO_ADMINDETAILSPAGE ||
+                location.pathname === NAVIGATE_TO_OPERATORPAGE ||
+                location.pathname === NAVIGATE_TO_OPERATORDETAILSPAGE ||
+                location.pathname === NAVIGATE_TO_PARENTDETAILSPAGE ||
+                location.pathname === NAVIGATE_TO_PARENTPAGE 
+              }
               props={{
                 title: t("sidebar.manageUser"),
                 icon: <GroupsOutlined />,
@@ -246,8 +262,8 @@ const Sidebar = ({
 
               {/* Admins */}
               {isAdmin && <ListItemComponent
-                route={'#'}
-                path={null}
+                route={NAVIGATE_TO_ADMINPAGE}
+                path={location.pathname === NAVIGATE_TO_ADMINPAGE || location.pathname === NAVIGATE_TO_ADMINDETAILSPAGE}
                 action={() => null}
                 props={{
                   title: t("sidebar.manageAdmins"),
@@ -258,7 +274,7 @@ const Sidebar = ({
               {/* Students */}
               <ListItemComponent
                 route={NAVIGATE_TO_STUDENTPAGE}
-                path={location.pathname === NAVIGATE_TO_STUDENTPAGE}
+                path={location.pathname === NAVIGATE_TO_STUDENTPAGE || location.pathname === NAVIGATE_TO_STUDENTDETAILSPAGE}
                 action={() => null}
                 props={{
                   title: t("sidebar.manageStudents"),
@@ -268,8 +284,8 @@ const Sidebar = ({
 
               {/* Parents */}
               <ListItemComponent
-                route={'#'}
-                path={null}
+                route={NAVIGATE_TO_PARENTPAGE}
+                path={location.pathname === NAVIGATE_TO_PARENTPAGE || location.pathname === NAVIGATE_TO_PARENTDETAILSPAGE}
                 action={() => null}
                 props={{
                   title: t("sidebar.manageParents"),
@@ -279,8 +295,8 @@ const Sidebar = ({
 
               {/* Operators */}
               <ListItemComponent
-                route={'#'}
-                path={null}
+                route={NAVIGATE_TO_OPERATORPAGE}
+                path={location.pathname === NAVIGATE_TO_OPERATORPAGE || location.pathname === NAVIGATE_TO_OPERATORDETAILSPAGE}
                 action={() => null}
                 props={{
                   title: t("sidebar.manageOperators"),
@@ -293,12 +309,24 @@ const Sidebar = ({
           {/* ------ Manage Resources ------- */}
           {userRole == 'admin' &&
             <DropdowmList
-              path={null}
+              path={location.pathname === NAVIGATE_TO_SCHOOLPAGE}
               props={{
                 title: t("sidebar.manageResources"),
                 icon: <FolderOutlined />,
 
               }}>
+
+              {/* School*/}
+              {isAdmin && <ListItemComponent
+                route={NAVIGATE_TO_SCHOOLPAGE}
+                path={location.pathname === NAVIGATE_TO_SCHOOLPAGE}
+                action={() => null}
+                props={{
+                  title: t("sidebar.manageSchool"),
+                  icon: <SchoolOutlined />
+                }}
+              />}
+
               {/* cards */}
               <ListItemComponent
                 route={'#'}
@@ -323,7 +351,7 @@ const Sidebar = ({
             </DropdowmList>}
 
           {/* Transactions */}
-          {userRole == 'admin' && 
+          {(userRole == 'admin' || userRole == 'parent') && 
           <ListItemComponent
             route={NAVIGATE_TO_TRANSACTIONPAGE}
             path={location.pathname === NAVIGATE_TO_TRANSACTIONPAGE}

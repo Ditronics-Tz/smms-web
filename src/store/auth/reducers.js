@@ -14,6 +14,10 @@ const INITIAL_STATE = {
     createUserStatus: STATUS.DEFAULT,
     createUserResult: null,
     createUserErrorMessage: "",
+
+    editUserStatus: STATUS.DEFAULT,
+    editUserResult: null,
+    editUserErrorMessage: "",
 }
 
 export default (state = INITIAL_STATE, { type, payload }) => {
@@ -104,6 +108,34 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 createUserStatus: STATUS.DEFAULT,
                 createUserResult: null,
                 createUserErrorMessage: ""
+            }
+
+        // EDIT USER
+        case STATE.EDIT_USER_LOADING:
+            return {
+                ...state,
+                editUserStatus: STATUS.LOADING
+            }
+        case STATE.EDIT_USER_SUCCESS:
+            return {
+                ...state,
+                editUserStatus: STATUS.SUCCESS,
+                editUserResult: payload,
+                editUserErrorMessage: ""
+            }
+        case STATE.EDIT_USER_FAILURE:
+            return {
+                ...state,
+                editUserStatus: STATUS.ERROR,
+                editUserResult: null,
+                editUserErrorMessage: payload,
+            }
+        case STATE.EDIT_USER_RESET:
+            return {
+                ...state,
+                editUserStatus: STATUS.DEFAULT,
+                editUserResult: null,
+                editUserErrorMessage: ""
             }
 
         default:

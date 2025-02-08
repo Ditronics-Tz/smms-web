@@ -3,51 +3,59 @@ import { STATE, STATUS } from "../../constant";
 const INITIAL_STATE = {
 
 
-    studentListStatus: STATUS.DEFAULT,
-    studentListResult: null,
-    studentListErrorMessage: "",
+    userListStatus: STATUS.DEFAULT,
+    userListResult: null,
+    userListErrorMessage: "",
 
     studentDetailsStatus: STATUS.DEFAULT,
     studentDetailsResult: null,
     studentDetailsErrorMessage: "",
 
-    studentEditStatus: STATUS.DEFAULT,
-    studentEditResult: null,
-    studentEditErrorMessage: "",
+    adminDetailsStatus: STATUS.DEFAULT,
+    adminDetailsResult: null,
+    adminDetailsErrorMessage: "",
+
+    operatorDetailsStatus: STATUS.DEFAULT,
+    operatorDetailsResult: null,
+    operatorDetailsErrorMessage: "",
+
+    parentDetailsStatus: STATUS.DEFAULT,
+    parentDetailsResult: null,
+    parentDetailsErrorMessage: "",
 }
 
 export default (state = INITIAL_STATE, { type, payload }) => {
     switch (type) {
         /* _________ 
-        STUDENT REDUCES 
+        USER REDUCES 
         ____________ */
 
-        // STUDENT LIST
-        case STATE.STUDENT_LIST_LOADING:
+        // USER LIST
+        case STATE.USER_LIST_LOADING:
             return {
                 ...state,
-                studentListStatus: STATUS.LOADING
+                userListStatus: STATUS.LOADING
             }
-        case STATE.STUDENT_LIST_SUCCESS:
+        case STATE.USER_LIST_SUCCESS:
             return {
                 ...state,
-                studentListStatus: STATUS.SUCCESS,
-                studentListResult: payload,
-                studentListErrorMessage: ""
+                userListStatus: STATUS.SUCCESS,
+                userListResult: payload,
+                userListErrorMessage: ""
             }
-        case STATE.STUDENT_LIST_FAILURE:
+        case STATE.USER_LIST_FAILURE:
             return {
                 ...state,
-                studentListStatus: STATUS.ERROR,
-                studentListResult: null,
-                studentListErrorMessage: payload,
+                userListStatus: STATUS.ERROR,
+                userListResult: null,
+                userListErrorMessage: payload,
             }
-        case STATE.STUDENT_LIST_RESET:
+        case STATE.USER_LIST_RESET:
             return {
                 ...state,
-                studentListStatus: STATUS.DEFAULT,
-                studentListResult: null,
-                studentListErrorMessage: ""
+                userListStatus: STATUS.DEFAULT,
+                userListResult: null,
+                userListErrorMessage: ""
             }
 
         // STUDENT DETAILS
@@ -78,34 +86,91 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 studentDetailsErrorMessage: ""
             }
 
-            // STUDENT EDIT
-        case STATE.STUDENT_EDIT_LOADING:
+        
+            
+        // ADMIN DETAILS
+        case STATE.ADMIN_DETAILS_LOADING:
             return {
                 ...state,
-                studentEditStatus: STATUS.LOADING
+                adminDetailsStatus: STATUS.LOADING
             }
-        case STATE.STUDENT_EDIT_SUCCESS:
+        case STATE.ADMIN_DETAILS_SUCCESS:
             return {
                 ...state,
-                studentEditStatus: STATUS.SUCCESS,
-                studentEditResult: payload,
-                studentEditErrorMessage: ""
+                adminDetailsStatus: STATUS.SUCCESS,
+                adminDetailsResult: payload,
+                adminDetailsErrorMessage: ""
             }
-        case STATE.STUDENT_EDIT_FAILURE:
+        case STATE.ADMIN_DETAILS_FAILURE:
             return {
                 ...state,
-                studentEditStatus: STATUS.ERROR,
-                studentEditResult: null,
-                studentEditErrorMessage: payload,
+                adminDetailsStatus: STATUS.ERROR,
+                adminDetailsResult: null,
+                adminDetailsErrorMessage: payload,
             }
-        case STATE.STUDENT_EDIT_RESET:
+        case STATE.ADMIN_DETAILS_RESET:
             return {
                 ...state,
-                studentEditStatus: STATUS.DEFAULT,
-                studentEditResult: null,
-                studentEditErrorMessage: ""
+                adminDetailsStatus: STATUS.DEFAULT,
+                adminDetailsResult: null,
+                adminDetailsErrorMessage: ""
             }
 
+            // OPERATOR DETAILS
+        case STATE.OPERATOR_DETAILS_LOADING:
+            return {
+                ...state,
+                operatorDetailsStatus: STATUS.LOADING
+            }
+        case STATE.OPERATOR_DETAILS_SUCCESS:
+            return {
+                ...state,
+                operatorDetailsStatus: STATUS.SUCCESS,
+                operatorDetailsResult: payload,
+                operatorDetailsErrorMessage: ""
+            }
+        case STATE.OPERATOR_DETAILS_FAILURE:
+            return {
+                ...state,
+                operatorDetailsStatus: STATUS.ERROR,
+                operatorDetailsResult: null,
+                operatorDetailsErrorMessage: payload,
+            }
+        case STATE.OPERATOR_DETAILS_RESET:
+            return {
+                ...state,
+                operatorDetailsStatus: STATUS.DEFAULT,
+                operatorDetailsResult: null,
+                operatorDetailsErrorMessage: ""
+            }
+
+            // PARENT DETAILS
+        case STATE.PARENT_DETAILS_LOADING:
+            return {
+                ...state,
+                parentDetailsStatus: STATUS.LOADING
+            }
+        case STATE.PARENT_DETAILS_SUCCESS:
+            return {
+                ...state,
+                parentDetailsStatus: STATUS.SUCCESS,
+                parentDetailsResult: payload,
+                parentDetailsErrorMessage: ""
+            }
+        case STATE.PARENT_DETAILS_FAILURE:
+            return {
+                ...state,
+                parentDetailsStatus: STATUS.ERROR,
+                parentDetailsResult: null,
+                parentDetailsErrorMessage: payload,
+            }
+        case STATE.PARENT_DETAILS_RESET:
+            return {
+                ...state,
+                parentDetailsStatus: STATUS.DEFAULT,
+                parentDetailsResult: null,
+                parentDetailsErrorMessage: ""
+            }
 
         default:
             return state;

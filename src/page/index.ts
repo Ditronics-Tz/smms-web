@@ -2,27 +2,27 @@ import { Dashboard } from "./Dashboard";
 import { LoginPage } from "./Login";
 import Error404Page from "./ErrorsPages/404Error";
 import { StudentPage, StudentDetailsPage } from "./Student";
+import { ParentDetailsPage, ParentPage } from "./Parent";
 import { SupportPage, InfoPage } from "./Support";
 import { ProfilePage } from "./Profile";
-import { AgentPage } from "./Agents";
-import { AccountsPage } from "./Accounts";
 import { TransactionPage } from "./Transactions";
-import { ApiAccessPage, ApiUsagePage, LogsPage } from "./Intergration";
+import { SchoolPage } from "./School";
+import { OperatorPage, OperatorDetailsPage } from "./Operator";
 
 export {
     Dashboard,
     LoginPage,
     StudentPage,
     StudentDetailsPage,
+    ParentPage,
+    ParentDetailsPage,
+    OperatorDetailsPage,
+    OperatorPage,
     SupportPage,
     ProfilePage,
-    TransactionPage,
-    AccountsPage,
-    AgentPage,
-    ApiAccessPage,
-    ApiUsagePage,
-    LogsPage,
     InfoPage,
+    TransactionPage,
+    SchoolPage,
 
     Error404Page,
 

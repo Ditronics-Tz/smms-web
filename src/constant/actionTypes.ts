@@ -22,9 +22,17 @@ export const STATE = createRequestTypes('STATE',
         'LOGIN',
         'TOKEN',
         'CREATE_USER',
-        'STUDENT_LIST',
+        'EDIT_USER',
+        'USER_LIST',
+
+        'CREATE_SCHOOL',
+        'SCHOOL_LIST',
+
+
         'STUDENT_DETAILS',
-        'STUDENT_EDIT',
+        'ADMIN_DETAILS',
+        'OPERATOR_DETAILS',
+        'PARENT_DETAILS',
     ], suffixTypes);
 
 export const ACTION_CHANGE_TO_ENGLISH = "CHANGE_TO_ENGLISH";

@@ -1,9 +1,14 @@
-import { LOGOUT_URL, LOGIN_URL, REFRESH_URL, CREATE_USER_URL } from '../../constant';
+import { LOGOUT_URL, LOGIN_URL, REFRESH_URL, CREATE_USER_URL, EDIT_USER_URL } from '../../constant';
 import {guestRequest, multipartRequest, resourceRequest} from '../calls'
 
 // create user
 export function doCreateUser(token, data){
     return multipartRequest(token, CREATE_USER_URL, data)
+}
+
+// edit user
+export function doEditUser(token, data){
+    return multipartRequest(token, EDIT_USER_URL, data)
 }
 
 // login call

@@ -2,13 +2,14 @@ import { combineReducers } from "redux";
 
 import authReducer from "./auth/reducers";
 import userReducer from "./user/reducers";
+import schoolReducer from "./school/reducers"
 
 import { ACTION_RESET_APP_STATE } from '../constant';
 
 const appReducers = combineReducers({
     auth: authReducer,
-
-    user: userReducer
+    user: userReducer,
+    school: schoolReducer
 });
 
 const rootReducer = (state, action) => {

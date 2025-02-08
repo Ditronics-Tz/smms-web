@@ -19,7 +19,8 @@
         "search":"Search by ",
         "date": "Date",
         "submit": "SUBMIT",
-        "loading": "LOADING..."
+        "loading": "LOADING...",
+        "page": "Page"
     },
     "alert": {
         "success": "SUCCESS",
@@ -118,6 +119,7 @@
         "manageResources": "Manage Resources",
         "manageCards": "Manage Cards",
         "manageItems": "Manage Canteen Items",
+        "manageSchool": "Manage School",
         "logout": "Log Out"
     },
     "home": {
@@ -130,6 +132,16 @@
         "ambassadorApproval": "Ambassador Approve",
         "managerApproval": "Manager Approve",
         "receiveLoan": "Receive Loan"
+    },
+    "school": {
+        "title": "Manage Schools",
+        "details": "School details",
+        "add": "Add School",
+        "edit": "Edit",
+        "delete": "Delete",
+        "name": "School Name",
+        "location": "Location",
+        "noList": "No school list found"
     },
     "student": {
         "title": "Manage Student",
@@ -158,13 +170,73 @@
         "amount": "Amount",
         "balance": "Balance",
         "issue": "Issued Date",
-        "joined": "Registered at"
+        "joined": "Registered at",
+        "changeProfile": "Change profile"
     },
     "parent": {
         "title":"Manage Parent",
         "details": "Parent Details",
         "email": "Email",
-        "mobile": "Mobile number"
+        "mobile": "Mobile number",
+        "username": "Username",
+        "add": "Add Parent",
+        "edit": "Edit Parent",
+        "delete": "Delete Parent",
+        "activate": "Activate",
+        "deactivate": "Deactivate",
+        "view": "View Parent",
+        "firstName": "First Name",
+        "middleName": "Middle Name",
+        "lastName": "Last Name",
+        "gender": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "student": "Students",
+        "transaction": "Transaction",
+        "schoolName": "School Name",
+        "classRoom": "Class",
+        "profile": "Picture",
+        "card": "Card Details",
+        "card_number": "Card Number",
+        "controlNumber": "Control Number",
+        "item": "Item",
+        "amount": "Amount",
+        "balance": "Balance",
+        "issue": "Issued Date",
+        "joined": "Registered at",
+        "changeProfile": "Change profile"
+    },
+    "operator": {
+        "title":"Manage Operator",
+        "details": "Operator Details",
+        "email": "Email",
+        "mobile": "Mobile number",
+        "username": "Username",
+        "add": "Add Operator",
+        "edit": "Edit Operator",
+        "delete": "Delete Operator",
+        "activate": "Activate",
+        "deactivate": "Deactivate",
+        "view": "View Operator",
+        "firstName": "First Name",
+        "middleName": "Middle Name",
+        "lastName": "Last Name",
+        "gender": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "session": "Sessions",
+        "session_type": "Session Type",
+        "operateAt": "Operate At",
+        "transaction": "Transaction",
+        "schoolName": "School Name",
+        "classRoom": "Class",
+        "profile": "Picture",
+        "card": "Card Details",
+        "card_number": "Card Number",
+        "controlNumber": "Control Number",
+        "item": "Item",
+        "startAt": "Start At",
+        "endAt": "End At"
     },
     "setting": {
         "title": "Profile & Settings",
@@ -253,7 +325,10 @@
         "200": "Success",
         "102": "Incorrect username or password",
         "103": "Username or password required",
-        "104": "Student id required",
-        "105": "This card is already assigned"
+        "104": "Id required",
+        "105": "This card is already assigned",
+        "106": "user ID is required",
+        "107": "User not found",
+        "108": "This user is already exist"
     }
 }

@@ -6,20 +6,24 @@ export const NAVIGATE_TO_LOGINPAGE = '/login';
 // Dashboard
 export const NAVIGATE_TO_DASHBOARD = '/';
 
+// School
+export const NAVIGATE_TO_SCHOOLPAGE = '/schools';
+
 // Student
 export const NAVIGATE_TO_STUDENTPAGE = '/student-manage';
 export const NAVIGATE_TO_STUDENTDETAILSPAGE = '/student-details'
 
-// Agents
-export const NAVIGATE_TO_AGENTSPAGE = '/agents';
+// Parent
+export const NAVIGATE_TO_PARENTPAGE = '/parent-manage';
+export const NAVIGATE_TO_PARENTDETAILSPAGE = '/parent-details';
 
-// Accounts
-export const NAVIGATE_TO_ACCOUNTSPAGE = '/accounts';
+// Parent
+export const NAVIGATE_TO_OPERATORPAGE = '/operator-manage';
+export const NAVIGATE_TO_OPERATORDETAILSPAGE = '/operator-details';
 
-// Integration
-export const NAVIGATE_TO_APIACCESSPAGE = '/api-access';
-export const NAVIGATE_TO_APIUSAGEPAGE = '/api-usage';
-export const NAVIGATE_TO_LOGSPAGE = '/logs'
+// Parent
+export const NAVIGATE_TO_ADMINPAGE = '/admin-manage';
+export const NAVIGATE_TO_ADMINDETAILSPAGE = '/admin-details';
 
 //Transactions
 export const NAVIGATE_TO_TRANSACTIONPAGE = '/transactions';

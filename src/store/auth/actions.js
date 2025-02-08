@@ -1,5 +1,39 @@
 import { STATE } from "../../constant";
 
+// Create user action
+export function createUserRequest(token, data) {
+    return {
+        type: STATE.CREATE_USER_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function createUserReset() {
+    return {
+        type: STATE.CREATE_USER_RESET
+    }
+}
+
+// Edit user action
+export function editUserRequest(token, data) {
+    return {
+        type: STATE.EDIT_USER_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function editUserReset() {
+    return {
+        type: STATE.EDIT_USER_RESET
+    }
+}
+
 // login action
 export function loginRequest(data) {
     return {
@@ -42,22 +76,5 @@ export function tokenRequest(data){
 export function tokenReset(){
     return {
         type: STATE.TOKEN_RESET
-    }
-}
-
-// Create user action
-export function createUserRequest(token, data) {
-    return {
-        type: STATE.CREATE_USER_REQUEST,
-        payload: {
-            token,
-            data
-        }
-    }
-}
-
-export function createUserReset(a) {
-    return {
-        type: STATE.CREATE_USER_RESET
     }
 }

@@ -1,10 +1,10 @@
 import { STATE } from "../../constant";
 
-/* _________________ STUDENT ACTIONS _______________ */
-// student list action
-export function studentListRequest(token, data, page) {
+/* _________________ USER ACTIONS _______________ */
+// user list action
+export function userListRequest(token, data, page) {
     return {
-        type: STATE.STUDENT_LIST_REQUEST,
+        type: STATE.USER_LIST_REQUEST,
         payload: {
             token,
             data,
@@ -13,9 +13,9 @@ export function studentListRequest(token, data, page) {
     }
 }
 
-export function studentListReset() {
+export function userListReset() {
     return {
-        type: STATE.STUDENT_LIST_RESET
+        type: STATE.USER_LIST_RESET
     }
 
 }
@@ -37,10 +37,10 @@ export function studentDetailsReset(){
     }
 }
 
-// student edit actions
-export function studentEditRequest(token, data){
+// admin details action
+export function adminDetailsRequest(token, data){
     return {
-        type: STATE.STUDENT_EDIT_REQUEST,
+        type: STATE.ADMIN_DETAILS_REQUEST,
         payload: {
             token,
             data
@@ -48,8 +48,42 @@ export function studentEditRequest(token, data){
     }
 }
 
-export function studentEditReset(){
+export function adminDetailsReset(){
     return {
-        type: STATE.STUDENT_EDIT_RESET
+        type: STATE.ADMIN_DETAILS_RESET
+    }
+}
+
+// operator details action
+export function operatorDetailsRequest(token, data){
+    return {
+        type: STATE.OPERATOR_DETAILS_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function operatorDetailsReset(){
+    return {
+        type: STATE.OPERATOR_DETAILS_RESET
+    }
+}
+
+// parent details action
+export function parentDetailsRequest(token, data){
+    return {
+        type: STATE.PARENT_DETAILS_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function parentDetailsReset(){
+    return {
+        type: STATE.PARENT_DETAILS_RESET
     }
 }

@@ -1,41 +1,41 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
 import { errorMessage } from '../../utils';
-import { doStudentDetails, doStudentEdit, doStudentList } from '../../service/user';
+import { doAdminDetails, doOperatorDetails, doParentDetails, doStudentDetails, doStudentEdit, doStudentList, doUserList } from '../../service/user';
 
 /* ______ STUDENT SAGAS ________ */
 
 // List
-function* studentListTask(action) {
+function* userListTask(action) {
     try {
-        yield put({ type: STATE.STUDENT_LIST_LOADING });
+        yield put({ type: STATE.USER_LIST_LOADING });
 
         const { payload } = action;
 
-        const res = yield call(doStudentList,payload.token, payload.data, payload.page);
+        const res = yield call(doUserList,payload.token, payload.data, payload.page);
 
         if (res.status == 200) {
             yield put({
-                type: STATE.STUDENT_LIST_SUCCESS,
+                type: STATE.USER_LIST_SUCCESS,
                 payload: res.data
             })
         } else {
             const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
             yield put({
-                type: STATE.STUDENT_LIST_FAILURE,
+                type: STATE.USER_LIST_FAILURE,
                 payload: errMsg
             })
         }
     } catch (e) {
         const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
         yield put({
-            type: STATE.STUDENT_LIST_FAILURE,
+            type: STATE.USER_LIST_FAILURE,
             payload: errMsg
         })
     }
 }
 
-// Details
+// student Details
 function* studentDetailsTask(action) {
     try {
         yield put({ type: STATE.STUDENT_DETAILS_LOADING });
@@ -65,41 +65,104 @@ function* studentDetailsTask(action) {
     }
 }
 
-// Edit
-function* studentEditTask(action) {
+// admin Details
+function* adminDetailsTask(action) {
     try {
-        yield put({ type: STATE.STUDENT_EDIT_LOADING });
+        yield put({ type: STATE.ADMIN_DETAILS_LOADING });
 
         const { payload } = action;
 
-        const res = yield call(doStudentEdit,payload.token, payload.data);
+        const res = yield call(doAdminDetails,payload.token, payload.data);
 
         if (res.status == 200) {
             yield put({
-                type: STATE.STUDENT_EDIT_SUCCESS,
+                type: STATE.ADMIN_DETAILS_SUCCESS,
                 payload: res.data
             })
         } else {
             const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
             yield put({
-                type: STATE.STUDENT_EDIT_FAILURE,
+                type: STATE.ADMIN_DETAILS_FAILURE,
                 payload: errMsg
             })
         }
     } catch (e) {
         const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
         yield put({
-            type: STATE.STUDENT_EDIT_FAILURE,
+            type: STATE.ADMIN_DETAILS_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
+// operator Details
+function* operatorDetailsTask(action) {
+    try {
+        yield put({ type: STATE.OPERATOR_DETAILS_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doOperatorDetails,payload.token, payload.data);
+
+        if (res.status == 200) {
+            yield put({
+                type: STATE.OPERATOR_DETAILS_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.OPERATOR_DETAILS_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.OPERATOR_DETAILS_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
+// parent Details
+function* parentDetailsTask(action) {
+    try {
+        yield put({ type: STATE.PARENT_DETAILS_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doParentDetails,payload.token, payload.data);
+
+        if (res.status == 200) {
+            yield put({
+                type: STATE.PARENT_DETAILS_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.PARENT_DETAILS_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.PARENT_DETAILS_FAILURE,
             payload: errMsg
         })
     }
 }
 
 
+
 function* userSaga() {
-    yield takeLatest(STATE.STUDENT_LIST_REQUEST, studentListTask);
+    yield takeLatest(STATE.USER_LIST_REQUEST, userListTask);
     yield takeLatest(STATE.STUDENT_DETAILS_REQUEST, studentDetailsTask);
-    yield takeLatest(STATE.STUDENT_EDIT_REQUEST, studentEditTask);
+    yield takeLatest(STATE.ADMIN_DETAILS_REQUEST, adminDetailsTask);
+    yield takeLatest(STATE.OPERATOR_DETAILS_REQUEST, operatorDetailsTask);
+    yield takeLatest(STATE.PARENT_DETAILS_REQUEST, parentDetailsTask);
 }
 
 export default userSaga;

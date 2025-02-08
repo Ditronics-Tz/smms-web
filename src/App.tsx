@@ -24,13 +24,13 @@ import "@fontsource/roboto/700.css";
 
 import RoutesContainer from "./route/Routes";
 import { doLogout } from "./service/auth";
-import { logoutRequest, tokenRequest, tokenReset } from "./store/actions";
+import { logoutRequest, tokenRequest, tokenReset, schoolListRequest } from "./store/actions";
 
 // FUNCTION TO CHECK TOKEN
 const parseJwt = (token) => {
   try {
     let jwtFirstPart = token.split(".")[1];
-    console.log(JSON.parse(atob(jwtFirstPart)));
+    // console.log(JSON.parse(atob(jwtFirstPart)));
     return JSON.parse(atob(jwtFirstPart));
   } catch (error) {
     console.log(error);
@@ -51,11 +51,19 @@ const App = ({
 }) => {
   const dispatch = useDispatch()
 
+  // check the token validity on every 30 sec
   useEffect(() => {
     if (loginStatus === STATUS.SUCCESS) {
-      checkTokenValidity(parseJwt(accessToken));
+      const checkToken = () => checkTokenValidity(parseJwt(accessToken));
+
+      dispatch(schoolListRequest(accessToken, {"search": ""}, 1))
+  
+      checkToken(); // Initial check
+      const interval = setInterval(checkToken, 30000); // Check every 30 seconds
+  
+      return () => clearInterval(interval); // Cleanup on unmount
     }
-  }, [])
+  }, [loginStatus, accessToken]);
 
 
 
