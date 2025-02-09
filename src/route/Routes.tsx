@@ -5,6 +5,7 @@ import { LoginPage } from "../page/Login";
 
 import {
   ERROR_404_PAGE,
+  NAVIGATE_TO_ADMINDETAILSPAGE,
   NAVIGATE_TO_ADMINPAGE,
   NAVIGATE_TO_DASHBOARD,
   NAVIGATE_TO_INFOPAGE,
@@ -23,7 +24,7 @@ import {
 import { STATUS } from "../constant";
 import Error404Page from "../page/ErrorsPages/404Error";
 import { Main } from "../components";
-import { Dashboard, InfoPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, StudentDetailsPage, StudentPage, SupportPage, TransactionPage } from "../page";
+import { AdminDetailsPage, AdminPage, Dashboard, InfoPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, StudentDetailsPage, StudentPage, SupportPage, TransactionPage } from "../page";
 
 // FUNCTION TO DIRECT ONLY AUTH USER TO THEIR PAGES
 const ProtectRoute = ({ status }) => {
@@ -117,22 +118,22 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
             } />
 
           {/* admin list */}
-          {/* <Route
+          <Route
             path={NAVIGATE_TO_ADMINPAGE}
             element={
               <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
                 <AdminPage />
               </RoleProtectedRoute>
-            } /> */}
+            } />
 
           {/* admin details */}
-          {/* <Route
+          <Route
             path={NAVIGATE_TO_ADMINDETAILSPAGE}
             element={
               <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
                 <AdminDetailsPage />
               </RoleProtectedRoute>
-            } /> */}
+            } />
 
           {/* Transactions */}
           <Route path={NAVIGATE_TO_TRANSACTIONPAGE} element={

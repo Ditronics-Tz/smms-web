@@ -206,7 +206,7 @@ const StudentDetailsPage = ({
                                 width: { xs: '100%', md: '800px' },
                                 backgroundColor: 'background.body',
                                 p: 2,
-                                gap: 3,
+                                gap: {xs: 1, md: 3},
                                 borderRadius: 6
                             }}>
                             <Avatar

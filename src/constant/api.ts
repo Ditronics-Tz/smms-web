@@ -16,6 +16,6 @@ export const SCHOOL_LIST = "/resources/school-list";
 // ---- USER URLS ----
 export const USERS_LIST_URL = '/resources/users-list';
 export const STUDENT_DETAILS_URL = '/resources/student-details';
-export const ADMIN_DETAILS_URL = '';
+export const ADMIN_DETAILS_URL = '/resources/admin-details';
 export const PARENT_DETAILS_URL = '/resources/parent-details';
 export const OPERATOR_DETAILS_URL = '/resources/operator-details';

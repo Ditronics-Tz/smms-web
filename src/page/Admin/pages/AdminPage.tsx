@@ -24,7 +24,7 @@ import {
     createUserReset,
 } from "../../../store/actions"
 import { useTranslation } from "react-i18next";
-import { NAVIGATE_TO_PARENTDETAILSPAGE } from "../../../route/types";
+import { NAVIGATE_TO_ADMINDETAILSPAGE } from "../../../route/types";
 
 const MobileViewTable = ({ data, props }) => {
     const { t } = useTranslation();
@@ -50,23 +50,15 @@ const MobileViewTable = ({ data, props }) => {
                                 <Avatar size="sm" src={FILE_BASE + listItem.profile_picture} />
                             </ListItemDecorator> */}
                             <div>
-                                <Typography fontWeight={600} gutterBottom>{
-                                    listItem.first_name + " " +
-                                    listItem.middle_name + " " +
-                                    listItem.last_name +
-                                    `(${{
-                                        'mother': t("parent.mother"),
-                                        'father': t("parent.father"),
-                                        'guardian': t("parent.guardian")
-                                    }[listItem.parent_type]})`}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("parent.gender")}:</b> {{ 'M': t("parent.male"), 'F': t("parent.female") }[listItem.gender]}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("parent.email")}:</b> {listItem.email}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("parent.mobile")}:</b> {listItem.mobile_number}</Typography>
-                                {/* <Typography level="body-xs" gutterBottom><b>{t("parent.schoolName")}:</b> {listItem.school}</Typography> */}
+                                <Typography fontWeight={600} gutterBottom>{listItem.first_name + " " + listItem.middle_name + " " + listItem.last_name}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("admin.gender")}:</b> {{ 'M': t("admin.male"), 'F': t("admin.female") }[listItem.gender]}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("admin.email")}:</b> {listItem.email}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("admin.mobile")}:</b> {listItem.mobile_number}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("admin.schoolName")}:</b> {listItem.school}</Typography>
                                 <Dropdown>
                                     <MenuButton variant="plain" size="sm">More ...</MenuButton>
                                     <Menu placement="bottom-end" sx={{ p: 1 }}>
-                                        <Typography level="body-sm" gutterBottom><b>{t("parent.joined")}:</b> {formatDate(listItem.date_joined)}</Typography>
+                                        <Typography level="body-sm" gutterBottom><b>{t("admin.joined")}:</b> {formatDate(listItem.date_joined)}</Typography>
                                     </Menu>
                                 </Dropdown>
                             </div>
@@ -122,7 +114,7 @@ const DesktopViewTable = ({ data, props }) => {
                 variant="outlined"
                 sx={{
                     display: { xs: 'none', md: 'flex', lg: 'flex' },
-                    // width: '100%',
+                    width: '100%',
                     borderRadius: 'sm',
                     flexShrink: 1,
                     overflow: 'auto',
@@ -149,14 +141,14 @@ const DesktopViewTable = ({ data, props }) => {
                     <thead>
                         <tr style={{ textAlign: 'center' }}>
                             {/* <th style={{ width: 50, padding: '10px 6px' }}></th> */}
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("parent.firstName")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("parent.middleName")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("parent.lastName")}</th>
-                            <th style={{ width: 50, padding: '10px 6px', }}>{t("parent.type")}</th>
-                            <th style={{ width: 40, padding: '10px 6px', }}>{t("parent.gender")}</th>
-                            <th style={{ width: 130, padding: '10px 6px', }}>{t("parent.email")}</th>
-                            <th style={{ width: 90, padding: '10px 6px', }}>{t("parent.mobile")}</th>
-                            <th style={{ width: 120, padding: '10px 6px', }}>{t("parent.joined")}</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("admin.firstName")}</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("admin.middleName")}</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("admin.lastName")}</th>
+                            <th style={{ width: 50, padding: '10px 6px', }}>{t("admin.gender")}</th>
+                            <th style={{ width: 130, padding: '10px 6px', }}>{t("admin.email")}</th>
+                            <th style={{ width: 100, padding: '10px 6px', }}>{t("admin.mobile")}</th>
+                            <th style={{ width: 100, padding: '10px 6px', }}>{t("admin.operateAt")}</th>
+                            <th style={{ width: 120, padding: '10px 6px', }}>{t("admin.joined")}</th>
                             <th style={{ width: 80, padding: '10px 6px', }}>Actions</th>
                         </tr>
                     </thead>
@@ -176,20 +168,16 @@ const DesktopViewTable = ({ data, props }) => {
                                     <Typography level="body-sm">{row.last_name}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-sm">{{
-                                        'mother': t("parent.mother"),
-                                        'father': t("parent.father"),
-                                        'guardian': t("parent.guardian")
-                                    }[row.parent_type]}</Typography>
-                                </td>
-                                <td>
-                                    <Typography level="body-sm">{{ 'M': t("parent.male"), 'F': t("parent.female") }[row.gender]}</Typography>
+                                    <Typography level="body-sm">{{ 'M': t("admin.male"), 'F': t("admin.female") }[row.gender]}</Typography>
                                 </td>
                                 <td>
                                     <Typography level="body-sm">{row.email}</Typography>
                                 </td>
                                 <td>
                                     <Typography level="body-sm">{row.mobile_number}</Typography>
+                                </td>
+                                <td>
+                                    <Typography level="body-sm">{row.school}</Typography>
                                 </td>
                                 <td>
                                     <Typography level="body-sm">{formatDate(row.date_joined)}</Typography>
@@ -218,8 +206,8 @@ const DesktopViewTable = ({ data, props }) => {
                                 </td> */}
                                 <td>
                                     <ButtonGroup variant="outlined" size="sm">
-                                        <Button title={t("parent.view")} color="neutral" onClick={() => props.view(row)}><RemoveRedEyeOutlined /></Button>
-                                        <Button title={t("parent.delete")} color="danger"><DeleteOutline /></Button>
+                                        <Button title={t("admin.view")} color="neutral" onClick={() => props.view(row)}><RemoveRedEyeOutlined /></Button>
+                                        <Button title={t("admin.delete")} color="danger"><DeleteOutline /></Button>
                                     </ButtonGroup>
                                 </td>
                             </tr>
@@ -231,8 +219,11 @@ const DesktopViewTable = ({ data, props }) => {
     );
 }
 
-const ParentPage = ({
+const AdminPage = ({
     accessToken,
+
+    schoolList,
+    schoolStatus,
 
     createStatus,
     createResult,
@@ -247,12 +238,11 @@ const ParentPage = ({
     const { t } = useTranslation()
     const isDesktop = useMediaQuery("(min-width:600px)");
 
-    const initiateParentData = {
-        parent_id: "",
+    const initiateAdminData = {
+        admin_id: "",
         first_name: "",
         middle_name: "",
         last_name: "",
-        parent_type: "",
         gender: "",
         email: "",
         username: "",
@@ -260,18 +250,18 @@ const ParentPage = ({
         school: ""
     }
 
-    const [parentData, setParentData] = useState(initiateParentData);
+    const [adminData, setAdminData] = useState(initiateAdminData);
 
     // ---- PAGINATION SETTINGS ----- //
     const [listData, setListData] = useState([]);
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
-    const [totalParent, setTotalParent] = useState(0);
+    const [totalAdmin, setTotalAdmin] = useState(0);
     const [nextPage, setNextPage] = useState(null);
     const [previousPage, setPreviousPage] = useState(null);
 
     const ITEMS_PER_PAGE = 50
-    const pageLength = listData.length > 0 ? Math.ceil(totalParent / ITEMS_PER_PAGE) : 1
+    const pageLength = listData.length > 0 ? Math.ceil(totalAdmin / ITEMS_PER_PAGE) : 1
 
     const [formModal, setFormModal] = useState(false)
 
@@ -280,7 +270,7 @@ const ParentPage = ({
             setListData(listResult.results);
             setNextPage(listResult.next);
             setPreviousPage(listResult.previous);
-            setTotalParent(listResult.count);
+            setTotalAdmin(listResult.count);
         }
         else if (listStatus === STATUS.ERROR) {
             toast.error(listErrorMessage);
@@ -290,8 +280,8 @@ const ParentPage = ({
         if (createStatus == STATUS.SUCCESS) {
             toast.success(createResult.message);
             setFormModal(false);
-            setParentData(initiateParentData);
-            dispatch(userListRequest(accessToken, { "search": search, "role": "parent" }, page))
+            setAdminData(initiateAdminData);
+            dispatch(userListRequest(accessToken, { "search": search, "role": "admin" }, page))
             dispatch(createUserReset())
         }
         else if (createStatus === STATUS.ERROR) {
@@ -303,7 +293,7 @@ const ParentPage = ({
     useEffect(() => {
         const data = {
             'search': search,
-            'role': 'parent'
+            'role': 'admin'
         }
         dispatch(userListRequest(accessToken, data, page))
     }, [page, search])
@@ -312,7 +302,7 @@ const ParentPage = ({
     const handleChange = (e) => {
         if (!e || !e.target) return;
         const { name, value } = e.target;
-        setParentData((prevData) => ({
+        setAdminData((prevData) => ({
             ...prevData,
             [name]: value,
         }));
@@ -321,7 +311,7 @@ const ParentPage = ({
     // Handle file input change
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        setParentData((prevData) => ({
+        setAdminData((prevData) => ({
             ...prevData,
             profile_picture: file,
         }));
@@ -330,20 +320,20 @@ const ParentPage = ({
     // ---- Submit function
     const handleSubmit = (event) => {
         event.preventDefault()
-        if (parentData.first_name) {
+        if (adminData.first_name) {
             const formData = new FormData();
 
             // Append non-file data
-            // formData.append("parent_id", parentData.parent_id);
-            formData.append("first_name", parentData.first_name);
-            formData.append("middle_name", parentData.middle_name);
-            formData.append("last_name", parentData.last_name);
-            formData.append("gender", parentData.gender);
-            formData.append("email", parentData.email);
-            formData.append("username", parentData.username);
-            formData.append("mobile_number", parentData.mobile);
-            formData.append("parent_type", parentData.parent_type);
-            formData.append("role", "parent");
+            // formData.append("admin_id", adminData.admin_id);
+            formData.append("first_name", adminData.first_name);
+            formData.append("middle_name", adminData.middle_name);
+            formData.append("last_name", adminData.last_name);
+            formData.append("gender", adminData.gender);
+            formData.append("email", adminData.email);
+            formData.append("username", adminData.username);
+            formData.append("mobile_number", adminData.mobile);
+            formData.append("school", adminData.school);
+            formData.append("role", "admin");
 
             dispatch(createUserRequest(accessToken, formData))
         } else {
@@ -352,8 +342,8 @@ const ParentPage = ({
     }
 
     /* -------- actions ----------- */
-    const viewParentDetails = (details) => {
-        navigate(NAVIGATE_TO_PARENTDETAILSPAGE, {
+    const viewAdminDetails = (details) => {
+        navigate(NAVIGATE_TO_ADMINDETAILSPAGE, {
             state: {
                 id: details.id
             }
@@ -376,7 +366,7 @@ const ParentPage = ({
 
     return (
         <Box>
-            <PageTitle title={t("parent.title") + ` (${totalParent})`} />
+            <PageTitle title={t("admin.title") + ` (${totalAdmin})`} />
 
             <LoadingView loading={checkLoading()} />
 
@@ -397,7 +387,7 @@ const ParentPage = ({
                     color="success"
                     sx={{ width: 'auto' }}
                     onClick={openAddForm}>
-                    {t("parent.add")}
+                    {t("admin.add")}
                 </Button>
 
                 <Input
@@ -414,11 +404,11 @@ const ParentPage = ({
 
             {listData.length > 0 ? <>
                 {/* ------ render different view depend on plafform -------- */}
-                <MobileViewTable data={listData} props={{ view: viewParentDetails, delete: null }} />
-                <DesktopViewTable data={listData} props={{ view: viewParentDetails, delete: null }} />
+                <MobileViewTable data={listData} props={{ view: viewAdminDetails, delete: null }} />
+                <DesktopViewTable data={listData} props={{ view: viewAdminDetails, delete: null }} />
 
                 {/* Pagination */}
-                {totalParent > ITEMS_PER_PAGE
+                {totalAdmin > ITEMS_PER_PAGE
                     &&
                     <Box
                         className="Pagination-laptopUp"
@@ -459,7 +449,7 @@ const ParentPage = ({
 
                         {/* for mobile to display page number */}
                         <Typography level="body-sm" mx="auto" textAlign={'center'} sx={{ display: { xs: 'flex', md: 'none' } }}>
-                            {t('init.page')} {page} of {Math.ceil(totalParent / ITEMS_PER_PAGE)}
+                            {t('init.page')} {page} of {Math.ceil(totalAdmin / ITEMS_PER_PAGE)}
                         </Typography>
                         <Box sx={{ flex: 1 }} />
 
@@ -500,61 +490,45 @@ const ParentPage = ({
                         },
                     })}>
                     <ModalClose variant="outlined" onClick={() => setFormModal(false)} />
-                    <DialogTitle>{t("parent.add")}</DialogTitle>
+                    <DialogTitle>{t("admin.add")}</DialogTitle>
                     <DialogContent>{t("init.enterDetails")}</DialogContent>
                     <Stack component='form' onSubmit={handleSubmit} gap={2} sx={{ mt: 2 }}>
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
                             {/* first name */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("parent.firstName")}</FormLabel>
-                                <Input type="text" name="first_name" value={parentData.first_name} onChange={handleChange} placeholder={t("init.placeholder") + t("parent.firstName")} />
+                                <FormLabel>{t("admin.firstName")}</FormLabel>
+                                <Input type="text" name="first_name" value={adminData.first_name} onChange={handleChange} placeholder={t("init.placeholder") + t("admin.firstName")} />
                             </FormControl>
 
                             {/* second name */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("parent.middleName")}</FormLabel>
-                                <Input type="text" name="middle_name" value={parentData.middle_name} onChange={handleChange} placeholder={t("init.placeholder") + t("parent.middleName")} />
+                                <FormLabel>{t("admin.middleName")}</FormLabel>
+                                <Input type="text" name="middle_name" value={adminData.middle_name} onChange={handleChange} placeholder={t("init.placeholder") + t("admin.middleName")} />
                             </FormControl>
 
                             {/* last name */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("parent.lastName")}</FormLabel>
-                                <Input type="text" name="last_name" value={parentData.last_name} onChange={handleChange} placeholder={t("init.placeholder") + t("parent.lastName")} />
+                                <FormLabel>{t("admin.lastName")}</FormLabel>
+                                <Input type="text" name="last_name" value={adminData.last_name} onChange={handleChange} placeholder={t("init.placeholder") + t("admin.lastName")} />
                             </FormControl>
                         </Stack>
 
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
                             {/* username */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("parent.username")}</FormLabel>
-                                <Input type="text" name="username" value={parentData.username} onChange={handleChange} placeholder={t("init.placeholder") + t("parent.username")} />
+                                <FormLabel>{t("admin.username")}</FormLabel>
+                                <Input type="text" name="username" value={adminData.username} onChange={handleChange} placeholder={t("init.placeholder") + t("admin.username")} />
                             </FormControl>
 
                             {/* gender */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("parent.gender")}</FormLabel>
-                                <Select name="gender" defaultValue={parentData.gender} value={parentData.gender}
-                                    placeholder={t("init.select") + t("parent.gender")}
-                                    onChange={(e, value) => setParentData({ ...parentData, gender: value })}>
-                                    {[{ value: 'M', label: t("parent.male") }, { value: 'F', label: t("parent.female") }].map((item, index) => (
+                                <FormLabel>{t("admin.gender")}</FormLabel>
+                                <Select name="gender" defaultValue={adminData.gender} value={adminData.gender}
+                                    placeholder={t("init.select") + t("admin.gender")}
+                                    onChange={(e, value) => setAdminData({ ...adminData, gender: value })}>
+                                    {[{ value: 'M', label: t("admin.male") }, { value: 'F', label: t("admin.female") }].map((item, index) => (
                                         <Option key={index} value={item.value}>{item.label}</Option>
                                     ))}
-                                </Select>
-                            </FormControl>
-
-                            {/* type */}
-                            <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("parent.type")}</FormLabel>
-                                <Select name="parent_type" defaultValue={parentData.parent_type} value={parentData.parent_type}
-                                    placeholder={t("init.select") + t("parent.gender")}
-                                    onChange={(e, value) => setParentData({ ...parentData, parent_type: value })}>
-                                    {[
-                                        { value: 'mother', label: t("parent.mother") },
-                                        { value: 'father', label: t("parent.father") },
-                                        { value: 'guardian', label: t("parent.guardian") }]
-                                        .map((item, index) => (
-                                            <Option key={index} value={item.value}>{item.label}</Option>
-                                        ))}
                                 </Select>
                             </FormControl>
                         </Stack>
@@ -562,14 +536,29 @@ const ParentPage = ({
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
                             {/* email */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("parent.email")}</FormLabel>
-                                <Input type="email" name="email" value={parentData.email} onChange={handleChange} placeholder={t("init.placeholder") + t("parent.email")} />
+                                <FormLabel>{t("admin.email")}</FormLabel>
+                                <Input type="email" name="email" value={adminData.email} onChange={handleChange} placeholder={t("init.placeholder") + t("admin.email")} />
                             </FormControl>
 
                             {/* class room */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("parent.mobile")}</FormLabel>
-                                <Input type="tel" name="mobile" value={parentData.mobile} onChange={handleChange} placeholder={t("init.placeholder") + t("parent.mobile") + " Eg: 0612******"} />
+                                <FormLabel>{t("admin.mobile")}</FormLabel>
+                                <Input type="tel" name="mobile" value={adminData.mobile} onChange={handleChange} placeholder={t("init.placeholder") + t("admin.mobile") + " Eg: 0612******"} />
+                            </FormControl>
+                        </Stack>
+
+                        {/* school name */}
+                        <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
+
+                            <FormControl sx={{ flex: 1 }} required>
+                                <FormLabel>{t("admin.schoolName")}</FormLabel>
+                                <Select name="school" defaultValue={adminData.school} value={adminData.school}
+                                    placeholder={t("init.select") + t("student.schoolName")}
+                                    onChange={(e, value) => setAdminData({ ...adminData, school: value })}>
+                                    {schoolStatus === STATUS.SUCCESS ? schoolList.results.map((item, index) => (
+                                        <Option key={index} value={item.id}>{item.name}</Option>
+                                    )) : <Option value={null}>{t("school.NoList")}</Option>}
+                                </Select>
                             </FormControl>
                         </Stack>
 
@@ -585,12 +574,17 @@ const ParentPage = ({
     )
 }
 
-const mapStateToProps = ({ auth, user }) => {
+const mapStateToProps = ({ auth, user, school }) => {
     const { accessToken,
         createUserStatus: createStatus,
         createUserResult: createResult,
         createUserErrorMessage: createErrorMessage,
     } = auth
+
+    const {
+        schoolListResult: schoolList,
+        schoolListStatus: schoolStatus,
+    } = school
 
     const {
         userListStatus: listStatus,
@@ -601,6 +595,9 @@ const mapStateToProps = ({ auth, user }) => {
     return {
         accessToken,
 
+        schoolList,
+        schoolStatus,
+
         createStatus,
         createResult,
         createErrorMessage,
@@ -610,4 +607,4 @@ const mapStateToProps = ({ auth, user }) => {
         listErrorMessage
     }
 }
-export default connect(mapStateToProps, {})(ParentPage)
+export default connect(mapStateToProps, {})(AdminPage)

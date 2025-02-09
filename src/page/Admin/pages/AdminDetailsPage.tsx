@@ -9,8 +9,8 @@ import { useMediaQuery } from "@mui/material";
 import {
     editUserRequest,
     editUserReset,
-    operatorDetailsRequest,
-    operatorDetailsReset,
+    adminDetailsRequest,
+    adminDetailsReset,
 } from '../../../store/actions'
 import { AddCardOutlined, BlockOutlined, CheckCircle, DeleteOutline, DoNotDisturbOn, EditOutlined, FolderOpenOutlined, LocationOn, RemoveRedEyeOutlined, TaskAltOutlined, WarningRounded } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
@@ -22,7 +22,7 @@ function CreateItems(
 ) { return { title, value } }
 
 
-const OperatorDetailsPage = ({
+const AdminDetailsPage = ({
     accessToken,
 
     editStatus,
@@ -43,8 +43,8 @@ const OperatorDetailsPage = ({
     const { state } = useLocation();
     const { id } = state
 
-    const initiateOperatorData = {
-        operator_id: id,
+    const initiateAdminData = {
+        admin_id: id,
         first_name: "",
         middle_name: "",
         last_name: "",
@@ -54,18 +54,18 @@ const OperatorDetailsPage = ({
         mobile: "",
         school: "",
         school_value: "",
-        sessions: []
+        // sessions: []
     }
 
 
     const [formModal, setFormModal] = useState(false);
 
-    const [operatorData, setOperatorData] = useState(initiateOperatorData);
+    const [adminData, setAdminData] = useState(initiateAdminData);
 
     useEffect(() => {
         if (detailsStatus === STATUS.SUCCESS) {
-            setOperatorData({
-                operator_id: detailsResult.id,
+            setAdminData({
+                admin_id: detailsResult.id,
                 first_name: detailsResult.first_name,
                 middle_name: detailsResult.middle_name,
                 last_name: detailsResult.last_name,
@@ -75,18 +75,18 @@ const OperatorDetailsPage = ({
                 mobile: detailsResult.mobile_number,
                 school: detailsResult.school,
                 school_value: detailsResult.school_id,
-                sessions: detailsResult.sessions,
+                // sessions: detailsResult.sessions,
             });
         }
         else if (detailsStatus === STATUS.ERROR) {
-            // dispatch(operatorDetailsReset());
+            // dispatch(adminDetailsReset());
             toast.error(detailsErrorMessage)
         }
 
         if (editStatus === STATUS.SUCCESS) {
             toast.success(editResult.message);
             setFormModal(false);
-            dispatch(operatorDetailsRequest(accessToken, { "operator_id": operatorData.operator_id }))
+            dispatch(adminDetailsRequest(accessToken, { "admin_id": adminData.admin_id }))
             dispatch(editUserReset())
         }
         else if (editStatus === STATUS.ERROR) {
@@ -97,8 +97,8 @@ const OperatorDetailsPage = ({
 
 
     useEffect(() => {
-        if (operatorData.operator_id != "") {
-            dispatch(operatorDetailsRequest(accessToken, { "operator_id": operatorData.operator_id }))
+        if (adminData.admin_id != "") {
+            dispatch(adminDetailsRequest(accessToken, { "admin_id": adminData.admin_id }))
         }
     }, [])
 
@@ -107,7 +107,7 @@ const OperatorDetailsPage = ({
     const handleChange = (e) => {
         if (!e || !e.target) return;
         const { name, value } = e.target;
-        setOperatorData((prevData) => ({
+        setAdminData((prevData) => ({
             ...prevData,
             [name]: value,
         }));
@@ -116,20 +116,20 @@ const OperatorDetailsPage = ({
     // ---- Submit function
     const handleSubmit = (event) => {
         event.preventDefault()
-        if (operatorData.first_name) {
+        if (adminData.first_name) {
             const formData = new FormData();
 
             // Append non-file data
-            formData.append("user_id", operatorData.operator_id);
-            formData.append("first_name", operatorData.first_name);
-            formData.append("middle_name", operatorData.middle_name);
-            formData.append("last_name", operatorData.last_name);
-            formData.append("gender", operatorData.gender);
-            formData.append("email", operatorData.email);
-            formData.append("username", operatorData.username);
-            formData.append("mobile_number", operatorData.mobile);
-            formData.append("school", operatorData.school);
-            formData.append("role", "operator");
+            formData.append("user_id", adminData.admin_id);
+            formData.append("first_name", adminData.first_name);
+            formData.append("middle_name", adminData.middle_name);
+            formData.append("last_name", adminData.last_name);
+            formData.append("gender", adminData.gender);
+            formData.append("email", adminData.email);
+            formData.append("username", adminData.username);
+            formData.append("mobile_number", adminData.mobile);
+            formData.append("school", adminData.school);
+            formData.append("role", "admin");
 
             dispatch(editUserRequest(accessToken, formData))
         } else {
@@ -147,22 +147,22 @@ const OperatorDetailsPage = ({
     }
 
     const rows = [
-        CreateItems(t("operator.username"), operatorData.username),
-        CreateItems(t("operator.gender"), { 'M': t("operator.male"), 'F': t("operator.female") }[operatorData.gender]),
-        CreateItems(t("operator.email"), operatorData.email),
-        CreateItems(t("operator.mobile"), operatorData.mobile),
-        CreateItems(t("operator.schoolName"), operatorData.school),
+        CreateItems(t("admin.username"), adminData.username),
+        CreateItems(t("admin.gender"), { 'M': t("admin.male"), 'F': t("admin.female") }[adminData.gender]),
+        CreateItems(t("admin.email"), adminData.email),
+        CreateItems(t("admin.mobile"), adminData.mobile),
+        CreateItems(t("admin.schoolName"), adminData.school),
     ]
 
 
     return (
         <Box>
-            {/* <PageTitle title={t("operator.details") + " - " + operatorData.first_name + " " + operatorData.last_name} /> */}
+            {/* <PageTitle title={t("admin.details") + " - " + adminData.first_name + " " + adminData.last_name} /> */}
 
             <LoadingView loading={checkLoading()} />
 
             {/* Contents */}
-            {operatorData.first_name ?
+            {adminData.first_name ?
                 <Box sx={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -174,7 +174,7 @@ const OperatorDetailsPage = ({
 
                     {/* Details */}
                     <Box sx={{ gap: 2, display: 'flex', flexDirection: 'column' }}>
-                        {/* operator details */}
+                        {/* admin details */}
 
                         <Sheet
                             variant="outlined"
@@ -185,13 +185,13 @@ const OperatorDetailsPage = ({
                                 flexDirection: 'row',
                                 backgroundColor: 'background.body',
                                 p: 2,
-                                gap:{xs: 1, md: 3},
+                                gap: {xs: 1, md: 3},
                                 borderRadius: 6
                             }}>
                             <Avatar sx={{height: 160, width: 140, borderRadius: 6}} />
                             {/* <Divider orientation="horizontal" /> */}
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, width: '100%' }}>
-                                <Typography level="h3">{operatorData.first_name + " " + operatorData.middle_name + " " + operatorData.last_name}</Typography>
+                                <Typography level="h3">{adminData.first_name + " " + adminData.middle_name + " " + adminData.last_name}</Typography>
                                 <Divider />
                                 {rows.map((item, index) => (
                                     <Typography key={index} level="body-sm"><b>{item.title}:</b> {item.value}</Typography>
@@ -204,69 +204,10 @@ const OperatorDetailsPage = ({
                                     // sx={{ alignSelf: 'flex-end' }}
                                     startDecorator={<EditOutlined />}
                                     onClick={() => setFormModal(true)}>
-                                    {t("operator.edit")}
+                                    {t("admin.edit")}
                                 </Button>
                             </Box>
                         </Sheet>
-
-
-                        {/* Students */}
-                        {operatorData.sessions.length > 0 &&
-                            <Sheet
-                                className="OrderTableContainer"
-                                variant="outlined"
-                                sx={{
-                                    maxWidth: "600px",
-                                    borderRadius: 'sm',
-                                    flexShrink: 1,
-                                    overflow: 'auto',
-                                    minHeight: 0,
-                                }}
-                            >
-                                <Table
-                                    aria-labelledby="tableTitle"
-                                    stickyHeader
-                                    hoverRow
-                                    sx={{
-                                        '--TableCell-headBackground': 'var(--joy-palette-background-level2)',
-                                        '--Table-headerUnderlineThickness': '1px',
-                                        '--TableRow-hoverBackground': 'var(--joy-palette-background-level1)',
-                                        '--TableCell-paddingY': '4px',
-                                        '--TableCell-paddingX': '8px',
-                                    }}>
-                                    <thead>
-                                        <tr>
-                                            <th style={{ width: '40%', fontSize: 18 }}>{t("operator.student")}</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    {operatorData.sessions.map((item, index) => (
-                                        <tbody key={index}>
-                                            <tr>
-                                                <td><b>{t("operator.firstName")}</b></td>
-                                                <td>{item.first_name}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>{t("operator.lastName")}</b></td>
-                                                <td>{item.last_name}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>{t("operator.gender")}</b></td>
-                                                <td>{item.gender}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>{t("operator.schoolName")}</b></td>
-                                                <td>{item.school}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>{t("operator.classRoom")}</b></td>
-                                                <td>{item.class_room}</td>
-                                            </tr>
-                                            <tr style={{ height: '15px' }}></tr>
-                                        </tbody>
-                                    ))}
-                                </Table>
-                            </Sheet>}
                     </Box>
                 </Box>
                 :
@@ -292,44 +233,44 @@ const OperatorDetailsPage = ({
                         },
                     })}>
                     <ModalClose variant="outlined" onClick={() => setFormModal(false)} />
-                    <DialogTitle>{t("operator.add")}</DialogTitle>
+                    <DialogTitle>{t("admin.add")}</DialogTitle>
                     <DialogContent>{t("init.enterDetails")}</DialogContent>
                     <Stack component='form' onSubmit={handleSubmit} gap={2} sx={{ mt: 2 }}>
 
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
                             {/* first name */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("operator.firstName")}</FormLabel>
-                                <Input type="text" name="first_name" value={operatorData.first_name} onChange={handleChange} placeholder={t("init.placeholder") + t("operator.firstName")} />
+                                <FormLabel>{t("admin.firstName")}</FormLabel>
+                                <Input type="text" name="first_name" value={adminData.first_name} onChange={handleChange} placeholder={t("init.placeholder") + t("admin.firstName")} />
                             </FormControl>
 
                             {/* second name */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("operator.middleName")}</FormLabel>
-                                <Input type="text" name="middle_name" value={operatorData.middle_name} onChange={handleChange} placeholder={t("init.placeholder") + t("operator.middleName")} />
+                                <FormLabel>{t("admin.middleName")}</FormLabel>
+                                <Input type="text" name="middle_name" value={adminData.middle_name} onChange={handleChange} placeholder={t("init.placeholder") + t("admin.middleName")} />
                             </FormControl>
 
                             {/* last name */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("operator.lastName")}</FormLabel>
-                                <Input type="text" name="last_name" value={operatorData.last_name} onChange={handleChange} placeholder={t("init.placeholder") + t("operator.lastName")} />
+                                <FormLabel>{t("admin.lastName")}</FormLabel>
+                                <Input type="text" name="last_name" value={adminData.last_name} onChange={handleChange} placeholder={t("init.placeholder") + t("admin.lastName")} />
                             </FormControl>
                         </Stack>
 
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
                             {/* username */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("operator.username")}</FormLabel>
-                                <Input type="text" name="username" value={operatorData.username} onChange={handleChange} placeholder={t("init.placeholder") + t("operator.username")} />
+                                <FormLabel>{t("admin.username")}</FormLabel>
+                                <Input type="text" name="username" value={adminData.username} onChange={handleChange} placeholder={t("init.placeholder") + t("admin.username")} />
                             </FormControl>
 
                             {/* gender */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("operator.gender")}</FormLabel>
-                                <Select name="gender" defaultValue={operatorData.gender} value={operatorData.gender}
-                                    placeholder={t("init.select") + t("operator.gender")}
-                                    onChange={(e, value) => setOperatorData({ ...operatorData, gender: value })}>
-                                    {[{ value: 'M', label: t("operator.male") }, { value: 'F', label: t("operator.female") }].map((item, index) => (
+                                <FormLabel>{t("admin.gender")}</FormLabel>
+                                <Select name="gender" defaultValue={adminData.gender} value={adminData.gender}
+                                    placeholder={t("init.select") + t("admin.gender")}
+                                    onChange={(e, value) => setAdminData({ ...adminData, gender: value })}>
+                                    {[{ value: 'M', label: t("admin.male") }, { value: 'F', label: t("admin.female") }].map((item, index) => (
                                         <Option key={index} value={item.value}>{item.label}</Option>
                                     ))}
                                 </Select>
@@ -340,24 +281,24 @@ const OperatorDetailsPage = ({
 
                             {/* email */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("operator.email")}</FormLabel>
-                                <Input type="text" name="email" value={operatorData.email} onChange={handleChange} placeholder={t("init.placeholder") + t("operator.email")} />
+                                <FormLabel>{t("admin.email")}</FormLabel>
+                                <Input type="text" name="email" value={adminData.email} onChange={handleChange} placeholder={t("init.placeholder") + t("admin.email")} />
                             </FormControl>
 
                             {/* mobile */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("operator.mobile")}</FormLabel>
-                                <Input type="text" name="mobile" value={operatorData.mobile} onChange={handleChange} placeholder={t("init.placeholder") + t("operator.mobile")} />
+                                <FormLabel>{t("admin.mobile")}</FormLabel>
+                                <Input type="text" name="mobile" value={adminData.mobile} onChange={handleChange} placeholder={t("init.placeholder") + t("admin.mobile")} />
                             </FormControl>
                         </Stack>
 
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
                             {/* school name */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("operator.schoolName")}</FormLabel>
-                                <Select name="school" defaultValue={operatorData.school_value} value={operatorData.school_value}
+                                <FormLabel>{t("admin.schoolName")}</FormLabel>
+                                <Select name="school" defaultValue={adminData.school_value} value={adminData.school_value}
                                     placeholder={t("init.select") + t("student.schoolName")}
-                                    onChange={(e, value) => setOperatorData({ ...operatorData, school_value: value })}>
+                                    onChange={(e, value) => setAdminData({ ...adminData, school_value: value })}>
                                     {schoolStatus === STATUS.SUCCESS ? schoolList.results.map((item, index) => (
                                         <Option key={index} value={item.id}>{item.name}</Option>
                                     )) : <Option value={null}>{t("school.NoList")}</Option>}
@@ -391,9 +332,9 @@ const mapStateToProps = ({ user, auth, school }) => {
     } = school
 
     const {
-        operatorDetailsStatus: detailsStatus,
-        operatorDetailsResult: detailsResult,
-        operatorDetailsErrorMessage: detailsErrorMessage,
+        adminDetailsStatus: detailsStatus,
+        adminDetailsResult: detailsResult,
+        adminDetailsErrorMessage: detailsErrorMessage,
     } = user
 
     return {
@@ -412,4 +353,4 @@ const mapStateToProps = ({ user, auth, school }) => {
     }
 }
 
-export default connect(mapStateToProps, {})(OperatorDetailsPage)
+export default connect(mapStateToProps, {})(AdminDetailsPage)

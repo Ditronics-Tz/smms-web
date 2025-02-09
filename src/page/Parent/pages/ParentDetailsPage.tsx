@@ -48,6 +48,7 @@ const ParentDetailsPage = ({
         first_name: "",
         middle_name: "",
         last_name: "",
+        parent_type: "",
         gender: "",
         email: "",
         username: "",
@@ -67,6 +68,7 @@ const ParentDetailsPage = ({
                 first_name: detailsResult.first_name,
                 middle_name: detailsResult.middle_name,
                 last_name: detailsResult.last_name,
+                parent_type: detailsResult.parent_type,
                 gender: detailsResult.gender,
                 email: detailsResult.email,
                 username: detailsResult.username,
@@ -120,6 +122,7 @@ const ParentDetailsPage = ({
             formData.append("first_name", parentData.first_name);
             formData.append("middle_name", parentData.middle_name);
             formData.append("last_name", parentData.last_name);
+            formData.append("parent_type", parentData.parent_type);
             formData.append("gender", parentData.gender);
             formData.append("email", parentData.email);
             formData.append("username", parentData.username);
@@ -142,6 +145,11 @@ const ParentDetailsPage = ({
     }
 
     const rows = [
+        CreateItems(t("parent.type"), {
+            'mother': t("parent.mother"),
+            'father': t("parent.father"),
+            'guardian': t("parent.guardian")
+        }[parentData.parent_type]),
         CreateItems(t("parent.username"), parentData.username),
         CreateItems(t("parent.gender"), { 'M': t("parent.male"), 'F': t("parent.female") }[parentData.gender]),
         CreateItems(t("parent.email"), parentData.email),
@@ -184,7 +192,7 @@ const ParentDetailsPage = ({
                                     flexDirection: 'row',
                                     backgroundColor: 'background.body',
                                     p: 2,
-                                    gap: 3,
+                                    gap: {xs: 1, md: 3},
                                     borderRadius: 6
                                 }}>
                                 <Avatar sx={{ height: 160, width: 140, borderRadius: 6 }} />
@@ -302,6 +310,22 @@ const ParentDetailsPage = ({
                                     {[{ value: 'M', label: t("parent.male") }, { value: 'F', label: t("parent.female") }].map((item, index) => (
                                         <Option key={index} value={item.value}>{item.label}</Option>
                                     ))}
+                                </Select>
+                            </FormControl>
+
+                            {/* type */}
+                            <FormControl sx={{ flex: 1 }} required>
+                                <FormLabel>{t("parent.type")}</FormLabel>
+                                <Select name="parent_type" defaultValue={parentData.parent_type} value={parentData.parent_type}
+                                    placeholder={t("init.select") + t("parent.gender")}
+                                    onChange={(e, value) => setParentData({ ...parentData, parent_type: value })}>
+                                    {[
+                                        { value: 'mother', label: t("parent.mother") },
+                                        { value: 'father', label: t("parent.father") },
+                                        { value: 'guardian', label: t("parent.guardian") }]
+                                        .map((item, index) => (
+                                            <Option key={index} value={item.value}>{item.label}</Option>
+                                        ))}
                                 </Select>
                             </FormControl>
                         </Stack>

@@ -8,6 +8,7 @@ import { ProfilePage } from "./Profile";
 import { TransactionPage } from "./Transactions";
 import { SchoolPage } from "./School";
 import { OperatorPage, OperatorDetailsPage } from "./Operator";
+import { AdminDetailsPage, AdminPage } from "./Admin";
 
 export {
     Dashboard,
@@ -18,6 +19,8 @@ export {
     ParentDetailsPage,
     OperatorDetailsPage,
     OperatorPage,
+    AdminPage,
+    AdminDetailsPage,
     SupportPage,
     ProfilePage,
     InfoPage,
