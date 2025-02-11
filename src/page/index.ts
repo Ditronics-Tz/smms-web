@@ -9,6 +9,7 @@ import { TransactionPage } from "./Transactions";
 import { SchoolPage } from "./School";
 import { OperatorPage, OperatorDetailsPage } from "./Operator";
 import { AdminDetailsPage, AdminPage } from "./Admin";
+import { CanteenItemPage } from "./CanteenItems";
 
 export {
     Dashboard,
@@ -26,6 +27,7 @@ export {
     InfoPage,
     TransactionPage,
     SchoolPage,
+    CanteenItemPage,
 
     Error404Page,
 

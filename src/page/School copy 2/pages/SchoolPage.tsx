@@ -286,7 +286,6 @@ const SchoolPage = ({
                     gap: 1,
                     flexDirection: { xs: 'column', sm: 'row' },
                     // width: { xs: 'auto', md: '30%' },
-                    maxWidth: '600px',
                     justifyContent: 'space-between',
                 }}
             >
@@ -300,7 +299,7 @@ const SchoolPage = ({
 
                 <Input
                     size="sm"
-                    placeholder={t("init.search") + "name/ location"}
+                    placeholder={t("init.search") + "name"}
                     type='text'
                     defaultValue={search}
                     value={search}

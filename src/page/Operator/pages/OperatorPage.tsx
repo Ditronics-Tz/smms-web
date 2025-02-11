@@ -587,7 +587,7 @@ const OperatorPage = ({
     )
 }
 
-const mapStateToProps = ({ auth, user, school }) => {
+const mapStateToProps = ({ auth, user, resources }) => {
     const { accessToken,
         createUserStatus: createStatus,
         createUserResult: createResult,
@@ -597,7 +597,7 @@ const mapStateToProps = ({ auth, user, school }) => {
     const {
         schoolListResult: schoolList,
         schoolListStatus: schoolStatus,
-    } = school
+    } = resources
 
     const {
         userListStatus: listStatus,

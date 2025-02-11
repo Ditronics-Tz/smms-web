@@ -420,7 +420,7 @@ const StudentDetailsPage = ({
     )
 }
 
-const mapStateToProps = ({ user, auth, school }) => {
+const mapStateToProps = ({ user, auth, resources }) => {
     const {
         accessToken,
 
@@ -432,7 +432,7 @@ const mapStateToProps = ({ user, auth, school }) => {
     const {
         schoolListResult: schoolList,
         schoolListStatus: schoolStatus,
-    } = school
+    } = resources
     const {
         studentDetailsStatus: detailsStatus,
         studentDetailsResult: detailsResult,

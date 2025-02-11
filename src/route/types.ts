@@ -9,6 +9,11 @@ export const NAVIGATE_TO_DASHBOARD = '/';
 // School
 export const NAVIGATE_TO_SCHOOLPAGE = '/schools';
 
+// Item
+export const NAVIGATE_TO_CANTEENITEMPAGE = '/item-page'
+export const NAVIGATE_TO_CARDPAGE = '/card-page';
+export const NAVIGATE_TO_CARDDETAILSPAGE = '/card-details';
+
 // Student
 export const NAVIGATE_TO_STUDENTPAGE = '/student-manage';
 export const NAVIGATE_TO_STUDENTDETAILSPAGE = '/student-details'
@@ -17,11 +22,11 @@ export const NAVIGATE_TO_STUDENTDETAILSPAGE = '/student-details'
 export const NAVIGATE_TO_PARENTPAGE = '/parent-manage';
 export const NAVIGATE_TO_PARENTDETAILSPAGE = '/parent-details';
 
-// Parent
+// Operator
 export const NAVIGATE_TO_OPERATORPAGE = '/operator-manage';
 export const NAVIGATE_TO_OPERATORDETAILSPAGE = '/operator-details';
 
-// Parent
+// Admin
 export const NAVIGATE_TO_ADMINPAGE = '/admin-manage';
 export const NAVIGATE_TO_ADMINDETAILSPAGE = '/admin-details';
 

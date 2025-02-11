@@ -29,6 +29,7 @@
         "attention": "ATTENTION",
         "wait": "Hold on!",
         "logout": "Are you sure you want to logout ?",
+        "deleteMessage": "You are about to delete {{item}}. \nAre your sure you want delete this?",
         "yes": "Yes",
         "no": "No",
         "confirm": "Confirm",
@@ -270,6 +271,17 @@
         "startAt": "Start At",
         "endAt": "End At"
     },
+    "item": {
+        "title": "Manage Canteen Items",
+        "details": "Item details",
+        "add": "Add Item",
+        "edit": "Edit",
+        "delete": "Delete",
+        "price": "Price",
+        "createdAt": "Created At",
+        "name": "Item Name",
+        "noList": "No Item list found"
+    },
     "setting": {
         "title": "Profile & Settings",
         "setting": "Settings",
@@ -361,6 +373,8 @@
         "105": "This card is already assigned",
         "106": "user ID is required",
         "107": "User not found",
-        "108": "This user is already exist"
+        "108": "This user is already exist",
+        "109": "Card ID required",
+        "111": "Invalid action. Use 'activate' or 'deactivate"
     }
 }

@@ -29,6 +29,7 @@
         "attention": "Umakini",
         "wait": "Subiri kidogo!",
         "logout": "Je, una uhakika unataka kutoka?",
+        "deleteMessage": "Unakaribia kufuta {{item}}. \nUnauhakika unataka kufuta hii?",
         "yes": "Ndio",
         "no": "Hapana",
         "confirm": "Thibitisha",
@@ -275,6 +276,17 @@
         "joined": "Amesajiliwa Tarehe",
         "startAt": "Kuanza",
         "endAt": "Kuisha"
+    },
+    "item": {
+        "title": "Dhibiti Bidhaa",
+        "details": "Taarifa za Bidhaa",
+        "add": "Ongeza Bidhaa",
+        "edit": "Rekebisha",
+        "delete": "Futa",
+        "price": "Bei",
+        "createdAt": "Imetengenezwa",
+        "name": "Jina la Bidhaa",
+        "noList": "Hakuna Taarifa za bidhaa"
     },
     "setting": {
         "title": "Wasifu & Mipangilio",

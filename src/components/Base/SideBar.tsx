@@ -23,6 +23,9 @@ import { logoutRequest } from "../../store/actions";
 import {
   NAVIGATE_TO_ADMINDETAILSPAGE,
   NAVIGATE_TO_ADMINPAGE,
+  NAVIGATE_TO_CANTEENITEMPAGE,
+  NAVIGATE_TO_CARDDETAILSPAGE,
+  NAVIGATE_TO_CARDPAGE,
   NAVIGATE_TO_DASHBOARD,
   NAVIGATE_TO_OPERATORDETAILSPAGE,
   NAVIGATE_TO_OPERATORPAGE,
@@ -245,14 +248,14 @@ const Sidebar = ({
           {userRole === 'admin' &&
             <DropdowmList
               path={
-                location.pathname === NAVIGATE_TO_STUDENTPAGE || 
+                location.pathname === NAVIGATE_TO_STUDENTPAGE ||
                 location.pathname === NAVIGATE_TO_STUDENTDETAILSPAGE ||
-                location.pathname === NAVIGATE_TO_ADMINPAGE || 
+                location.pathname === NAVIGATE_TO_ADMINPAGE ||
                 location.pathname === NAVIGATE_TO_ADMINDETAILSPAGE ||
                 location.pathname === NAVIGATE_TO_OPERATORPAGE ||
                 location.pathname === NAVIGATE_TO_OPERATORDETAILSPAGE ||
                 location.pathname === NAVIGATE_TO_PARENTDETAILSPAGE ||
-                location.pathname === NAVIGATE_TO_PARENTPAGE 
+                location.pathname === NAVIGATE_TO_PARENTPAGE
               }
               props={{
                 title: t("sidebar.manageUser"),
@@ -309,7 +312,12 @@ const Sidebar = ({
           {/* ------ Manage Resources ------- */}
           {userRole == 'admin' &&
             <DropdowmList
-              path={location.pathname === NAVIGATE_TO_SCHOOLPAGE}
+              path={
+                location.pathname === NAVIGATE_TO_SCHOOLPAGE ||
+                location.pathname === NAVIGATE_TO_CANTEENITEMPAGE ||
+                location.pathname === NAVIGATE_TO_CARDPAGE ||
+                location.pathname === NAVIGATE_TO_CARDDETAILSPAGE
+              }
               props={{
                 title: t("sidebar.manageResources"),
                 icon: <FolderOutlined />,
@@ -329,8 +337,9 @@ const Sidebar = ({
 
               {/* cards */}
               <ListItemComponent
-                route={'#'}
-                path={null}
+                route={NAVIGATE_TO_CARDPAGE}
+                path={location.pathname === NAVIGATE_TO_CARDPAGE ||
+                  location.pathname === NAVIGATE_TO_CARDDETAILSPAGE}
                 action={() => null}
                 props={{
                   title: t("sidebar.manageCards"),
@@ -340,8 +349,8 @@ const Sidebar = ({
 
               {/* items */}
               <ListItemComponent
-                route={'#'}
-                path={null}
+                route={NAVIGATE_TO_CANTEENITEMPAGE}
+                path={location.pathname === NAVIGATE_TO_CANTEENITEMPAGE}
                 action={() => null}
                 props={{
                   title: t("sidebar.manageItems"),
@@ -351,31 +360,31 @@ const Sidebar = ({
             </DropdowmList>}
 
           {/* Transactions */}
-          {(userRole == 'admin' || userRole == 'parent') && 
-          <ListItemComponent
-            route={NAVIGATE_TO_TRANSACTIONPAGE}
-            path={location.pathname === NAVIGATE_TO_TRANSACTIONPAGE}
-            action={() => null}
-            props={{
-              title: t("sidebar.transaction"),
-              icon: <CurrentExchangeRoundIcon />
-            }}
-          />}
+          {(userRole == 'admin' || userRole == 'parent') &&
+            <ListItemComponent
+              route={NAVIGATE_TO_TRANSACTIONPAGE}
+              path={location.pathname === NAVIGATE_TO_TRANSACTIONPAGE}
+              action={() => null}
+              props={{
+                title: t("sidebar.transaction"),
+                icon: <CurrentExchangeRoundIcon />
+              }}
+            />}
 
           {/* Sessions */}
-          {userRole == 'operator' && 
-          <ListItemComponent
-            route={'#'}
-            path={null}
-            action={() => null}
-            props={{
-              title: t("sidebar.session"),
-              icon: <ScheduleOutlined />
-            }}
-          />}
+          {userRole == 'operator' &&
+            <ListItemComponent
+              route={'#'}
+              path={null}
+              action={() => null}
+              props={{
+                title: t("sidebar.session"),
+                icon: <ScheduleOutlined />
+              }}
+            />}
 
           {/* Bank deposit */}
-          {userRole == 'admin'&& <ListItemComponent
+          {userRole == 'admin' && <ListItemComponent
             route={'#'}
             path={null}
             action={() => null}

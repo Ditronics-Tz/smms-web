@@ -34,6 +34,24 @@ export function editUserReset() {
     }
 }
 
+
+// Activate/deactivate user action
+export function activateUserRequest(token, data) {
+    return {
+        type: STATE.ACTIVATE_USER_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function activateUserReset() {
+    return {
+        type: STATE.ACTIVATE_USER_RESET
+    }
+}
+
 // login action
 export function loginRequest(data) {
     return {

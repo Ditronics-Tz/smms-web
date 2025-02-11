@@ -3,7 +3,7 @@ import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, T
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import { AlertModal, LoadingView, NotFoundMessage, PageTitle } from "../../../components";
-import { formatDate } from "../../../utils";
+import { formatDate, thousandSeparator } from "../../../utils";
 
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -18,12 +18,17 @@ import { FILE_BASE, STATUS } from "../../../constant";
 import { toast } from "react-toastify";
 
 import {
-    schoolListRequest,
-    schoolListReset,
-    createSchoolRequest,
-    createSchoolReset,
-    deleteSchoolRequest,
-    deleteSchoolReset,
+    itemListRequest,
+    itemListReset,
+
+    editItemRequest,
+    editItemReset,
+
+    createItemRequest,
+    createItemReset,
+
+    deleteItemRequest,
+    deleteItemReset,
 } from "../../../store/actions"
 import { useTranslation } from "react-i18next";
 
@@ -49,7 +54,7 @@ const MobileViewTable = ({ data, props }) => {
                         <ListItemContent sx={{ display: 'flex', gap: 2, alignItems: 'start' }}>
                             <div>
                                 <Typography fontWeight={600} gutterBottom>{listItem.name}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("school.location")}:</b> {listItem.location}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("item.price")}:</b> Tsh.{thousandSeparator(listItem.price)}</Typography>
                             </div>
                         </ListItemContent>
                         <Box sx={{
@@ -60,8 +65,8 @@ const MobileViewTable = ({ data, props }) => {
                             rowGap: 1
                         }}>
                             <ButtonGroup variant="outlined" size="sm">
-                                {/* <Button color="neutral" onClick={() => null}>{t("school.edit")}</Button> */}
-                                <Button color="danger" onClick={() => props.delete(listItem)}><DeleteOutline />{t("school.delete")}</Button>
+                                <Button color="neutral" onClick={() => props.edit(listItem)}>{t("item.edit")}</Button>
+                                <Button color="danger" onClick={() => props.delete(listItem)}><DeleteOutline />{t("item.delete")}</Button>
                             </ButtonGroup>
                         </Box>
 
@@ -109,8 +114,8 @@ const DesktopViewTable = ({ data, props }) => {
                     <thead>
                         <tr style={{ textAlign: 'center' }}>
                             {/* <th style={{ width: 50, padding: '10px 6px' }}></th> */}
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("school.name")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("school.location")}</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("item.name")}</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("item.price")} (Tsh)</th>
                             <th style={{ width: 80, padding: '10px 6px', }}>Actions</th>
                         </tr>
                     </thead>
@@ -121,12 +126,12 @@ const DesktopViewTable = ({ data, props }) => {
                                     <Typography level="body-sm">{row.name}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-sm">{row.location}</Typography>
+                                    <Typography level="body-sm">{thousandSeparator(row.price)}</Typography>
                                 </td>
                                 <td>
                                     <ButtonGroup variant="outlined" size="sm">
-                                        {/* <Button title={t("school.view")} color="neutral">{t("school.edit")}</Button> */}
-                                        <Button title={t("school.delete")} onClick={() => props.delete(row)} color="danger">{t("school.delete")}</Button>
+                                        <Button title={t("item.edit")} onClick={() => props.edit(row)} color="neutral">{t("item.edit")}</Button>
+                                        <Button title={t("item.delete")} onClick={() => props.delete(row)} color="danger">{t("item.delete")}</Button>
                                     </ButtonGroup>
                                 </td>
                             </tr>
@@ -138,12 +143,16 @@ const DesktopViewTable = ({ data, props }) => {
     );
 }
 
-const SchoolPage = ({
+const ItemPage = ({
     accessToken,
 
     createStatus,
     createResult,
     createErrorMessage,
+
+    editStatus,
+    editResult,
+    editErrorMessage,
 
     deleteStatus,
     deleteResult,
@@ -158,23 +167,24 @@ const SchoolPage = ({
     const { t } = useTranslation()
     const isDesktop = useMediaQuery("(min-width:600px)");
 
-    const initiateSchoolData = {
+    const initiateItemData = {
+        id: "",
         name: "",
-        location: ""
+        price: ""
     }
 
-    const [schoolData, setSchoolData] = useState(initiateSchoolData);
+    const [itemData, setItemData] = useState(initiateItemData);
 
     // ---- PAGINATION SETTINGS ----- //
     const [listData, setListData] = useState([]);
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
-    const [totalSchool, setTotalSchool] = useState(0);
+    const [totalItem, setTotalItem] = useState(0);
     const [nextPage, setNextPage] = useState(null);
     const [previousPage, setPreviousPage] = useState(null);
 
     const ITEMS_PER_PAGE = 50
-    const pageLength = listData.length > 0 ? Math.ceil(totalSchool / ITEMS_PER_PAGE) : 1
+    const pageLength = listData.length > 0 ? Math.ceil(totalItem / ITEMS_PER_PAGE) : 1
 
     const [formModal, setFormModal] = useState(false)
     const [deleteModal, setDeleteModal] = useState(false)
@@ -184,50 +194,62 @@ const SchoolPage = ({
             setListData(listResult.results);
             setNextPage(listResult.next);
             setPreviousPage(listResult.previous);
-            setTotalSchool(listResult.count);
+            setTotalItem(listResult.count);
         }
         else if (listStatus === STATUS.ERROR) {
             toast.error(listErrorMessage);
-            dispatch(schoolListReset());
+            dispatch(itemListReset());
         }
 
         if (createStatus == STATUS.SUCCESS) {
             toast.success(createResult.message);
             setFormModal(false);
-            setSchoolData(initiateSchoolData);
-            dispatch(schoolListRequest(accessToken, { "search": search }, page))
-            dispatch(createSchoolReset())
+            setItemData(initiateItemData);
+            dispatch(itemListRequest(accessToken, { "search": search }, page))
+            dispatch(createItemReset())
         }
         else if (createStatus === STATUS.ERROR) {
             toast.error(createErrorMessage);
-            dispatch(createSchoolReset())
+            dispatch(createItemReset())
         }
 
-        if (deleteStatus === STATUS.SUCCESS){
+        if (editStatus == STATUS.SUCCESS) {
+            toast.success(editResult.message);
+            setFormModal(false);
+            setItemData(initiateItemData);
+            dispatch(itemListRequest(accessToken, { "search": search }, page))
+            dispatch(editItemReset())
+        }
+        else if (editStatus === STATUS.ERROR) {
+            toast.error(editErrorMessage);
+            dispatch(editItemReset())
+        }
+
+        if (deleteStatus === STATUS.SUCCESS) {
             setDeleteModal(false)
             toast.success(t("status.success"))
-            dispatch(schoolListRequest(accessToken, { "search": search }, page))
-            dispatch(deleteSchoolReset())
+            dispatch(itemListRequest(accessToken, { "search": search }, page))
+            dispatch(deleteItemReset())
         }
-        else if (deleteStatus === STATUS.ERROR){
+        else if (deleteStatus === STATUS.ERROR) {
             setDeleteModal(false)
             toast.error(deleteErrorMessage)
-            dispatch(deleteSchoolReset())
+            dispatch(deleteItemReset())
         }
-    }, [listStatus, createStatus, deleteStatus])
+    }, [listStatus, createStatus, deleteStatus, editStatus])
 
     useEffect(() => {
         const data = {
             'search': search,
         }
-        dispatch(schoolListRequest(accessToken, data, page))
+        dispatch(itemListRequest(accessToken, data, page))
     }, [page, search])
 
     // Handle text, select, and RFID input changes
     const handleChange = (e) => {
         if (!e || !e.target) return;
         const { name, value } = e.target;
-        setSchoolData((prevData) => ({
+        setItemData((prevData) => ({
             ...prevData,
             [name]: value,
         }));
@@ -236,25 +258,38 @@ const SchoolPage = ({
     // ---- Submit function
     const handleSubmit = (event) => {
         event.preventDefault()
-        if (schoolData.name && schoolData.location) {
+        if (itemData.name && itemData.price) {
             const data = {
-                "name": schoolData.name,
-                "location": schoolData.location
+                "name": itemData.name,
+                "price": itemData.price
             }
-            dispatch(createSchoolRequest(accessToken, data))
+            if (itemData.id) {
+                dispatch(editItemRequest(accessToken, { ...data, "item_id": itemData.id }))
+            } else {
+                dispatch(createItemRequest(accessToken, data))
+            }
+
+
         } else {
             toast.error(t("init.emptyErr"))
         }
     }
 
-    const [schoolItem, setSchoolItem] = useState({
+    const [itemItem, setItemItem] = useState({
         id: '',
         name: ''
     })
-    // Actions
-    const deleteSchool = (item) => {
-        setSchoolItem({id: item.id, name: item.name})
+
+    // Actions delete
+    const deleteItem = (item) => {
+        setItemItem({ id: item.id, name: item.name })
         setDeleteModal(true)
+    }
+
+    // action edit
+    const editItem = (item) => {
+        setItemData({ id: item.id, name: item.name, price: item.price })
+        setFormModal(true)
     }
 
     const openAddForm = () => {
@@ -262,7 +297,8 @@ const SchoolPage = ({
     }
 
     const checkLoading = () => {
-        if (listStatus === STATUS.LOADING || createStatus === STATUS.SUCCESS || deleteStatus === STATUS.LOADING) {
+        if (listStatus === STATUS.LOADING || createStatus === STATUS.SUCCESS
+            || deleteStatus === STATUS.LOADING || editStatus === STATUS.LOADING) {
             return true
         }
         else {
@@ -273,7 +309,7 @@ const SchoolPage = ({
 
     return (
         <Box>
-            <PageTitle title={t("school.title") + ` (${totalSchool})`} />
+            <PageTitle title={t("item.title") + ` (${totalItem})`} />
 
             <LoadingView loading={checkLoading()} />
 
@@ -285,8 +321,8 @@ const SchoolPage = ({
                     my: 1,
                     gap: 1,
                     flexDirection: { xs: 'column', sm: 'row' },
-                    // width: { xs: 'auto', md: '30%' },
                     maxWidth: '600px',
+                    // width: { xs: 'auto', md: '30%' },
                     justifyContent: 'space-between',
                 }}
             >
@@ -295,12 +331,12 @@ const SchoolPage = ({
                     color="success"
                     sx={{ width: 'auto' }}
                     onClick={openAddForm}>
-                    {t("school.add")}
+                    {t("item.add")}
                 </Button>
 
                 <Input
                     size="sm"
-                    placeholder={t("init.search") + "name/ location"}
+                    placeholder={t("init.search") + "name/price"}
                     type='text'
                     defaultValue={search}
                     value={search}
@@ -312,11 +348,11 @@ const SchoolPage = ({
 
             {listData.length > 0 ? <>
                 {/* ------ render different view depend on plafform -------- */}
-                <MobileViewTable data={listData} props={{ view: null, delete: deleteSchool }} />
-                <DesktopViewTable data={listData} props={{ view: null, delete: deleteSchool }} />
+                <MobileViewTable data={listData} props={{ edit: editItem, delete: deleteItem }} />
+                <DesktopViewTable data={listData} props={{ edit: editItem, delete: deleteItem }} />
 
                 {/* Pagination */}
-                {totalSchool > ITEMS_PER_PAGE
+                {totalItem > ITEMS_PER_PAGE
                     &&
                     <Box
                         className="Pagination-laptopUp"
@@ -357,7 +393,7 @@ const SchoolPage = ({
 
                         {/* for mobile to display page number */}
                         <Typography level="body-sm" mx="auto" textAlign={'center'} sx={{ display: { xs: 'flex', md: 'none' } }}>
-                            {t('init.page')} {page} of {Math.ceil(totalSchool / ITEMS_PER_PAGE)}
+                            {t('init.page')} {page} of {Math.ceil(totalItem / ITEMS_PER_PAGE)}
                         </Typography>
                         <Box sx={{ flex: 1 }} />
 
@@ -381,42 +417,42 @@ const SchoolPage = ({
             {/* ----- Delete Modal ---- */}
             <AlertModal
                 visibility={deleteModal}
-                message={t("alert.deleteMessage", { item: `school ${schoolItem.name}` })}
+                message={t("alert.deleteMessage", { item: `item ${itemItem.name}` })}
                 onClose={() => setDeleteModal(false)}
                 onConfirm={() => {
-                    dispatch(deleteSchoolRequest(accessToken, { "school_id": schoolItem.id }))
+                    dispatch(deleteItemRequest(accessToken, { "item_id": itemItem.id }))
                 }}
             />
 
-            {/* ------ Modal form for add school details ------ */}
+            {/* ------ Modal form for add item details ------ */}
             <Modal open={formModal} >
                 <ModalDialog
                     aria-labelledby="nested-modal-title"
                     aria-describedby="nested-modal-description"
-                   >
+                >
                     <ModalClose variant="outlined" onClick={() => setFormModal(false)} />
-                    <DialogTitle>{t("school.add")}</DialogTitle>
+                    <DialogTitle>{t("item.add")}</DialogTitle>
                     <DialogContent>{t("init.enterDetails")}</DialogContent>
                     <Stack component='form' onSubmit={handleSubmit} gap={2} sx={{ mt: 2 }}>
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
                             {/* name */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("school.name")}</FormLabel>
-                                <Input type="text" name="name" value={schoolData.name} onChange={handleChange} placeholder={t("init.placeholder") + t("school.name")} />
+                                <FormLabel>{t("item.name")}</FormLabel>
+                                <Input type="text" name="name" value={itemData.name} onChange={handleChange} placeholder={t("init.placeholder") + t("item.name")} />
                             </FormControl>
                         </Stack>
 
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
-                            {/* location */}
+                            {/* price */}
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("school.location")}</FormLabel>
-                                <Input type="text" name="location" value={schoolData.location} onChange={handleChange} placeholder={t("init.placeholder") + t("school.location")} />
+                                <FormLabel>{t("item.price")}</FormLabel>
+                                <Input type="number" name="price" value={itemData.price} onChange={handleChange} placeholder={t("init.placeholder") + t("item.price")} />
                             </FormControl>
                         </Stack>
 
                         <Stack gap={4} sx={{ mt: 2 }}>
                             <Button color="success" type="submit" fullWidth>
-                                {createStatus === STATUS.LOADING ? t("init.loading") : t("init.submit")}
+                                {(createStatus === STATUS.LOADING || editStatus === STATUS.LOADING) ? t("init.loading") : t("init.submit")}
                             </Button>
                         </Stack>
                     </Stack>
@@ -431,18 +467,21 @@ const mapStateToProps = ({ auth, resources }) => {
     } = auth
 
     const {
+        editItemStatus: editStatus,
+        editItemResult: editResult,
+        editItemErrorMessage: editErrorMessage,
 
-        createSchoolStatus: createStatus,
-        createSchoolResult: createResult,
-        createSchoolErrorMessage: createErrorMessage,
+        createItemStatus: createStatus,
+        createItemResult: createResult,
+        createItemErrorMessage: createErrorMessage,
 
-        deleteSchoolStatus: deleteStatus,
-        deleteSchoolResult: deleteResult,
-        deleteSchoolErrorMessage: deleteErrorMessage,
+        deleteItemStatus: deleteStatus,
+        deleteItemResult: deleteResult,
+        deleteItemErrorMessage: deleteErrorMessage,
 
-        schoolListStatus: listStatus,
-        schoolListResult: listResult,
-        schoolListErrorMessage: listErrorMessage,
+        itemListStatus: listStatus,
+        itemListResult: listResult,
+        itemListErrorMessage: listErrorMessage,
     } = resources
 
     return {
@@ -451,6 +490,10 @@ const mapStateToProps = ({ auth, resources }) => {
         createStatus,
         createResult,
         createErrorMessage,
+
+        editStatus,
+        editResult,
+        editErrorMessage,
 
         deleteStatus,
         deleteResult,
@@ -461,4 +504,4 @@ const mapStateToProps = ({ auth, resources }) => {
         listErrorMessage
     }
 }
-export default connect(mapStateToProps, {})(SchoolPage)
+export default connect(mapStateToProps, {})(ItemPage)
