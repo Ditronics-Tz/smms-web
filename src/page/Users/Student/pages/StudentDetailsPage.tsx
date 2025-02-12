@@ -1,21 +1,22 @@
-import React, { Fragment, lazy, useEffect, useState } from "react";
-import { Typography, Box, Table, AspectRatio, Card, CardContent, Divider, ButtonGroup, Button, Sheet, Modal, ModalOverflow, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar, Chip, ColorPaletteProp, ListDivider } from "@mui/joy";
+import React, { useEffect, useState } from "react";
+import { Typography, Box, Divider, Button, Sheet, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar, Chip, ColorPaletteProp, ListDivider, Autocomplete } from "@mui/joy";
 import { toast } from 'react-toastify';
-import { LoadingView, Main, NotFoundMessage, PageTitle } from "../../../components";
+import { LoadingView, NotFoundMessage } from "../../../../components";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FILE_BASE, STATUS } from "../../../constant";
+import { API_BASE, FILE_BASE, STATUS } from "../../../../constant";
 import { connect, useDispatch } from "react-redux";
-import { useMediaQuery } from "@mui/material";
+import classList from '../../../../assets/data/classess.json'
+
 import {
     editUserRequest,
     editUserReset,
     studentDetailsRequest,
     studentDetailsReset,
-} from '../../../store/actions'
-import { AddCardOutlined, BlockOutlined, CheckCircle, DeleteOutline, DoNotDisturbOn, EditOutlined, FolderOpenOutlined, LocationOn, RemoveRedEyeOutlined, TaskAltOutlined, WarningRounded } from "@mui/icons-material";
+} from '../../../../store/actions'
+import { EditOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import { formatDate, thousandSeparator } from "../../../utils";
-import image from "../../../constant/image";
+import { formatDate, thousandSeparator } from "../../../../utils";
+import axios from "axios";
 
 function CreateItems(
     title: String,
@@ -56,7 +57,7 @@ const StudentDetailsPage = ({
         school: null,
         school_value: "",
         rfid_card: null,
-        parents: [],
+        parent_ids: null,
         profile_picture: null,
         profile_picture_url: ""
     }
@@ -65,6 +66,20 @@ const StudentDetailsPage = ({
     const [formModal, setFormModal] = useState(false);
 
     const [studentData, setStudentData] = useState(initiateStudentData);
+    const [parentList, setParentList] = useState([])
+
+    // function to fetch parents data to fetch student data
+    useEffect(() => {
+        axios.get(API_BASE + "/list/parents", {
+            timeout: 30000,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
+                'Authorization': 'Bearer ' + accessToken,
+
+            }
+        }).then((res) => setParentList(res.data.results))
+    }, [])
 
     useEffect(() => {
         if (detailsStatus === STATUS.SUCCESS) {
@@ -79,7 +94,7 @@ const StudentDetailsPage = ({
                 school_value: detailsResult.school_id,
                 profile_picture: null,
                 rfid_card: detailsResult.rfid_card,
-                parents: detailsResult.parents,
+                parent_ids: detailsResult.parents,
                 profile_picture_url: detailsResult.profile_picture,
             });
         }
@@ -143,6 +158,10 @@ const StudentDetailsPage = ({
             formData.append("class_room", studentData.class_room);
             formData.append("school", studentData.school_value);
             formData.append("role", "student");
+
+            if (studentData.parent_ids) {
+                formData.append("parent_ids", studentData.parent_ids.map(v => v.id))
+            }
 
             // Append file only if selected
             if (studentData.profile_picture) {
@@ -274,7 +293,7 @@ const StudentDetailsPage = ({
                                 </Sheet>}
 
                             {/* Parent*/}
-                            {studentData.parents.length > 0 &&
+                            {studentData.parent_ids.length > 0 &&
                                 <Sheet
                                     variant="outlined"
                                     sx={{
@@ -289,7 +308,7 @@ const StudentDetailsPage = ({
                                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, width: '100%' }}>
                                         <Typography level="h4">{t("parent.details")}</Typography>
                                         <Divider />
-                                        {studentData.parents.map((item, index) => (
+                                        {studentData.parent_ids.map((item, index) => (
                                             <Box key={index} sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, width: '100%' }}>
                                                 <Typography level="title-md">{item.first_name + " " + item.last_name}</Typography>
                                                 {parentDetails(item).map((dt, id) => (
@@ -386,6 +405,20 @@ const StudentDetailsPage = ({
                                     ))}
                                 </Select>
                             </FormControl>
+
+                            {/* select parent */}
+                            <FormControl sx={{ flex: 1 }}>
+                                <FormLabel>{t("student.parents")} <small>({t("student.alertParent")})</small></FormLabel>
+                                <Autocomplete
+                                    multiple
+                                    options={parentList}
+                                    value={studentData.parent_ids}
+                                    defaultValue={studentData.parent_ids}
+                                    getOptionLabel={(option) => `${option.first_name} ${option.last_name}`}
+                                    onChange={(e, value) => setStudentData({ ...studentData, parent_ids: value })}
+                                    placeholder={t("init.select") + t("student.parents")}
+                                />
+                            </FormControl>
                         </Stack>
 
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
@@ -401,10 +434,15 @@ const StudentDetailsPage = ({
                                 </Select>
                             </FormControl>
 
-                            {/* class room */}
                             <FormControl sx={{ flex: 1 }} required>
                                 <FormLabel>{t("student.classRoom")}</FormLabel>
-                                <Input type="text" name="class_room" value={studentData.class_room} onChange={handleChange} placeholder={t("init.placeholder") + t("student.classRoom")} />
+                                <Select name="class_room" defaultValue={studentData.class_room} value={studentData.class_room}
+                                    placeholder={t("init.select") + t("student.classRoom")}
+                                    onChange={(e, value) => setStudentData({ ...studentData, class_room: value })}>
+                                    {classList.map((item, index) => (
+                                        <Option key={index} value={item}>{item}</Option>
+                                    ))}
+                                </Select>
                             </FormControl>
                         </Stack>
 

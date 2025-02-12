@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 
 import { LoginPage } from "../page/Login";
@@ -8,6 +8,7 @@ import {
   NAVIGATE_TO_ADMINDETAILSPAGE,
   NAVIGATE_TO_ADMINPAGE,
   NAVIGATE_TO_CANTEENITEMPAGE,
+  NAVIGATE_TO_CARDPAGE,
   NAVIGATE_TO_DASHBOARD,
   NAVIGATE_TO_INFOPAGE,
   NAVIGATE_TO_LOGINPAGE,
@@ -25,11 +26,11 @@ import {
 import { STATUS } from "../constant";
 import Error404Page from "../page/ErrorsPages/404Error";
 import { Main } from "../components";
-import { AdminDetailsPage, AdminPage, CanteenItemPage, Dashboard, InfoPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, StudentDetailsPage, StudentPage, SupportPage, TransactionPage } from "../page";
+import { AdminDetailsPage, AdminPage, CanteenItemPage, CardPage, Dashboard, InfoPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, StudentDetailsPage, StudentPage, SupportPage, TransactionPage } from "../page";
 
 // FUNCTION TO DIRECT ONLY AUTH USER TO THEIR PAGES
 const ProtectRoute = ({ status }) => {
-  return status == STATUS.SUCCESS ? (
+  return status === STATUS.SUCCESS ? (
     <Outlet />
   ) : (
     <Navigate to={NAVIGATE_TO_LOGINPAGE} />
@@ -146,13 +147,13 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
             } />
 
           {/* card  page */}
-          {/* <Route
+          <Route
             path={NAVIGATE_TO_CARDPAGE}
             element={
               <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
                 <CardPage />
               </RoleProtectedRoute>
-            } /> */}
+            } />
 
           {/* card details page */}
           {/* <Route

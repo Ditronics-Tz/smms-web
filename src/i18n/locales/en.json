@@ -29,7 +29,8 @@
         "attention": "ATTENTION",
         "wait": "Hold on!",
         "logout": "Are you sure you want to logout ?",
-        "deleteMessage": "You are about to delete {{item}}. \nAre your sure you want delete this?",
+        "deleteMessage": "You are about to delete {{item}}. \nAre you sure you want delete this?",
+        "activateMessage": "You are about to {{action}} {{item}}. \n Are you sure you want to {{action}} this?",
         "yes": "Yes",
         "no": "No",
         "confirm": "Confirm",
@@ -160,6 +161,7 @@
         "male": "Male",
         "female": "Female",
         "parents": "Parents",
+        "alertParent": "For parents who are registered",
         "transaction": "Transaction",
         "schoolName": "School Name",
         "classRoom": "Class",
@@ -197,6 +199,7 @@
         "father": "Father",
         "guardian": "Guardian",
         "student": "Students",
+        "alertStudent": "For students who are registered",
         "transaction": "Transaction",
         "schoolName": "School Name",
         "classRoom": "Class",
@@ -281,6 +284,24 @@
         "createdAt": "Created At",
         "name": "Item Name",
         "noList": "No Item list found"
+    },
+    "card": {
+        "title": "Manage Student Cards",
+        "details": "Card Details",
+        "status": "Status",
+        "balance": "Balance",
+        "activate": "Activate",
+        "deactivate": "Deactivate",
+        "active": "Active",
+        "inactive": "Inactive",
+        "control_number": "Control Number",
+        "card_number":"Card Number",
+        "issued": "Issued Date",
+        "created": "Created At",
+        "view": "View Student Card",
+        "add": "Add Student Card",
+        "edit": "Edit Student Card",
+        "student": "Student"
     },
     "setting": {
         "title": "Profile & Settings",
@@ -375,6 +396,7 @@
         "107": "User not found",
         "108": "This user is already exist",
         "109": "Card ID required",
-        "111": "Invalid action. Use 'activate' or 'deactivate"
+        "111": "Invalid action. Use 'activate' or 'deactivate",
+        "112": "This student already have a card"
     }
 }

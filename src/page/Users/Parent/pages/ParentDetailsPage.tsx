@@ -1,9 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Typography, Box, Table, AspectRatio, Card, CardContent, Divider, ButtonGroup, Button, Sheet, Modal, ModalOverflow, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar, Chip, ColorPaletteProp, ListDivider } from "@mui/joy";
+import { Typography, Box, Table, AspectRatio, Card, CardContent, Divider, ButtonGroup, Button, Sheet, Modal, ModalOverflow, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar, Chip, ColorPaletteProp, ListDivider, Autocomplete } from "@mui/joy";
 import { toast } from 'react-toastify';
-import { LoadingView, Main, NotFoundMessage, PageTitle } from "../../../components";
+import { LoadingView, Main, NotFoundMessage, PageTitle } from "../../../../components";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FILE_BASE, STATUS } from "../../../constant";
+import { API_BASE, FILE_BASE, STATUS } from "../../../../constant";
 import { connect, useDispatch } from "react-redux";
 import { useMediaQuery } from "@mui/material";
 import {
@@ -11,10 +11,11 @@ import {
     editUserReset,
     parentDetailsRequest,
     parentDetailsReset,
-} from '../../../store/actions'
+} from '../../../../store/actions'
 import { AddCardOutlined, BlockOutlined, CheckCircle, DeleteOutline, DoNotDisturbOn, EditOutlined, FolderOpenOutlined, LocationOn, RemoveRedEyeOutlined, TaskAltOutlined, WarningRounded } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import { formatDate, thousandSeparator } from "../../../utils";
+import { formatDate, thousandSeparator } from "../../../../utils";
+import axios from "axios";
 
 function CreateItems(
     title: String,
@@ -53,13 +54,27 @@ const ParentDetailsPage = ({
         email: "",
         username: "",
         mobile: "",
-        students: []
+        student_ids: null
     }
 
 
     const [formModal, setFormModal] = useState(false);
 
     const [parentData, setParentData] = useState(initiateParentData);
+    const [studentList, setStudentList] = useState([]);
+
+    // function to fetch student data to fetch student data
+    useEffect(() => {
+        axios.get(API_BASE + "/list/students", {
+            timeout: 30000,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
+                'Authorization': 'Bearer ' + accessToken,
+
+            }
+        }).then((res) => setStudentList(res.data.results))
+    }, [])
 
     useEffect(() => {
         if (detailsStatus === STATUS.SUCCESS) {
@@ -73,7 +88,7 @@ const ParentDetailsPage = ({
                 email: detailsResult.email,
                 username: detailsResult.username,
                 mobile: detailsResult.mobile_number,
-                students: detailsResult.students,
+                student_ids: detailsResult.students,
             });
         }
         else if (detailsStatus === STATUS.ERROR) {
@@ -128,6 +143,10 @@ const ParentDetailsPage = ({
             formData.append("username", parentData.username);
             formData.append("mobile_number", parentData.mobile);
             formData.append("role", "parent");
+
+            if (parentData.student_ids) {
+                formData.append("student_ids", parentData.student_ids.map(v => v.id))
+            }
 
             dispatch(editUserRequest(accessToken, formData))
         } else {
@@ -219,7 +238,7 @@ const ParentDetailsPage = ({
 
 
                         {/* Parent*/}
-                        {parentData.students.length > 0 &&
+                        {parentData.student_ids.length > 0 &&
                             <Sheet
                                 variant="outlined"
                                 sx={{
@@ -234,7 +253,7 @@ const ParentDetailsPage = ({
                                 <Typography level="h4">{t("student.details")}</Typography>
 
                                 <Divider />
-                                {parentData.students.map((item, index) => (
+                                {parentData.student_ids.map((item, index) => (
                                     <Box key={index} sx={{ display: 'flex', flexDirection: 'column', gap: 0.6 }}>
                                         <Typography level="title-md">{item.first_name + " " + item.last_name}</Typography>
                                         {studentDetails(item).map((dt, id) => (
@@ -312,12 +331,28 @@ const ParentDetailsPage = ({
                                     ))}
                                 </Select>
                             </FormControl>
+                        </Stack>
+
+                        <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
+                            {/* studentr */}
+                            <FormControl sx={{ flex: 1 }}>
+                                <FormLabel>{t("parent.student")} <small>({t("parent.alertStudent")})</small></FormLabel>
+                                <Autocomplete
+                                    multiple
+                                    options={studentList}
+                                    value={parentData.student_ids}
+                                    defaultValue={parentData.student_ids}
+                                    getOptionLabel={(option) => `${option.first_name} ${option.last_name}`}
+                                    onChange={(e, value) => setParentData({ ...parentData, student_ids: value })}
+                                    placeholder={t("init.select") + t("parent.student")}
+                                />
+                            </FormControl>
 
                             {/* type */}
                             <FormControl sx={{ flex: 1 }} required>
                                 <FormLabel>{t("parent.type")}</FormLabel>
                                 <Select name="parent_type" defaultValue={parentData.parent_type} value={parentData.parent_type}
-                                    placeholder={t("init.select") + t("parent.gender")}
+                                    placeholder={t("init.select") + t("parent.type")}
                                     onChange={(e, value) => setParentData({ ...parentData, parent_type: value })}>
                                     {[
                                         { value: 'mother', label: t("parent.mother") },

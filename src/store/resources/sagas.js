@@ -12,7 +12,7 @@ function* createSchoolTask(action) {
 
         const res = yield call(doCreateSchool,payload.token, payload.data);
 
-        if (res.status == 201) {
+        if (res.status === 201) {
             yield put({
                 type: STATE.CREATE_SCHOOL_SUCCESS,
                 payload: res.data
@@ -42,7 +42,7 @@ function* schoolListTask(action) {
 
         const res = yield call(doSchoolList,payload.token, payload.data, payload.page);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.SCHOOL_LIST_SUCCESS,
                 payload: res.data
@@ -72,7 +72,7 @@ function* deleteSchoolTask(action) {
 
         const res = yield call(doDeleteSchool,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.DELETE_SCHOOL_SUCCESS,
                 payload: res.data
@@ -102,7 +102,7 @@ function* createItemTask(action) {
 
         const res = yield call(doCreateItem,payload.token, payload.data);
 
-        if (res.status == 201) {
+        if (res.status === 201) {
             yield put({
                 type: STATE.CREATE_ITEM_SUCCESS,
                 payload: res.data
@@ -132,7 +132,7 @@ function* editItemTask(action) {
 
         const res = yield call(doEditItem,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.EDIT_ITEM_SUCCESS,
                 payload: res.data
@@ -162,7 +162,7 @@ function* deleteItemTask(action) {
 
         const res = yield call(doDeleteItem,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.DELETE_ITEM_SUCCESS,
                 payload: res.data
@@ -192,7 +192,7 @@ function* itemListTask(action) {
 
         const res = yield call(doItemList,payload.token, payload.data, payload.page);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.ITEM_LIST_SUCCESS,
                 payload: res.data
@@ -223,7 +223,7 @@ function* createCardTask(action) {
 
         const res = yield call(doCreateCard,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 201) {
             yield put({
                 type: STATE.CREATE_CARD_SUCCESS,
                 payload: res.data
@@ -253,7 +253,7 @@ function* editCardTask(action) {
 
         const res = yield call(doEditCard,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 201) {
             yield put({
                 type: STATE.EDIT_CARD_SUCCESS,
                 payload: res.data
@@ -283,7 +283,7 @@ function* activateCardTask(action) {
 
         const res = yield call(doActivateCard,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.ACTIVATE_CARD_SUCCESS,
                 payload: res.data
@@ -313,7 +313,7 @@ function* cardListTask(action) {
 
         const res = yield call(doCardList,payload.token, payload.data, payload.page);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.CARD_LIST_SUCCESS,
                 payload: res.data
@@ -343,7 +343,7 @@ function* cardDetailsTask(action) {
 
         const res = yield call(doCardDetails,payload.token, payload.data, payload.page);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.CARD_DETAILS_SUCCESS,
                 payload: res.data

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack, ListItemDecorator, Avatar, MenuItem, Divider, Alert, CircularProgress } from "@mui/joy";
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
-import { AlertModal, LoadingView, NotFoundMessage, PageTitle } from "../../../components";
-import { formatDate } from "../../../utils";
+import { AlertModal, LoadingView, NotFoundMessage, PageTitle } from "../../../../components";
+import { formatDate } from "../../../../utils";
 
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -14,7 +14,7 @@ import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { DeleteOutline, PersonAddOutlined, RemoveRedEyeOutlined, Warning } from "@mui/icons-material";
-import { FILE_BASE, STATUS } from "../../../constant";
+import { FILE_BASE, STATUS } from "../../../../constant";
 import { toast } from "react-toastify";
 
 import {
@@ -24,7 +24,7 @@ import {
     createSchoolReset,
     deleteSchoolRequest,
     deleteSchoolReset,
-} from "../../../store/actions"
+} from "../../../../store/actions"
 import { useTranslation } from "react-i18next";
 
 const MobileViewTable = ({ data, props }) => {
