@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 
 import { LoginPage } from "../page/Login";
@@ -7,6 +7,8 @@ import {
   ERROR_404_PAGE,
   NAVIGATE_TO_ADMINDETAILSPAGE,
   NAVIGATE_TO_ADMINPAGE,
+  NAVIGATE_TO_CANTEENITEMPAGE,
+  NAVIGATE_TO_CARDPAGE,
   NAVIGATE_TO_DASHBOARD,
   NAVIGATE_TO_INFOPAGE,
   NAVIGATE_TO_LOGINPAGE,
@@ -24,11 +26,11 @@ import {
 import { STATUS } from "../constant";
 import Error404Page from "../page/ErrorsPages/404Error";
 import { Main } from "../components";
-import { AdminDetailsPage, AdminPage, Dashboard, InfoPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, StudentDetailsPage, StudentPage, SupportPage, TransactionPage } from "../page";
+import { AdminDetailsPage, AdminPage, CanteenItemPage, CardPage, Dashboard, InfoPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, StudentDetailsPage, StudentPage, SupportPage, TransactionPage } from "../page";
 
 // FUNCTION TO DIRECT ONLY AUTH USER TO THEIR PAGES
 const ProtectRoute = ({ status }) => {
-  return status == STATUS.SUCCESS ? (
+  return status === STATUS.SUCCESS ? (
     <Outlet />
   ) : (
     <Navigate to={NAVIGATE_TO_LOGINPAGE} />
@@ -53,15 +55,6 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
         <Route path='/' element={<Main />}>
           <Route index element={<Dashboard />} />
           <Route path={NAVIGATE_TO_PROFILEPAGE} element={<ProfilePage />} />
-
-          {/* school page */}
-          <Route
-            path={NAVIGATE_TO_SCHOOLPAGE}
-            element={
-              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
-                <SchoolPage />
-              </RoleProtectedRoute>
-            } />
 
           {/* student list */}
           <Route
@@ -134,6 +127,42 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
                 <AdminDetailsPage />
               </RoleProtectedRoute>
             } />
+
+          {/* school page */}
+          <Route
+            path={NAVIGATE_TO_SCHOOLPAGE}
+            element={
+              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+                <SchoolPage />
+              </RoleProtectedRoute>
+            } />
+
+          {/* canteen items page */}
+          <Route
+            path={NAVIGATE_TO_CANTEENITEMPAGE}
+            element={
+              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+                <CanteenItemPage />
+              </RoleProtectedRoute>
+            } />
+
+          {/* card  page */}
+          <Route
+            path={NAVIGATE_TO_CARDPAGE}
+            element={
+              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+                <CardPage />
+              </RoleProtectedRoute>
+            } />
+
+          {/* card details page */}
+          {/* <Route
+            path={NAVIGATE_TO_CARDDETAILSPAGE}
+            element={
+              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+                <CardDetailsPage />
+              </RoleProtectedRoute>
+            } /> */}
 
           {/* Transactions */}
           <Route path={NAVIGATE_TO_TRANSACTIONPAGE} element={

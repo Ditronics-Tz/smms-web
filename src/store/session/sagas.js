@@ -1,165 +1,168 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
-import { doActivateUser, doCreateUser, doEditUser, doLogin, doRefreshToken } from '../../service/auth';
+import { doScanCard, doSessionList, doStartSession, doCardList, doEndSession, doScannedList } from '../../service/sessions';
 import { errorMessage } from '../../utils';
 
-// login
-function* loginTask(action) {
+// Scan Card
+function* scanCardTask(action) {
     try {
-        yield put({ type: STATE.LOGIN_LOADING });
+        yield put({ type: STATE.SCAN_CARD_LOADING });
 
         const { payload } = action;
 
-        const res = yield call(doLogin, payload.data);
-
-        if (res.status == 200) {
-            yield put({
-                type: STATE.LOGIN_SUCCESS,
-                payload: res.data
-            })
-        } else {
-            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
-            yield put({
-                type: STATE.LOGIN_FAILURE,
-                payload: errMsg
-            })
-        }
-    } catch (e) {
-        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
-        yield put({
-            type: STATE.LOGIN_FAILURE,
-            payload: errMsg
-        })
-    }
-}
-
-// token 
-function* tokenTask(action) {
-    try {
-        yield put({ type: STATE.TOKEN_LOADING });
-
-        const { payload } = action;
-
-        const res = yield call(doRefreshToken, payload.data);
-
-        if (res.status == 200) {
-            yield put({
-                type: STATE.TOKEN_SUCCESS,
-                payload: res.data
-            })
-        } else {
-            const errMsg = res.data ? res.data.message : errorMessage(1000);
-            yield put({
-                type: STATE.TOKEN_FAILURE,
-                payload: errMsg
-            })
-        }
-    } catch (e) {
-        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
-        yield put({
-            type: STATE.TOKEN_FAILURE,
-            payload: errMsg
-        })
-    }
-}
-
-// Create user
-function* createUserTask(action) {
-    try {
-        yield put({ type: STATE.CREATE_USER_LOADING });
-
-        const { payload } = action;
-
-        const res = yield call(doCreateUser,payload.token, payload.data);
+        const res = yield call(doScanCard,payload.token, payload.data);
 
         if (res.status == 201) {
             yield put({
-                type: STATE.CREATE_USER_SUCCESS,
+                type: STATE.SCAN_CARD_SUCCESS,
                 payload: res.data
             })
         } else {
             const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
             yield put({
-                type: STATE.CREATE_USER_FAILURE,
+                type: STATE.SCAN_CARD_FAILURE,
                 payload: errMsg
             })
         }
     } catch (e) {
         const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
         yield put({
-            type: STATE.CREATE_USER_FAILURE,
+            type: STATE.SCAN_CARD_FAILURE,
             payload: errMsg
         })
     }
 }
 
-// Edit user
-function* editUserTask(action) {
+// Start Session
+function* startSessionTask(action) {
     try {
-        yield put({ type: STATE.EDIT_USER_LOADING });
+        yield put({ type: STATE.START_SESSION_LOADING });
 
         const { payload } = action;
 
-        const res = yield call(doEditUser,payload.token, payload.data);
+        const res = yield call(doStartSession,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status == 201) {
             yield put({
-                type: STATE.EDIT_USER_SUCCESS,
+                type: STATE.START_SESSION_SUCCESS,
                 payload: res.data
             })
         } else {
             const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
             yield put({
-                type: STATE.EDIT_USER_FAILURE,
+                type: STATE.START_SESSION_FAILURE,
                 payload: errMsg
             })
         }
     } catch (e) {
         const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
         yield put({
-            type: STATE.EDIT_USER_FAILURE,
+            type: STATE.START_SESSION_FAILURE,
             payload: errMsg
         })
     }
 }
 
-// Activate user
-function* activateUserTask(action) {
+// end Session
+function* endSessionTask(action) {
     try {
-        yield put({ type: STATE.ACTIVATE_USER_LOADING });
+        yield put({ type: STATE.END_SESSION_LOADING });
 
         const { payload } = action;
 
-        const res = yield call(doActivateUser,payload.token, payload.data);
+        const res = yield call(doEndSession,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status == 201) {
             yield put({
-                type: STATE.ACTIVATE_USER_SUCCESS,
+                type: STATE.END_SESSION_SUCCESS,
                 payload: res.data
             })
         } else {
             const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
             yield put({
-                type: STATE.ACTIVATE_USER_FAILURE,
+                type: STATE.END_SESSION_FAILURE,
                 payload: errMsg
             })
         }
     } catch (e) {
         const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
         yield put({
-            type: STATE.ACTIVATE_USER_FAILURE,
+            type: STATE.END_SESSION_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
+// Session List
+function* sessionListTask(action) {
+    try {
+        yield put({ type: STATE.SESSION_LIST_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doSessionList,payload.token, payload.data, payload.page);
+
+        if (res.status == 200) {
+            yield put({
+                type: STATE.SESSION_LIST_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.SESSION_LIST_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.SESSION_LIST_FAILURE,
             payload: errMsg
         })
     }
 }
 
 
-function* authSaga() {
-    yield takeLatest(STATE.LOGIN_REQUEST, loginTask);
-    yield takeLatest(STATE.TOKEN_REQUEST, tokenTask);
-    yield takeLatest(STATE.CREATE_USER_REQUEST, createUserTask);
-    yield takeLatest(STATE.EDIT_USER_REQUEST, editUserTask);
-    yield takeLatest(STATE.ACTIVATE_USER_REQUEST, activateUserTask);
+
+// Scanned List
+function* scannedListTask(action) {
+    try {
+        yield put({ type: STATE.SCANNED_LIST_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doScannedList,payload.token, payload.data, payload.page);
+
+        if (res.status == 200) {
+            yield put({
+                type: STATE.SCANNED_LIST_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.SCANNED_LIST_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.SCANNED_LIST_FAILURE,
+            payload: errMsg
+        })
+    }
 }
 
-export default authSaga;
+
+
+function* sessionSaga() {
+    yield takeLatest(STATE.SCAN_CARD_REQUEST, scanCardTask);
+    yield takeLatest(STATE.START_SESSION_REQUEST, startSessionTask);
+    yield takeLatest(STATE.END_SESSION_REQUEST, endSessionTask)
+    yield takeLatest(STATE.SCANNED_LIST_REQUEST, scannedListTask);
+    yield takeLatest(STATE.SESSION_LIST_REQUEST, sessionListTask);
+}
+
+export default sessionSaga

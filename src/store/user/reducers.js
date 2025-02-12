@@ -7,6 +7,10 @@ const INITIAL_STATE = {
     userListResult: null,
     userListErrorMessage: "",
 
+    inactiveUsersStatus: STATUS.DEFAULT,
+    inactiveUsersResult: null,
+    inactiveUsersErrorMessage: "",
+
     studentDetailsStatus: STATUS.DEFAULT,
     studentDetailsResult: null,
     studentDetailsErrorMessage: "",
@@ -56,6 +60,34 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 userListStatus: STATUS.DEFAULT,
                 userListResult: null,
                 userListErrorMessage: ""
+            }
+
+             //INACTIVE_USERS
+        case STATE.INACTIVE_USERS_LOADING:
+            return {
+                ...state,
+                inactiveUsersStatus: STATUS.LOADING
+            }
+        case STATE.INACTIVE_USERS_SUCCESS:
+            return {
+                ...state,
+                inactiveUsersStatus: STATUS.SUCCESS,
+                inactiveUsersResult: payload,
+                inactiveUsersErrorMessage: ""
+            }
+        case STATE.INACTIVE_USERS_FAILURE:
+            return {
+                ...state,
+                inactiveUsersStatus: STATUS.ERROR,
+                inactiveUsersResult: null,
+                inactiveUsersErrorMessage: payload,
+            }
+        case STATE.INACTIVE_USERS_RESET:
+            return {
+                ...state,
+                inactiveUsersStatus: STATUS.DEFAULT,
+                inactiveUsersResult: null,
+                inactiveUsersErrorMessage: ""
             }
 
         // STUDENT DETAILS

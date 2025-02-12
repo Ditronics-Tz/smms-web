@@ -19,20 +19,46 @@ function createRequestTypes(prefix = '', bases, suffixes = suffixTypes) {
 //sava application expected api states
 export const STATE = createRequestTypes('STATE',
     [
+        // authentication
         'LOGIN',
         'TOKEN',
+
         'CREATE_USER',
         'EDIT_USER',
         'USER_LIST',
+        'INACTIVE_USERS',
+        'ACTIVATE_USER',
 
+
+        // resources
         'CREATE_SCHOOL',
         'SCHOOL_LIST',
+        'DELETE_SCHOOL',
+
+        'CREATE_ITEM',
+        'ITEM_LIST',
+        'EDIT_ITEM',
+        'DELETE_ITEM',
+
+        'CREATE_CARD',
+        'CARD_LIST',
+        'EDIT_CARD',
+        'ACTIVATE_CARD',
+        'CARD_DETAILS',
 
 
+        // users
         'STUDENT_DETAILS',
         'ADMIN_DETAILS',
         'OPERATOR_DETAILS',
         'PARENT_DETAILS',
+
+        // session
+        'START_SESSION',
+        'END_SESSION',
+        'SCANNED_LIST',
+        'SESSION_LIST',
+        'SCAN_CARD',
     ], suffixTypes);
 
 export const ACTION_CHANGE_TO_ENGLISH = "CHANGE_TO_ENGLISH";

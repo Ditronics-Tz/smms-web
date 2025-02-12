@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
 import { errorMessage } from '../../utils';
-import { doAdminDetails, doOperatorDetails, doParentDetails, doStudentDetails, doStudentEdit, doStudentList, doUserList } from '../../service/user';
+import { doAdminDetails, doInactiveUsers, doOperatorDetails, doParentDetails, doStudentDetails, doStudentEdit, doStudentList, doUserList } from '../../service/user';
 
 /* ______ STUDENT SAGAS ________ */
 
@@ -30,6 +30,36 @@ function* userListTask(action) {
         const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
         yield put({
             type: STATE.USER_LIST_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
+// List
+function* inactiveUsersTask(action) {
+    try {
+        yield put({ type: STATE.INACTIVE_USERS_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doInactiveUsers,payload.token, payload.data, payload.page);
+
+        if (res.status == 200) {
+            yield put({
+                type: STATE.INACTIVE_USERS_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.INACTIVE_USERS_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.INACTIVE_USERS_FAILURE,
             payload: errMsg
         })
     }
@@ -159,6 +189,7 @@ function* parentDetailsTask(action) {
 
 function* userSaga() {
     yield takeLatest(STATE.USER_LIST_REQUEST, userListTask);
+    yield takeLatest(STATE.INACTIVE_USERS_REQUEST, inactiveUsersTask);
     yield takeLatest(STATE.STUDENT_DETAILS_REQUEST, studentDetailsTask);
     yield takeLatest(STATE.ADMIN_DETAILS_REQUEST, adminDetailsTask);
     yield takeLatest(STATE.OPERATOR_DETAILS_REQUEST, operatorDetailsTask);
