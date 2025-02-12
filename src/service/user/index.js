@@ -1,9 +1,14 @@
-import { STUDENT_DETAILS_URL, STUDENT_EDIT_URL, STUDENT_LIST_URL, CREATE_USER_URL, USERS_LIST_URL, ADMIN_DETAILS_URL, OPERATOR_DETAILS_URL, PARENT_DETAILS_URL } from "../../constant";
+import { STUDENT_DETAILS_URL, STUDENT_EDIT_URL, STUDENT_LIST_URL, CREATE_USER_URL, USERS_LIST_URL, ADMIN_DETAILS_URL, OPERATOR_DETAILS_URL, PARENT_DETAILS_URL, INACTIVE_USERS_URL } from "../../constant";
 import { listRequest, resourceRequest } from "../calls";
 
 // user list call
 export function doUserList(token, data, page){
     return listRequest(token, USERS_LIST_URL, data, page)
+}
+
+// inactive users call
+export function doInactiveUsers(token, data, page){
+    return listRequest(token, INACTIVE_USERS_URL, data, page)
 }
 
 // student details

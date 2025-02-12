@@ -5,6 +5,7 @@ import LoadingView from "./molecules/LoadingView";
 import AppInit from "./organic/AppInit";
 import PageTitle from "./Base/PageTitle";
 import NotFoundMessage from "./molecules/notFoundMessage";
+import AlertModal from "./molecules/AlertModal";
 
 export {
     SideBar,
@@ -13,5 +14,6 @@ export {
     LoadingView,
     AppInit,
     PageTitle,
-    NotFoundMessage
+    NotFoundMessage,
+    AlertModal
 }

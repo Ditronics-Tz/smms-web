@@ -20,6 +20,25 @@ export function userListReset() {
 
 }
 
+// inactive user list action
+export function inactiveUserRequest(token, data, page) {
+    return {
+        type: STATE.INACTIVE_USERS_REQUEST,
+        payload: {
+            token,
+            data,
+            page
+        }
+    }
+}
+
+export function inactiveUserReset() {
+    return {
+        type: STATE.INACTIVE_USERS_RESET
+    }
+
+}
+
 // student details action
 export function studentDetailsRequest(token, data){
     return {
