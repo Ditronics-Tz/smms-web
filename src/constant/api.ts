@@ -1,5 +1,7 @@
 // ----- BASE API ------
-export const API_BASE = 'http://127.0.0.1:8000';
+// export const API_BASE = 'http://127.0.0.1:8000';
+
+export const API_BASE = 'http://31.200.82.177:8000'
 export const FILE_BASE =  API_BASE;
 
 // ---- AUTH URLS ------
