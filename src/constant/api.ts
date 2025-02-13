@@ -1,7 +1,10 @@
 // ----- BASE API ------
-export const API_BASE = 'http://192.168.100.8:8000';
+// export const API_BASE = 'http://127.0.0.1:8000';
+export const API_BASE = 'http://192.168.103.29:8000';
 
-// export const API_BASE = 'http://31.220.82.177:8000'
+
+// export const API_BASE = 'https://31.220.82.177:8000'
+// export const API_BASE = 'https://ditronics.co.tz:8000'
 export const FILE_BASE =  API_BASE;
 
 // ---- AUTH URLS ------

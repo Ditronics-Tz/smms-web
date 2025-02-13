@@ -442,6 +442,8 @@
         "116": "This canteen item item is not valid",
         "117": "This card has insuficient balance, Please recharge.",
         "118": "Meal denied. Student has exceed allowed insuficient count.",
-        "119": "This Student have already purchase this item on this session"
+        "119": "This Student have already purchase this item",
+        "120": "Session ID is required",
+        "121": "Not Scanned list for this session"
     }
 }

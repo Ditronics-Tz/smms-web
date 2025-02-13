@@ -18,7 +18,7 @@ import {
     scannedListRequest,
     scannedListReset,
 } from '../../../store/actions.js'
-import { Box, Button, Card, CardContent, FormControl, FormLabel, IconButton, iconButtonClasses, Input, List, ListDivider, ListItem, ListItemContent, Option, Select, Sheet, Stack, Table, Typography } from '@mui/joy';
+import { Box, Button, Card, CardContent, Divider, FormControl, FormLabel, IconButton, iconButtonClasses, Input, List, ListDivider, ListItem, ListItemContent, Option, Select, Sheet, Stack, Table, Typography } from '@mui/joy';
 import { LoadingView, NotFoundMessage, PageTitle } from '../../../components';
 import { InfoOutlined, InfoRounded, PersonAddOutlined, WarningAmber, WarningRounded } from '@mui/icons-material';
 import { useMediaQuery } from '@mui/material';
@@ -48,8 +48,8 @@ const MobileViewTable = ({ data, props }) => {
                             <div>
                                 <Typography fontWeight={600} gutterBottom>{listItem.card_number}</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("session.studentName")}:</b> {listItem.student_name}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("session.card_number")}:</b> {listItem.control_number}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("session.item")}:</b> {listItem.item_name} - Tsh. {thousandSeparator(listItem.item_price)}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("session.card_number")}:</b> {listItem.card_number}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("session.item")}:</b> {listItem.item_name} - Tsh. {thousandSeparator(listItem.item_price || 0.0)}</Typography>
                                 <Typography level='body-xs'>{formatDate(listItem.scanned_at)}</Typography>
                             </div>
                         </ListItemContent>
@@ -98,7 +98,7 @@ const DesktopViewTable = ({ data, props }) => {
                         <tr style={{ textAlign: 'center' }}>
                             <th style={{ width: 70, padding: '10px 6px' }}>{t("session.card_number")}</th>
                             <th style={{ width: 100, padding: '10px 6px', }}>{t("session.studentName")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("session.item_name")}</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("session.item")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("session.price")} (Tsh)</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("session.scanned_at")}</th>
                         </tr>
@@ -116,7 +116,7 @@ const DesktopViewTable = ({ data, props }) => {
                                     <Typography level="body-sm">{row.item_name}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-sm">{thousandSeparator(row.item_price)}</Typography>
+                                    <Typography level="body-sm">{thousandSeparator(row.item_price || 0.0)}</Typography>
                                 </td>
                                 <td>
                                     <Typography level="body-sm">{formatDate(row.scanned_at)}</Typography>
@@ -160,7 +160,7 @@ const SessionPage = ({
     const [scannedList, setScannedList] = useState([]);
     const [sessionData, setSessionData] = useState(null);
     const [items, setItems] = useState([]);
-    const [item_id, setItemID] = useState('tryette');
+    const [item_id, setItemID] = useState('');
     const [sessionType, setSessionType] = useState('');
 
     const SessionTypes = [
@@ -169,8 +169,9 @@ const SessionPage = ({
         // {value: "dinner", label: t("session.dinner")},
     ]
 
-    useEffect(() => {
-        axios.get(API_BASE + "/list/canteen-items", {
+    // ----- Fetch canteen list
+    async function fetchCanteenList() {
+        await axios.get(API_BASE + "/list/canteen-items", {
             timeout: 20000,
             headers: {
                 'Accept': 'application/json',
@@ -178,8 +179,37 @@ const SessionPage = ({
                 'Authorization': 'Bearer ' + accessToken,
 
             }
-        }).then((res) => setItems(res.data))
-    }, [])
+        }).then((res) => setItems(res.data.results))
+    }
+
+    // ---- Fetch Session status
+    async function fetchSessionStatus() {
+        await axios.get(API_BASE + "/sessions/active-session", {
+            timeout: 20000,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken,
+
+            }
+        })
+            .then((res) => {
+                setSessionData(res.data)
+            })
+            .catch((e) => {
+                if (e.response) {
+                    toast.error(e.response.data.message)
+                } else {
+                    console.log(e.message)
+                }
+            })
+    }
+
+    // ----- Effect to call fetch
+    useEffect(() => {
+        fetchSessionStatus()
+        fetchCanteenList()
+    }, [accessToken])
 
     // ---- PAGINATION SETTINGS ----- //
     const [page, setPage] = useState(1);
@@ -191,12 +221,12 @@ const SessionPage = ({
     const ITEMS_PER_PAGE = 50
     const pageLength = scannedList.length > 0 ? Math.ceil(totalScan / ITEMS_PER_PAGE) : 1
 
-
+    // ---- Main Effect
     useEffect(() => {
         //  start scan
         if (startStatus === STATUS.SUCCESS) {
             setSessionData(startResult)
-            toast.success(t("session.success.start"))
+            // toast.success(t("session.success.start"))
         }
         else if (startStatus === STATUS.ERROR) {
             toast.error(startErrorMessage);
@@ -206,6 +236,7 @@ const SessionPage = ({
         // end scan
         if (endStatus === STATUS.SUCCESS) {
             toast.success(t("session.success.end"))
+            setSessionData(null)
             dispatch(startSessionReset())
             dispatch(endSessionReset())
         }
@@ -218,7 +249,7 @@ const SessionPage = ({
         if (scanStatus === STATUS.SUCCESS) {
             setCardNumber("")
             toast.success(t("session.success.scan"))
-            dispatch(scannedListRequest(accessToken, { "session_id": sessionData.id }))
+            dispatch(scannedListRequest(accessToken, { "session_id": sessionData.id, "search": "" }, 1))
             dispatch(scanCardReset())
         }
         else if (scanStatus === STATUS.ERROR) {
@@ -233,7 +264,7 @@ const SessionPage = ({
             setNextPage(scannedResult.next);
             setPreviousPage(scannedResult.previous);
             setTotalScan(scannedResult.count);
-            toast.success(t("session.success.list"))
+            // toast.success(t("session.success.list"))
             // dispatch(scannedListReset())
         }
         else if (scannedStatus === STATUS.ERROR) {
@@ -244,6 +275,12 @@ const SessionPage = ({
 
     }, [startStatus, endStatus, scannedStatus, scanStatus])
 
+    // ---- Effect to update scanned list table
+    useEffect(() => {
+        if (sessionData) {
+            dispatch(scannedListRequest(accessToken, { "session_id": sessionData ? sessionData.id : "", "search": search }, page))
+        }
+    }, [scanStatus, page, search])
 
     const [card_number, setCardNumber] = useState('');
     const inputRef = useRef(null);
@@ -267,6 +304,15 @@ const SessionPage = ({
         }
 
     }
+
+    // End session
+    const endSession = () => {
+        const data = {
+            "session_id": sessionData.id
+        }
+        dispatch(endSessionRequest(accessToken, data))
+    }
+
 
     // Handle change in input field
     const handleInputChange = (event) => {
@@ -301,13 +347,13 @@ const SessionPage = ({
         }
     }
 
-
     // Detect Enter key to submit automatically
     const handleKeyDown = (event) => {
         if (event.key === "Enter") {
             handleScan()
         }
     }
+
 
     // ----- Render Active Session
     const RenderActiveSession = () => {
@@ -334,9 +380,29 @@ const SessionPage = ({
                     }}>
                     {t("session.activeInst")}
                 </Typography>
+
+                {sessionData &&
+                    <Box >
+                        <Typography
+                            level='body-sm'><b>{
+                                t("session.type")}:</b> {{
+                                    'lunch': t('session.lunch'),
+                                    'dinner': t("session.dinner"),
+                                    'breakfast': t("session.breakfast")
+                                }[sessionData.type]}
+                        </Typography>
+                        <Typography level='body-sm'><b>{t("session.start_at")}:</b> {formatDate(sessionData.start_at)}</Typography>
+                    </Box>}
+                <Divider />
                 <Stack mt={3} display='flex' gap={2}>
+                    <FormControl>
+                        <FormLabel>{t("session.item")}</FormLabel>
+                        <Select placeholder={t("init.select") + t("session.item")} value={item_id} onChange={(e, v) => setItemID(v)}>
+                            {items.length > 0 && items.map((item, index) => (<Option key={index} value={item.id} >{item.name} Tsh. {thousandSeparator(item.price)}</Option>))}
+                        </Select>
+                    </FormControl>
                     <FormControl required>
-                        <FormLabel>{t("init.select") + t("session.type")}</FormLabel>
+                        {/* <FormLabel>{t("init.placeholder") + t("session.")}</FormLabel> */}
                         <Input
                             // ref={inputRef}
                             color='success'
@@ -354,9 +420,10 @@ const SessionPage = ({
                         />
                     </FormControl>
                     <Button
+                        onClick={handleScan}
                         type='submit'
-                        variant='outlined'
-                        color='neutral'
+                        variant='solid'
+                        color='success'
                         sx={{
                             alignSelf: 'center',
                             width: '200px'
@@ -364,6 +431,14 @@ const SessionPage = ({
                         {t("session.send")}
                     </Button>
                 </Stack>
+                <Divider />
+                <Button
+                    variant='outlined'
+                    color='danger'
+                    onClick={endSession}
+                >
+                    {t("session.end")} {t("session.session")}
+                </Button>
 
             </CardContent>
         )
@@ -418,7 +493,7 @@ const SessionPage = ({
 
     // CHECK LOADING
     const checkLoading = () => {
-        if (startStatus === STATUS.SUCCESS || endStatus === STATUS.LOADING
+        if (startStatus === STATUS.LOADING || endStatus === STATUS.LOADING
             || scanStatus === STATUS.LOADING) {
             return true
         } else {

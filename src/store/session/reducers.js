@@ -26,8 +26,8 @@ const INITIATE_STATE = {
     transactionErrorMessage: ''
 }
 
-export default (state = INITIATE_STATE, { type: payload }) => {
-    switch (state) {
+export default (state = INITIATE_STATE, { type, payload }) => {
+    switch (type) {
         // SCAN CARD
         case STATE.SCAN_CARD_LOADING:
             return {

@@ -52,12 +52,13 @@ export function endSessionReset(){
 }
 
 // ----- Scanned list
-export function scannedListRequest(token, data){
+export function scannedListRequest(token, data, page){
     return {
         type: STATE.SCANNED_LIST_REQUEST,
         payload: {
             token,
-            data
+            data,
+            page
         }
     }
 }
