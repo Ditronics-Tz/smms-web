@@ -6,3 +6,4 @@ export * from "./Profile";
 export * from "./Transactions";
 export * from './Resources'
 export * from "./Users";
+export * from './Sessions';

@@ -1,4 +1,4 @@
-import { END_SESSION_URL, SCAN_CARD_URL, SCANNED_LIST_URL, SESSION_LIST_URL, START_SESSION_URL } from "../../constant";
+import { END_SESSION_URL, SCAN_CARD_URL, SCANNED_LIST_URL, SESSION_LIST_URL, START_SESSION_URL, TRANSACTIONS_URL } from "../../constant";
 import { listRequest, resourceRequest } from "../calls";
 
 // scan card
@@ -23,4 +23,9 @@ export function doSessionList(token, data, page){
 // scanned list
 export function doScannedList(token, data, page){
     return listRequest(token, SCANNED_LIST_URL, data, page)
+}
+
+// Transactions
+export function doTransactions(token , data, page){
+    return listRequest(token, TRANSACTIONS_URL, data, page)
 }

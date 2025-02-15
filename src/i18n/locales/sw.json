@@ -177,7 +177,7 @@
         "changeProfile": "Badili picha"
     },
     "parent": {
-        "title":"Dhibiti wazazi",
+        "title": "Dhibiti wazazi",
         "details": "Maelezo ya Mzazi",
         "email": "Barua Pepe",
         "username": "Jina la Utumiaji",
@@ -215,7 +215,7 @@
         "changeProfile": "Badili picha"
     },
     "operator": {
-        "title":"Dhibiti waendeshaji",
+        "title": "Dhibiti waendeshaji",
         "details": "Maelezo ya Mwendeshaji",
         "email": "Barua Pepe",
         "username": "Jina la Utumiaji",
@@ -248,7 +248,7 @@
         "endAt": "Kuisha"
     },
     "admin": {
-        "title":"Dhibiti Wasimamizi",
+        "title": "Dhibiti Wasimamizi",
         "details": "Maelezo ya Msimamizi",
         "email": "Barua Pepe",
         "username": "Jina la Utumiaji",
@@ -291,6 +291,44 @@
         "name": "Jina la Bidhaa",
         "noList": "Hakuna Taarifa za bidhaa"
     },
+    "session": {
+        "title": "Kikao cha Uchakataji",
+        "startSession": "Anza Kikao Sasa",
+        "instructions": "Ili kuchanganua kadi ya mwanafunzi, tafadhali anza kikao na hakikisha kifaa cha uchanganuzi kimeunganishwa na mashine ya POS na weka mshale wa kipanya kwenye kisanduku cha kuingiza kadi ili kunasa namba ya kadi",
+        "activeInst": "Tafadhali hakikisha kifaa kimeunganishwa na mshale wa kipanya umewekwa kwenye kisanduku cha uchanganuzi hapa chini ili kunasa namba ya kadi",
+        "start": "Anza",
+        "end": "Maliza",
+        "start_at": "Ilianza Saa",
+        "end_at": "Ilimalizika Saa",
+        "send": "Tuma",
+        "inputPlaceholder": "Hakikisha umeweka mshale wa kipanya hapa",
+        "item": "Bidhaa ya Kantini",
+        "active": "Kinachoendelea",
+        "session": "Kikao",
+        "studentName": "Jina la Mwanafunzi",
+        "type": "Aina ya Kikao",
+        "card_number": "Namba ya Kadi",
+        "lunch": "Chakula cha Mchana",
+        "breakfast": "Chakula cha Asubuhi",
+        "dinner": "Chakula cha Jioni",
+        "price": "Bei",
+        "scannedList": "Orodha ya Kadi Zilizochanganuliwa",
+        "scanned_at": "Ilichanganuliwa Saa",
+        "success": {
+            "title": "Mafanikio",
+            "start": "Kikao chako kimewashwa! Endelea na uchanganuzi wa kadi",
+            "end": "Kikao kimehitimishwa kwa mafanikio, Asante!",
+            "scan": "Kadi imechanganuliwa kwa mafanikio!",
+            "list": "Orodha Imesasishwa"
+        },
+        "error": {
+            "title": "Hitilafu",
+            "noCard": "Tafadhali changanua kadi",
+            "noItem": "Tafadhali chagua bidhaa ya kantini",
+            "noSession": "Imeshindikana kunasa kikao, Jaribu tena",
+            "other": "Kuna hitilafu, Tafadhali jaribu tena"
+        }
+    },
     "card": {
         "title": "Dhibiti Kadi za Wanafunzi",
         "details": "Taarifa za Kadi",
@@ -301,7 +339,7 @@
         "active": "Hai",
         "inactive": "Sio Hai",
         "control_number": "Namba ya malipo",
-        "card_number":"Nambari ya Kadi",
+        "card_number": "Nambari ya Kadi",
         "issued": "Tarehe iliyotolewa",
         "created": "Imetengenezwa",
         "view": "Tazama Kadi ya Mwanafunzi",
@@ -385,14 +423,33 @@
         "listTitle": "Taarifa Zako"
     },
     "errors": {
-        "1000": "Hitilafu ya Mfumo, Ombi limekosa kufanikiwa",
+        "1000": "Hitilafu ya mfumo, Ombi limeshindikana",
         "4000": "Hitilafu ya Mtandao! Haiwezi kuunganishwa",
-        "500": "Hitilafu ya Kawaida ya Mfumo",
-        "400": "Tokeni si halali",
+        "500": "Hitilafu ya Jumla ya Mfumo",
+        "400": "Token si halali",
         "401": "Uthibitisho unahitajika",
-        "403": "Ruhusa Imekataliwa",
-        "404": "Rasilimali haikupatikana",
-        "422": "Hitilafu iliyofafanuliwa na Mfumo",
-        "102": "Umekosea jina la kuingilia au nenosiri"
+        "403": "Ufikiaji umekataliwa",
+        "404": "Rasilimali haijapatikana",
+        "422": "Hitilafu iliyoainishwa na mfumo",
+        "200": "Mafanikio",
+        "102": "Jina la mtumiaji au nenosiri si sahihi",
+        "103": "Jina la mtumiaji au nenosiri linahitajika",
+        "104": "Kitambulisho kinahitajika",
+        "105": "Kadi hii tayari imetengwa",
+        "106": "Kitambulisho cha mtumiaji kinahitajika",
+        "107": "Mtumiaji hajapatikana",
+        "108": "Mtumiaji huyu tayari yupo",
+        "109": "Kitambulisho cha kadi kinahitajika",
+        "111": "Hatua si halali. Tumia 'washa' au 'zima'",
+        "112": "Mwanafunzi huyu tayari ana kadi",
+        "113": "Una kikao kinachoendelea, Maliza kwanza ili kuanza kingine",
+        "114": "Huna kikao kinachoendelea",
+        "115": "Kadi hii si halali au imezimwa, Tafadhali wasiliana na msimamizi.",
+        "116": "Bidhaa hii ya kantini si halali",
+        "117": "Kadi hii haina salio la kutosha, Tafadhali ongeza salio.",
+        "118": "Mlo umekataliwa. Mwanafunzi amezidi kikomo cha upungufu wa salio kinachoruhusiwa.",
+        "119": "Mwanafunzi huyu tayari amenunua bidhaa hii",
+        "120": "Kitambulisho cha kikao kinahitajika",
+        "121": "Hakuna orodha ya waliyochanganuliwa kwa kikao hiki"
     }
 }

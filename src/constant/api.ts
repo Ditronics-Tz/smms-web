@@ -1,7 +1,10 @@
 // ----- BASE API ------
 // export const API_BASE = 'http://127.0.0.1:8000';
+// export const API_BASE = 'http://192.168.137.183:8000';
 
-export const API_BASE = 'http://31.220.82.177:8000'
+
+// FOR PRODUCTION
+export const API_BASE = 'https://backend1.ditronics.co.tz'
 export const FILE_BASE =  API_BASE;
 
 // ---- AUTH URLS ------
@@ -40,8 +43,9 @@ export const OPERATOR_DETAILS_URL = '/resources/operator-details';
 
 
 // ---- SESSION URLS -----
-export const START_SESSION_URL = '';
-export const END_SESSION_URL = '';
-export const SESSION_LIST_URL = '';
-export const SCANNED_LIST_URL = '';
-export const SCAN_CARD_URL = '';
+export const START_SESSION_URL = '/sessions/start-session';
+export const END_SESSION_URL = '/sessions/end-session';
+export const SESSION_LIST_URL = '/sessions/session-list';
+export const SCANNED_LIST_URL = '/sessions/scanned-data';
+export const SCAN_CARD_URL = '/sessions/scan-card';
+export const TRANSACTIONS_URL = '/session/transactions';

@@ -30,13 +30,16 @@ export const NAVIGATE_TO_OPERATORDETAILSPAGE = '/operator-details';
 export const NAVIGATE_TO_ADMINPAGE = '/admin-manage';
 export const NAVIGATE_TO_ADMINDETAILSPAGE = '/admin-details';
 
-//Transactions
+// Session
+export const NAVIGATE_TO_SESSIONPAGE = '/session';
+
+// Transactions
 export const NAVIGATE_TO_TRANSACTIONPAGE = '/transactions';
 
-//Profile
+// Profile
 export const NAVIGATE_TO_PROFILEPAGE = '/profile';
 
-//Support
+// Support
 export const NAVIGATE_TO_SUPPORTPAGE = '/support';
 export const NAVIGATE_TO_INFOPAGE = '/info';
 

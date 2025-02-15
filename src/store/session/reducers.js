@@ -19,11 +19,15 @@ const INITIATE_STATE = {
 
     scannedListStatus: STATUS.DEFAULT,
     scannedListResult: null,
-    scannedListErrorMessage: ''
+    scannedListErrorMessage: '',
+
+    transactionsStatus: STATUS.DEFAULT,
+    transactionsResult: null,
+    transactionErrorMessage: ''
 }
 
-export default (state = INITIATE_STATE, { type: payload }) => {
-    switch (state) {
+export default (state = INITIATE_STATE, { type, payload }) => {
+    switch (type) {
         // SCAN CARD
         case STATE.SCAN_CARD_LOADING:
             return {
@@ -162,6 +166,34 @@ export default (state = INITIATE_STATE, { type: payload }) => {
                 scannedListStatus: STATUS.DEFAULT,
                 scannedListResult: null,
                 scannedListErrorMessage: ''
+            }
+
+         // TRANSACTIONS LIST
+         case STATE.TRANSACTIONS_LOADING:
+            return {
+                ...state,
+                transactionsStatus: STATUS.LOADING
+            }
+
+        case STATE.TRANSACTIONS_SUCCESS:
+            return {
+                transactionsStatus: STATUS.SUCCESS,
+                transactionsResult: payload,
+                transactionsErrorMessage: ''
+            }
+
+        case STATE.TRANSACTIONS_FAILURE:
+            return {
+                transactionsStatus: STATUS.ERROR,
+                transactionsResult: null,
+                transactionsErrorMessage: payload
+            }
+
+        case STATE.TRANSACTIONS_RESET:
+            return {
+                transactionsStatus: STATUS.DEFAULT,
+                transactionsResult: null,
+                transactionsErrorMessage: ''
             }
 
         default:

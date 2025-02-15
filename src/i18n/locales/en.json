@@ -285,6 +285,44 @@
         "name": "Item Name",
         "noList": "No Item list found"
     },
+    "session": {
+        "title": "Scan Session",
+        "startSession": "Start Session Now",
+        "instructions": "To scan a student card, Please start a session and make sure the Scan device is connected to a POS machine and focus a cursor to a Scan Card Input Box to capture card number",
+        "activeInst": "Please make sure the device is connected and the cursor is focused on the Scan Box bellow to capture card number",
+        "start": "Start",
+        "end": "End",
+        "start_at": "Start At",
+        "end_at": "End At",
+        "send": "Send",
+        "inputPlaceholder": "Make sure you focus cursor here",
+        "item": "Centeen item",
+        "active": "Active",
+        "session": "Session",
+        "studentName": "Student Name",
+        "type": "Session Type",
+        "card_number": "Card Number",
+        "lunch": "Lunch",
+        "breakfast": "Breakfast",
+        "dinner": "Dinner",
+        "price": "Price",
+        "scannedList": "Scanned List",
+        "scanned_at": "Scanned At",
+        "success": {
+            "title": "Success",
+            "start": "Your session is Active!, continue with card scan",
+            "end": "Session has ended successful, Thank You!",
+            "scan": "Card Scanned successful!",
+            "list": "List Updated"
+        },
+        "error": {
+            "title": "Error",
+            "noCard": "Please scan card",
+            "noItem": "Please select Canteen item",
+            "noSession": "failed to capture session, Try again",
+            "other": "Something went wrong, Please try again"
+        }
+    },
     "card": {
         "title": "Manage Student Cards",
         "details": "Card Details",
@@ -397,6 +435,15 @@
         "108": "This user is already exist",
         "109": "Card ID required",
         "111": "Invalid action. Use 'activate' or 'deactivate",
-        "112": "This student already have a card"
+        "112": "This student already have a card",
+        "113": "You have Active session, End it first to start another",
+        "114": "You don't have active session",
+        "115": "This card is invalid or inactive, Please conctact with admin.",
+        "116": "This canteen item item is not valid",
+        "117": "This card has insuficient balance, Please recharge.",
+        "118": "Meal denied. Student has exceed allowed insuficient count.",
+        "119": "This Student have already purchase this item",
+        "120": "Session ID is required",
+        "121": "Not Scanned list for this session"
     }
 }

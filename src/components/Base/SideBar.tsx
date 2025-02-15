@@ -32,6 +32,7 @@ import {
   NAVIGATE_TO_PARENTDETAILSPAGE,
   NAVIGATE_TO_PARENTPAGE,
   NAVIGATE_TO_SCHOOLPAGE,
+  NAVIGATE_TO_SESSIONPAGE,
   NAVIGATE_TO_STUDENTDETAILSPAGE,
   NAVIGATE_TO_STUDENTPAGE,
   NAVIGATE_TO_TRANSACTIONPAGE,
@@ -374,8 +375,8 @@ const Sidebar = ({
           {/* Sessions */}
           {userRole == 'operator' &&
             <ListItemComponent
-              route={'#'}
-              path={null}
+              route={NAVIGATE_TO_SESSIONPAGE}
+              path={location.pathname === NAVIGATE_TO_SESSIONPAGE}
               action={() => null}
               props={{
                 title: t("sidebar.session"),

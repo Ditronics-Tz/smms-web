@@ -253,7 +253,7 @@ function* editCardTask(action) {
 
         const res = yield call(doEditCard,payload.token, payload.data);
 
-        if (res.status === 201) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.EDIT_CARD_SUCCESS,
                 payload: res.data

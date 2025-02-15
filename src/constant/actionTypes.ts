@@ -59,6 +59,9 @@ export const STATE = createRequestTypes('STATE',
         'SCANNED_LIST',
         'SESSION_LIST',
         'SCAN_CARD',
+        'TRANSACTIONS'
+
+
     ], suffixTypes);
 
 export const ACTION_CHANGE_TO_ENGLISH = "CHANGE_TO_ENGLISH";
