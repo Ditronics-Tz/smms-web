@@ -9,6 +9,7 @@ import { useDispatch, connect } from "react-redux";
 
 import { toast } from 'react-toastify';
 import { STATUS } from './constant';
+import { requestForToken} from '../src/firebase/firebase'
 
 
 
@@ -25,6 +26,7 @@ import "@fontsource/roboto/700.css";
 import RoutesContainer from "./route/Routes";
 import { doLogout } from "./service/auth";
 import { logoutRequest, tokenRequest, tokenReset, schoolListRequest } from "./store/actions";
+import { initializeSidebar } from "./utils";
 
 // FUNCTION TO CHECK TOKEN
 const parseJwt = (token) => {
@@ -50,6 +52,15 @@ const App = ({
   tokenErrorMessage
 }) => {
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    initializeSidebar();
+  }, []);
+
+  // get fcm token for firebase
+  useEffect(() => {
+    requestForToken();
+  },[])
 
   // check the token validity on every 30 sec
   useEffect(() => {

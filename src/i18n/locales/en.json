@@ -60,6 +60,9 @@
         "reject": "Rejected",
         "approved": "Approved",
         "send": "Send",
+        "sent": "Sent",
+        "failed": "Failed",
+        "penalt": "Penalt",
         "received": "Received",
         "used": "Used",
         "notUsed": "Not Used",
@@ -401,20 +404,23 @@
         "ref": "Ref: ",
         "date": "Date",
         "amount": "Amount: ",
-        "channel": "Channel",
-        "tranType": "Trans Type: ",
-        "receiveLoan": "Loan Received",
-        "payLoan": "Repay Loan",
-        "empty": "No Transaction Record Found",
-        "emptyDesc": "This can be either you don't have transactions history or network issue.",
-        "status": "Status",
-        "received": "Received",
-        "sent": "Sent"
+        "student_name": "Student Name",
+        "card_number":"Card Number",
+        "item_name": "Item Name",
+        "status": "Status"
     },
     "notification": {
         "title": "Notifications",
         "notFound": "No notification found",
-        "listTitle": "Your Notifications"
+        "listTitle": "Your Notifications",
+        "recipient": "Recipient",
+        "status": "Status",
+        "date": "Date",
+        "type": "Title",
+        "message": "Message",
+        "reminder": "Reminder",
+        "transaction": "Transaction",
+        "system": "System Info"
     },
     "errors": {
         "1000": "System error, Request failed",
@@ -444,6 +450,8 @@
         "118": "Meal denied. Student has exceed allowed insuficient count.",
         "119": "This Student have already purchase this item",
         "120": "Session ID is required",
-        "121": "Not Scanned list for this session"
+        "121": "Not Scanned list for this session",
+        "122": "Mobile number already exists",
+        "123": "Email already exists"
     }
 }

@@ -80,6 +80,7 @@ const LoginPage = ({
         const data = {
             'username': formElements.email.value,
             'password': formElements.password.value,
+            'fcm_token': localStorage.getItem('fcm_token')
         };
         console.log(data)
         if (data.username != "" && data.password != "") {

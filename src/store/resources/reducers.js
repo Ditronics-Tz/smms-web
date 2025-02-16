@@ -52,6 +52,14 @@ const INITIAL_STATE = {
     cardDetailsStatus: STATUS.DEFAULT,
     cardDetailsResult: null,
     cardDetailsErrorMessage: "",
+
+    notificationsStatus: STATUS.DEFAULT,
+    notificationsResult: null,
+    notificationsErrorMessage: "",
+
+    allNotificationsStatus: STATUS.DEFAULT,
+    allNotificationsResult: null,
+    allNotificationsErrorMessage: "",
 }
 
 export default (state = INITIAL_STATE, { type, payload }) => {
@@ -395,6 +403,63 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 cardDetailsStatus: STATUS.DEFAULT,
                 cardDetailsResult: null,
                 cardDetailsErrorMessage: ""
+            }
+
+
+            //NOTIFICATIONS
+        case STATE.NOTIFICATIONS_LOADING:
+            return {
+                ...state,
+                notificationsStatus: STATUS.LOADING
+            }
+        case STATE.NOTIFICATIONS_SUCCESS:
+            return {
+                ...state,
+                notificationsStatus: STATUS.SUCCESS,
+                notificationsResult: payload,
+                notificationsErrorMessage: ""
+            }
+        case STATE.NOTIFICATIONS_FAILURE:
+            return {
+                ...state,
+                notificationsStatus: STATUS.ERROR,
+                notificationsResult: null,
+                notificationsErrorMessage: payload,
+            }
+        case STATE.NOTIFICATIONS_RESET:
+            return {
+                ...state,
+                notificationsStatus: STATUS.DEFAULT,
+                notificationsResult: null,
+                notificationsErrorMessage: ""
+            }
+
+            // ALL NOTIFICATIONS
+        case STATE.ALL_NOTIFICATIONS_LOADING:
+            return {
+                ...state,
+                allNotificationsStatus: STATUS.LOADING
+            }
+        case STATE.ALL_NOTIFICATIONS_SUCCESS:
+            return {
+                ...state,
+                allNotificationsStatus: STATUS.SUCCESS,
+                allNotificationsResult: payload,
+                allNotificationsErrorMessage: ""
+            }
+        case STATE.ALL_NOTIFICATIONS_FAILURE:
+            return {
+                ...state,
+                allNotificationsStatus: STATUS.ERROR,
+                allNotificationsResult: null,
+                allNotificationsErrorMessage: payload,
+            }
+        case STATE.ALL_NOTIFICATIONS_RESET:
+            return {
+                ...state,
+                allNotificationsStatus: STATUS.DEFAULT,
+                allNotificationsResult: null,
+                allNotificationsErrorMessage: ""
             }
 
         default:

@@ -15,8 +15,8 @@ import { API_BASE, STATUS } from "../../../constant";
 import { toast } from "react-toastify";
 
 import {
-    transactionsRequest,
-    transactionsReset
+    allNotificationsRequest,
+    allNotificationsReset
 } from "../../../store/actions"
 import { useTranslation } from "react-i18next";
 import axios from "axios";
@@ -37,11 +37,10 @@ const MobileViewTable = ({ data, props }) => {
                         variant="outlined"
                         color={
                             {
-                                "successful": "success",
+                                "sent": "success",
                                 "failed": "danger",
-                                "penalt": "warning",
                                 "pending": "neutral"
-                            }[listItem.transaction_status] as ColorPaletteProp}
+                            }[listItem.notification_status] as ColorPaletteProp}
                         sx={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -53,10 +52,17 @@ const MobileViewTable = ({ data, props }) => {
                     >
                         <ListItemContent sx={{ display: 'flex', gap: 1, alignItems: 'start' }}>
                             <div>
-                                <Typography fontWeight={600} level="title-md">{listItem.item_name}</Typography>
-                                <Typography level="title-sm" >{listItem.student_name}</Typography>
-                                <Typography level="body-xs" ><b>{t("transaction.card_number")}:</b> {listItem.card_number}</Typography>
-                                <Typography fontSize={11} gutterBottom>{formatDate(listItem.transaction_date)}</Typography>
+                                <Typography fontWeight={600} level="title-md">{
+                                    {
+                                        "transaction": t("notification.transaction"),
+                                        "system": t("notification.system"),
+                                        "reminder": t("notification.reminder"),
+                                        "message": t("notification.message")
+                                    }[listItem.type]}
+                                </Typography>
+                                <Typography fontSize={12} >{listItem.message}</Typography>
+                                <Typography level="title-sm" ><b>{t("notification.recipient")}: </b>{listItem.recipient}</Typography>
+                                <Typography fontSize={12} gutterBottom>{formatDate(listItem.created_at)}</Typography>
                             </div>
                         </ListItemContent>
                         <Box sx={{
@@ -66,25 +72,22 @@ const MobileViewTable = ({ data, props }) => {
                             alignItems: 'flex-end',
                             rowGap: 1
                         }}>
-                            <Typography fontWeight={600} level="title-md" gutterBottom>Tsh. {thousandSeparator(listItem.amount)}</Typography>
                             <Chip
                                 variant="solid"
                                 size="sm"
                                 color={
                                     {
-                                        "successful": "success",
+                                        "sent": "success",
                                         "failed": "danger",
-                                        "penalt": "warning",
                                         "pending": "neutral"
-                                    }[listItem.transaction_status] as ColorPaletteProp
+                                    }[listItem.status] as ColorPaletteProp
                                 }
                             >
                                 {{
-                                    "successful": t("status.success"),
+                                    "sent": t("status.sent"),
                                     "failed": t("status.failed"),
-                                    "penalt": t("status.penalt"),
                                     "pending": t("status.pending")
-                                }[listItem.transaction_status]}
+                                }[listItem.status]}
                             </Chip>
                         </Box>
 
@@ -130,28 +133,29 @@ const DesktopViewTable = ({ data, props }) => {
                 >
                     <thead>
                         <tr style={{ textAlign: 'center' }}>
-                            <th style={{ width: 70, padding: '10px 6px' }}>{t("transaction.item_name")}</th>
-                            <th style={{ width: 100, padding: '10px 6px', }}>{t("transaction.student_name")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.card_number")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.amount")} (Tsh)</th>
-                            <th style={{ width: 50, padding: '10px 6px', }}>{t("transaction.status")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.date")}</th>
+                            <th style={{ width: 70, padding: '10px 6px' }}>{t("notification.type")}</th>
+                            <th style={{ width: 100, padding: '10px 6px', }}>{t("notification.recipient")}</th>
+                            <th style={{ width: 250, padding: '10px 6px', }}>{t("notification.message")}</th>
+                            <th style={{ width: 50, padding: '10px 6px', }}>{t("notification.status")}</th>
+                            <th style={{ width: 100, padding: '10px 6px', }}>{t("notification.date")}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {data.map((row, index) => (
                             <tr key={index}>
                                 <td>
-                                    <Typography level="body-sm">{row.item_name}</Typography>
+                                    <Typography level="body-sm">{{
+                                        "transaction": t("notification.transaction"),
+                                        "system": t("notification.system"),
+                                        "reminder": t("notification.reminder"),
+                                        "message": t("notification.message")
+                                    }[row.type]}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-sm">{row.student_name}</Typography>
+                                    <Typography level="body-sm">{row.recipient}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-sm">{row.card_number}</Typography>
-                                </td>
-                                <td>
-                                    <Typography level="body-sm">{thousandSeparator(row.amount)}</Typography>
+                                    <Typography level="body-sm">{row.message}</Typography>
                                 </td>
                                 <td>
                                     <Chip
@@ -159,23 +163,21 @@ const DesktopViewTable = ({ data, props }) => {
                                         size="sm"
                                         color={
                                             {
-                                                "successful": "success",
+                                                "sent": "success",
                                                 "failed": "danger",
-                                                "penalt": "warning",
                                                 "pending": "neutral"
-                                            }[row.transaction_status] as ColorPaletteProp
+                                            }[row.status] as ColorPaletteProp
                                         }
                                     >
                                         {{
-                                            "successful": t("status.success"),
+                                            "sent": t("status.sent"),
                                             "failed": t("status.failed"),
-                                            "penalt": t("status.penalt"),
                                             "pending": t("status.pending")
-                                        }[row.transaction_status]}
+                                        }[row.status]}
                                     </Chip>
                                 </td>
                                 <td>
-                                    <Typography level="body-sm">{formatDate(row.transaction_date)}</Typography>
+                                    <Typography level="body-sm">{formatDate(row.created_at)}</Typography>
                                 </td>
                             </tr>
                         ))}
@@ -187,7 +189,7 @@ const DesktopViewTable = ({ data, props }) => {
 }
 
 
-const TransactionPage = ({
+const NotificationPage = ({
     accessToken,
 
     listStatus,
@@ -203,23 +205,23 @@ const TransactionPage = ({
     const [listData, setListData] = useState([]);
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
-    const [totalTransactions, setTotalTransactions] = useState(0);
+    const [totalAllNotifications, setTotalAllNotifications] = useState(0);
     const [nextPage, setNextPage] = useState(null);
     const [previousPage, setPreviousPage] = useState(null);
 
     const ITEMS_PER_PAGE = 50
-    const pageLength = listData.length > 0 ? Math.ceil(totalTransactions / ITEMS_PER_PAGE) : 1
+    const pageLength = listData.length > 0 ? Math.ceil(totalAllNotifications / ITEMS_PER_PAGE) : 1
 
     useEffect(() => {
         if (listStatus === STATUS.SUCCESS) {
             setListData(listResult.results);
             setNextPage(listResult.next);
             setPreviousPage(listResult.previous);
-            setTotalTransactions(listResult.count);
+            setTotalAllNotifications(listResult.count);
         }
         else if (listStatus === STATUS.ERROR) {
             toast.error(listErrorMessage);
-            dispatch(transactionsReset());
+            dispatch(allNotificationsReset());
         }
     }, [listStatus])
 
@@ -227,7 +229,7 @@ const TransactionPage = ({
         const data = {
             'search': search,
         }
-        dispatch(transactionsRequest(accessToken, data, page))
+        dispatch(allNotificationsRequest(accessToken, data, page))
     }, [page, search])
 
     // for calender open
@@ -253,7 +255,7 @@ const TransactionPage = ({
 
     return (
         <Box>
-            <PageTitle title={t("transaction.title")} />
+            <PageTitle title={t("notification.title") + ` (${totalAllNotifications})`} />
 
             <LoadingView loading={checkLoading()} />
 
@@ -272,13 +274,13 @@ const TransactionPage = ({
             >
                 <Input
                     size="sm"
-                    placeholder={t("init.search") + t("transaction.date") + "/ "+ t("transaction.status")}
-                type='text'
-                defaultValue={search}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                startDecorator={<SearchIcon />}
-                sx={{ width: { xs: '100%', md: '30%' }, textTransform: 'capitalize' }}
+                    placeholder={t("init.search") + t("notification.date") + "/ " + t("notification.status") + "/ " + t("notification.type")}
+                    type='text'
+                    defaultValue={search}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    startDecorator={<SearchIcon />}
+                    sx={{ width: { xs: '100%', md: '30%' }, textTransform: 'capitalize' }}
                 />
                 <label htmlFor="calendar" style={{ cursor: "pointer" }} onClick={handleLabelClick}>
                     <CalendarMonthRounded />
@@ -299,7 +301,7 @@ const TransactionPage = ({
                 <DesktopViewTable data={listData} props={{ edit: null, activate: null }} />
 
                 {/* Pagination */}
-                {totalTransactions > ITEMS_PER_PAGE
+                {totalAllNotifications > ITEMS_PER_PAGE
                     &&
                     <Box
                         className="Pagination-laptopUp"
@@ -340,7 +342,7 @@ const TransactionPage = ({
 
                         {/* for mobile to display page number */}
                         <Typography level="body-sm" mx="auto" textAlign={'center'} sx={{ display: { xs: 'flex', md: 'none' } }}>
-                            {t('init.page')} {page} of {Math.ceil(totalTransactions / ITEMS_PER_PAGE)}
+                            {t('init.page')} {page} of {Math.ceil(totalAllNotifications / ITEMS_PER_PAGE)}
                         </Typography>
                         <Box sx={{ flex: 1 }} />
 
@@ -364,15 +366,15 @@ const TransactionPage = ({
     )
 }
 
-const mapStateToProps = ({ auth, session }) => {
+const mapStateToProps = ({ auth, resources }) => {
     const { accessToken
     } = auth
 
     const {
-        transactionsStatus: listStatus,
-        transactionsResult: listResult,
-        transactionsErrorMessage: listErrorMessage,
-    } = session
+        allNotificationsStatus: listStatus,
+        allNotificationsResult: listResult,
+        allNotificationsErrorMessage: listErrorMessage,
+    } = resources
 
     return {
         accessToken,
@@ -382,4 +384,4 @@ const mapStateToProps = ({ auth, session }) => {
         listErrorMessage
     }
 }
-export default connect(mapStateToProps, {})(TransactionPage)
+export default connect(mapStateToProps, {})(NotificationPage)

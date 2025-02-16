@@ -3,6 +3,7 @@ import { useDispatch, connect } from "react-redux";
 import { toast } from "react-toastify";
 import { STATUS } from "../../constant";
 import React, { Fragment, useEffect, useState } from "react";
+import { requestForToken, onMessageListener } from '../../firebase/firebase'
 
 import GlobalStyles from "@mui/joy/GlobalStyles";
 import Sheet from "@mui/joy/Sheet";
@@ -23,13 +24,14 @@ import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
 import { toggleSidebar } from "../../utils/sideBarutils";
-import { logoutRequest } from "../../store/actions";
+import { logoutRequest, notificationsRequest, notificationsReset } from "../../store/actions";
 import { useColorScheme } from "@mui/joy/styles";
 import { NAVIGATE_TO_DASHBOARD, NAVIGATE_TO_LOGINPAGE, NAVIGATE_TO_PROFILEPAGE } from "../../route/types";
 import image from "../../constant/image";
 import { DarkMode, LightMode, Lock, Notifications, Settings } from "@mui/icons-material";
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import {
+  Badge,
   Button,
   CircularProgress,
   DialogContent,
@@ -87,7 +89,11 @@ const Header = ({
   loginStatus,
   loginResult,
   loginErrorMessage,
-  accessToken
+  accessToken,
+
+  notificationsStatus,
+  notificationsResult,
+  notificationsErrorMessage,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -96,10 +102,6 @@ const Header = ({
   const [refresh, setRefresh] = useState(false)
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
-
-  const [notList, setNotList] = React.useState([]);
-  const [notLoad, setNotLoad] = React.useState(false);
-  const [notError, setNotError] = React.useState("");
 
   useEffect(() => {
     if (loginResult != null || loginResult != undefined) {
@@ -119,6 +121,53 @@ const Header = ({
   useEffect(() => {
     console.log("Refresh screen")
   }, [refresh])
+
+  // ---- NOTIFICATIONS -----
+  const [notificationCount, setNotificationCount] = useState(null)
+  const [notList, setNotList] = React.useState([]);
+  const [notLoad, setNotLoad] = React.useState(false);
+  const [notError, setNotError] = React.useState("");
+
+  // --- get message from backedn
+  useEffect(() => {
+    if (notificationsStatus === STATUS.SUCCESS) {
+      setNotList(notificationsResult);
+      dispatch(notificationsReset())
+    }
+    else if (notificationsStatus === STATUS.ERROR) {
+      setNotError(notificationsErrorMessage)
+      dispatch(notificationsReset())
+    }
+  }, [notificationsStatus])
+
+  useEffect(() => {
+    dispatch(notificationsRequest(accessToken, {}))
+  }, [])
+
+  // get background message
+  useEffect(() => {
+    // Listen for background messages through the BroadcastChannel
+    const channel = new BroadcastChannel("notification-channel");
+
+    channel.addEventListener("message", (event) => {
+      console.log("Background message received: ", event.data);
+
+      const newNotification = {
+        type: event.data.notification.title,
+        message: event.data.notification.body,
+        created_at: new Date().toISOString(),
+      };
+
+      // Update the notification list and count for background messages
+      setNotList((prev) => [newNotification, ...prev]);
+      setNotificationCount((prev) => prev + 1);
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      channel.close();
+    };
+  }, []);
 
   return (
     <Fragment>
@@ -207,16 +256,22 @@ const Header = ({
             <MenuButton
               variant="plain"
               size="sm"
-              sx={{ maxWidth: '32px', maxHeight: '32px', borderRadius: '9999999px' }}>
+              sx={{ maxWidth: '32px', maxHeight: '32px', borderRadius: '9999999px' }}
+              aria-label="Notifications"
+            >
               <IconButton
                 id="toggle-mode"
                 size="sm"
                 variant="plain"
                 color="success"
                 sx={{ alignSelf: 'center' }}
-                onClick={null}
+              // onClick={null}
+              // aria-haspopup="true"
+              // aria-expanded={open ? 'true' : 'false'}
               >
-                <Notifications />
+                <Badge size="sm" badgeContent={notificationCount}>
+                  <Notifications />
+                </Badge>
               </IconButton>
             </MenuButton>
             <Menu
@@ -224,50 +279,75 @@ const Header = ({
               size="sm"
               sx={{
                 zIndex: '99999',
-                width: { xs: "90%", sm: "60%", md: '40%' },
-                justifyContent: 'center',
-                alignItems: 'center',
-                p: 1,
+                overflow: 'auto',
+                maxHeight: '90vh', // Set a maximum height for the menu
+                width: { xs: "90%", md: '400px' },
+                justifyContent: 'flex-start', // Align content to the top
+                alignItems: 'flex-start', // Align content to the left
+                pt: 0,
+                pb: 2,
+                px: 1,
                 gap: 1,
                 '--ListItem-radius': 'var(--joy-radius-sm)',
-              }}>
-
+              }}
+              aria-labelledby="toggle-mode"
+            >
               {/* notification header */}
               <Box sx={{
                 display: 'flex',
                 gap: 1,
                 justifyContent: 'center',
-                alignItems: 'center'
+                alignItems: 'center',
+                width: '100%',
+                position: 'sticky', // Make the header sticky
+                top: 0, // Stick to the top
+                backgroundColor: 'background.surface', // Match the background color
+                zIndex: 1, // Ensure the header stays above the scrollable content
+                p: 1, // Add padding to the header
+                borderBottom: '1px solid', // Add a border to separate the header from the content
+                borderColor: 'divider', // Use the theme's divider color
               }}>
                 <Notifications />
-                <Typography level='title-md'> {t("header.notification")}</Typography>
+                <Typography level='title-md' id="notification-header">
+                  {t("header.notification")}
+                </Typography>
               </Box>
-              <ListDivider />
 
-              {notLoad ?
+              {notLoad || notificationsStatus === STATUS.LOADING ? (
                 <CircularProgress size='lg' thickness={3} sx={{ alignSelf: 'center' }} />
-                : (
-                  notList.length > 0 ? notList.map((item, index) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        width: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignSelf: 'flex-start',
-                        p: 0.7,
-                        borderLeft: 2.5,
-                        borderBottom: 0.6,
-                        borderColor: 'green',
-                        gap: 0.5
-                      }}>
-                      <Typography level='title-sm'>{item.title}</Typography>
-                      <Typography level='body-sm'>{item.message}</Typography>
-                      {/* <Divider /> */}
-                    </Box>
-                  )) :
-                    <Typography level='title-md' sx={{ p: 1, backgroundColor: 'lightgray', borderRadius: 'md' }}>{notError}</Typography>
-                )}
+              ) : (
+                notList.length > 0 ? notList.map((item, index) => (
+                  <Sheet
+                    variant="outlined"
+                    key={index}
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignSelf: 'flex-start',
+                      p: 0.7,
+                      gap: 0.5,
+                      borderRadius: 'sm',
+                      boxShadow: 'sm',
+                    }}
+                  >
+                    <Typography level='title-sm'>
+                      {{
+                        "transaction": t("notification.transaction"),
+                        "system": t("notification.system"),
+                        "reminder": t("notification.reminder"),
+                        "message": t("notification.message")
+                      }[item.type]}
+                    </Typography>
+                    <Typography level='body-xs'>{item.message}</Typography>
+                    <Divider />
+                  </Sheet>
+                )) : (
+                  <Typography level='title-sm' sx={{ p: 1, backgroundColor: 'lightgray', borderRadius: 'md' }}>
+                    {notError || t("notification.notFound")}
+                  </Typography>
+                )
+              )}
             </Menu>
           </Dropdown>
 
@@ -366,7 +446,7 @@ const Header = ({
 };
 
 //mapping Redux store states to props
-const mapStateToProps = ({ auth }) => {
+const mapStateToProps = ({ auth, resources }) => {
   const {
     loginStatus,
     loginResult,
@@ -374,11 +454,21 @@ const mapStateToProps = ({ auth }) => {
     accessToken
   } = auth;
 
+  const {
+    notificationsStatus,
+    notificationsResult,
+    notificationsErrorMessage,
+  } = resources
+
   return {
     loginStatus,
     loginResult,
     loginErrorMessage,
-    accessToken
+    accessToken,
+
+    notificationsStatus,
+    notificationsResult,
+    notificationsErrorMessage,
   };
 };
 

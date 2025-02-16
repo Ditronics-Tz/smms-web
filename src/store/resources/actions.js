@@ -221,3 +221,41 @@ export function activateCardReset() {
 }
 
 
+// notification list action
+export function notificationsRequest(token, data, page) {
+    return {
+        type: STATE.NOTIFICATIONS_REQUEST,
+        payload: {
+            token,
+            data,
+            page
+        }
+    }
+}
+
+export function notificationsReset() {
+    return {
+        type: STATE.NOTIFICATIONS_RESET
+    }
+
+}
+
+// all notification list action
+export function allNotificationsRequest(token, data, page) {
+    return {
+        type: STATE.ALL_NOTIFICATIONS_REQUEST,
+        payload: {
+            token,
+            data,
+            page
+        }
+    }
+}
+
+export function allNotificationsReset() {
+    return {
+        type: STATE.ALL_NOTIFICATIONS_RESET
+    }
+
+}
+

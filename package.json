@@ -22,6 +22,7 @@
     "axios": "^1.6.7",
     "classnames": "^2.5.1",
     "cra-template": "1.2.0",
+    "firebase": "^11.3.1",
     "formik": "^2.4.5",
     "framer-motion": "^11.0.16",
     "google-maps-react": "^2.0.6",
