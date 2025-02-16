@@ -5,7 +5,6 @@ import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import Typography from '@mui/joy/Typography';
 import { useTranslation } from 'react-i18next';
-import { WarningRounded } from '@mui/icons-material';
 
 
 export default function AlertModal({ visibility, message, onConfirm, onClose }) {

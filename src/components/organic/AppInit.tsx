@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { CssVarsProvider, useColorScheme } from '@mui/joy/styles';
+import React, {  } from 'react';
+import { CssVarsProvider } from '@mui/joy/styles';
 import GlobalStyles from '@mui/joy/GlobalStyles';
 import CssBaseline from '@mui/joy/CssBaseline';
 import Box from '@mui/joy/Box';
 
 import Typography from '@mui/joy/Typography';
 
-import { Avatar, Card } from '@mui/joy';
+import { Avatar } from '@mui/joy';
 import theme from '../../utils/theme';
 import LoadingView from '../molecules/LoadingView';
 import image from '../../constant/image';
-
-
 
 export default function AppInit () {
 

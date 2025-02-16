@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack, ListItemDecorator, Avatar, MenuItem, Divider } from "@mui/joy";
+import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack } from "@mui/joy";
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import { LoadingView, NotFoundMessage, PageTitle } from "../../../../components";
@@ -8,13 +8,12 @@ import { formatDate } from "../../../../utils";
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 
 import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { DeleteOutline, PersonAddOutlined, RemoveRedEyeOutlined } from "@mui/icons-material";
-import { FILE_BASE, STATUS } from "../../../../constant";
+import { STATUS } from "../../../../constant";
 import { toast } from "react-toastify";
 
 import {
@@ -265,6 +264,7 @@ const AdminPage = ({
 
     const [formModal, setFormModal] = useState(false)
 
+    /* eslint-disable */
     useEffect(() => {
         if (listStatus === STATUS.SUCCESS) {
             setListData(listResult.results);
@@ -277,7 +277,7 @@ const AdminPage = ({
             dispatch(userListReset());
         }
 
-        if (createStatus == STATUS.SUCCESS) {
+        if (createStatus === STATUS.SUCCESS) {
             toast.success(createResult.message);
             setFormModal(false);
             setAdminData(initiateAdminData);
@@ -297,6 +297,7 @@ const AdminPage = ({
         }
         dispatch(userListRequest(accessToken, data, page))
     }, [page, search])
+    /* eslint-disable */
 
     // Handle text, select, and RFID input changes
     const handleChange = (e) => {

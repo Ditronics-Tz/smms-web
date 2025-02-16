@@ -1,6 +1,6 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
-import { doScanCard, doSessionList, doStartSession, doCardList, doEndSession, doScannedList, doTransactions } from '../../service/sessions';
+import { doScanCard, doSessionList, doStartSession, doEndSession, doScannedList, doTransactions } from '../../service/sessions';
 import { errorMessage } from '../../utils';
 
 // Scan Card
@@ -102,7 +102,7 @@ function* sessionListTask(action) {
 
         const res = yield call(doSessionList,payload.token, payload.data, payload.page);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.SESSION_LIST_SUCCESS,
                 payload: res.data
@@ -134,7 +134,7 @@ function* scannedListTask(action) {
 
         const res = yield call(doScannedList,payload.token, payload.data, payload.page);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.SCANNED_LIST_SUCCESS,
                 payload: res.data
@@ -165,7 +165,7 @@ function* transactionsTask(action) {
 
         const res = yield call(doTransactions,payload.token, payload.data, payload.page);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.TRANSACTIONS_SUCCESS,
                 payload: res.data

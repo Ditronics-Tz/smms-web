@@ -252,6 +252,7 @@ const StudentPage = ({
     const [parentList, setParentList] = useState([])
 
     // function to fetch parents data to fetch student data
+    /* eslint-disable */
     useEffect(() => {
         axios.get(API_BASE + "/list/parents", {
             timeout: 30000,
@@ -261,7 +262,7 @@ const StudentPage = ({
                 'Authorization': 'Bearer ' + accessToken,
 
             }
-        }).then((res) => setParentList(res.data.results))
+        }).then((res) => setParentList(res.data.results)).catch((e) => console.error(e))
     }, [])
 
     // ---- PAGINATION SETTINGS ----- //
@@ -309,6 +310,7 @@ const StudentPage = ({
         }
         dispatch(userListRequest(accessToken, data, page))
     }, [page, search])
+    /* eslint-enable */
 
     // Handle text, select, and RFID input changes
     const handleChange = (e) => {

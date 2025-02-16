@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack, ListItemDecorator, Avatar, MenuItem, Divider } from "@mui/joy";
+import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack } from "@mui/joy";
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import { LoadingView, NotFoundMessage, PageTitle } from "../../../../components";
@@ -8,13 +8,12 @@ import { formatDate } from "../../../../utils";
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 
 import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { DeleteOutline, PersonAddOutlined, RemoveRedEyeOutlined } from "@mui/icons-material";
-import { FILE_BASE, STATUS } from "../../../../constant";
+import { STATUS } from "../../../../constant";
 import { toast } from "react-toastify";
 
 import {
@@ -182,42 +181,7 @@ const DesktopViewTable = ({ data, props }) => {
                                 <td>
                                     <Typography level="body-sm">{formatDate(row.date_joined)}</Typography>
                                 </td>
-                                {/* <td>
-                                    <Chip
-                                        variant="solid"
-                                        size="sm"
-                                        // startDecorator={
-                                        //     {
-                                        //         Paid: <CheckRoundedIcon />,
-                                        //         Refunded: <AutorenewRoundedIcon />,
-                                        //         Cancelled: <BlockIcon />,
-                                        //     }['Paid']
-                                        // }
-                                        color={
-                                            {
-                                                Paid: 'success',
-                                                Refunded: 'neutral',
-                                                Cancelled: 'danger',
-                                            }['Paid'] as ColorPaletteProp
-                                        }
-                                    >
-                                        {'Active'}
-                                    </Chip>
-                                </td> */}
                                 <td>
-                                    {/* <Dropdown>
-                                        <MenuButton
-                                            slots={{ root: IconButton }}
-                                            slotProps={{ root: { variant: 'plain', color: 'neutral', size: 'sm' } }}
-                                        >
-                                            <MoreHorizRoundedIcon />
-                                        </MenuButton>
-                                        <Menu size="sm" sx={{ minWidth: 140 }}>
-                                            <MenuItem>{t("operator.view")}</MenuItem>
-                                            <Divider />
-                                            <MenuItem color="danger">{t("operator.delete")}</MenuItem>
-                                        </Menu>
-                                    </Dropdown> */}
                                     <ButtonGroup variant="outlined" size="sm">
                                         <Button title={t("operator.view")} color="neutral" onClick={() => props.view(row)}><RemoveRedEyeOutlined /></Button>
                                         <Button title={t("operator.delete")} color="danger"><DeleteOutline /></Button>
@@ -278,6 +242,7 @@ const OperatorPage = ({
 
     const [formModal, setFormModal] = useState(false)
 
+    /* eslint-disable */
     useEffect(() => {
         if (listStatus === STATUS.SUCCESS) {
             setListData(listResult.results);
@@ -290,7 +255,7 @@ const OperatorPage = ({
             dispatch(userListReset());
         }
 
-        if (createStatus == STATUS.SUCCESS) {
+        if (createStatus === STATUS.SUCCESS) {
             toast.success(createResult.message);
             setFormModal(false);
             setOperatorData(initiateOperatorData);
@@ -310,6 +275,7 @@ const OperatorPage = ({
         }
         dispatch(userListRequest(accessToken, data, page))
     }, [page, search])
+    /* eslint-enable */
 
     // Handle text, select, and RFID input changes
     const handleChange = (e) => {
@@ -318,15 +284,6 @@ const OperatorPage = ({
         setOperatorData((prevData) => ({
             ...prevData,
             [name]: value,
-        }));
-    };
-
-    // Handle file input change
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setOperatorData((prevData) => ({
-            ...prevData,
-            profile_picture: file,
         }));
     };
 

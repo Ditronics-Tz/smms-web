@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { CssVarsProvider, useColorScheme } from "@mui/joy/styles";
+import React, {  } from "react";
+import { CssVarsProvider } from "@mui/joy/styles";
 import GlobalStyles from "@mui/joy/GlobalStyles";
 import CssBaseline from "@mui/joy/CssBaseline";
 import Box from "@mui/joy/Box";
 
 import Typography from "@mui/joy/Typography";
 
-import { Avatar, Button, Card, Divider } from "@mui/joy";
+import { Avatar, Button, Card } from "@mui/joy";
 import theme from "../../utils/theme";
 import image from "../../constant/image";
 import { RefreshOutlined, WarningOutlined } from "@mui/icons-material";

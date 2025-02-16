@@ -1,12 +1,9 @@
 import * as React from 'react';
-import Box, { BoxProps } from '@mui/joy/Box';
-import Stack from '@mui/joy/Stack';
+import Box from '@mui/joy/Box';
 import CssBaseline from '@mui/joy/CssBaseline'
 import Header from './Header';
-import Typography from '@mui/joy/Typography';
-import { ToastContainer } from 'react-toastify';
 import { CssVarsProvider } from '@mui/joy';
-import { useLocation, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import theme from '../../utils/theme'
 import SideBar from './SideBar';
 

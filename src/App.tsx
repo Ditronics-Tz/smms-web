@@ -12,11 +12,6 @@ import { STATUS } from './constant';
 import { requestForToken} from '../src/firebase/firebase'
 
 
-
-import {
-  NAVIGATE_TO_LOGINPAGE,
-} from "./route/types";
-
 //import MainRoute from './route/Mainroute';
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -44,12 +39,10 @@ const parseJwt = (token) => {
 const App = ({
   loginStatus,
   loginResult,
-  loginErrorMessage,
+  
   accessToken,
 
   tokenStatus,
-  tokenResult,
-  tokenErrorMessage
 }) => {
   const dispatch = useDispatch()
 
@@ -63,6 +56,7 @@ const App = ({
   },[])
 
   // check the token validity on every 30 sec
+  /* eslint-disable */
   useEffect(() => {
     if (loginStatus === STATUS.SUCCESS) {
       const checkToken = () => checkTokenValidity(parseJwt(accessToken));
@@ -76,8 +70,6 @@ const App = ({
     }
   }, [loginStatus, accessToken]);
 
-
-
   useEffect(() => {
     if (tokenStatus === STATUS.ERROR) {
       toast.warn("User access timeout please login");
@@ -86,6 +78,7 @@ const App = ({
       dispatch(logoutRequest());
     }
   }, [tokenStatus])
+  /* eslint-enable */
 
   const checkTokenValidity = (decodedJwt) => {
     if (!decodedJwt) {

@@ -12,7 +12,7 @@ function* loginTask(action) {
 
         const res = yield call(doLogin, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.LOGIN_SUCCESS,
                 payload: res.data
@@ -42,7 +42,7 @@ function* tokenTask(action) {
 
         const res = yield call(doRefreshToken, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.TOKEN_SUCCESS,
                 payload: res.data
@@ -72,7 +72,7 @@ function* createUserTask(action) {
 
         const res = yield call(doCreateUser,payload.token, payload.data);
 
-        if (res.status == 201) {
+        if (res.status === 201) {
             yield put({
                 type: STATE.CREATE_USER_SUCCESS,
                 payload: res.data
@@ -102,7 +102,7 @@ function* editUserTask(action) {
 
         const res = yield call(doEditUser,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.EDIT_USER_SUCCESS,
                 payload: res.data
@@ -132,7 +132,7 @@ function* activateUserTask(action) {
 
         const res = yield call(doActivateUser,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.ACTIVATE_USER_SUCCESS,
                 payload: res.data

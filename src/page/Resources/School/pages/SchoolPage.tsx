@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack, ListItemDecorator, Avatar, MenuItem, Divider, Alert, CircularProgress } from "@mui/joy";
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
+import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack } from "@mui/joy";
 import { AlertModal, LoadingView, NotFoundMessage, PageTitle } from "../../../../components";
-import { formatDate } from "../../../../utils";
 
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 
 import { connect, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
-import { DeleteOutline, PersonAddOutlined, RemoveRedEyeOutlined, Warning } from "@mui/icons-material";
-import { FILE_BASE, STATUS } from "../../../../constant";
+import { DeleteOutline, PersonAddOutlined } from "@mui/icons-material";
+import { STATUS } from "../../../../constant";
 import { toast } from "react-toastify";
 
 import {
@@ -154,7 +149,6 @@ const SchoolPage = ({
     listErrorMessage,
 }) => {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     const { t } = useTranslation()
     const isDesktop = useMediaQuery("(min-width:600px)");
 
@@ -179,6 +173,7 @@ const SchoolPage = ({
     const [formModal, setFormModal] = useState(false)
     const [deleteModal, setDeleteModal] = useState(false)
 
+    /* eslint-disable */
     useEffect(() => {
         if (listStatus === STATUS.SUCCESS) {
             setListData(listResult.results);
@@ -191,7 +186,7 @@ const SchoolPage = ({
             dispatch(schoolListReset());
         }
 
-        if (createStatus == STATUS.SUCCESS) {
+        if (createStatus === STATUS.SUCCESS) {
             toast.success(createResult.message);
             setFormModal(false);
             setSchoolData(initiateSchoolData);
@@ -222,6 +217,7 @@ const SchoolPage = ({
         }
         dispatch(schoolListRequest(accessToken, data, page))
     }, [page, search])
+    /* eslint-enable */
 
     // Handle text, select, and RFID input changes
     const handleChange = (e) => {

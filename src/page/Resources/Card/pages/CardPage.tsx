@@ -8,9 +8,8 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 import { connect, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
-import { BlockOutlined, EditOutlined, PersonAddOutlined, RemoveRedEyeOutlined, TaskAltOutlined } from "@mui/icons-material";
+import { BlockOutlined, EditOutlined, PersonAddOutlined, TaskAltOutlined } from "@mui/icons-material";
 import { API_BASE, STATUS } from "../../../../constant";
 import { toast } from "react-toastify";
 
@@ -28,7 +27,6 @@ import {
 } from "../../../../store/actions"
 import { useTranslation } from "react-i18next";
 import axios from "axios";
-import { NAVIGATE_TO_CARDDETAILSPAGE } from "../../../../route/types";
 
 const MobileViewTable = ({ data, props }) => {
     const { t } = useTranslation();
@@ -198,12 +196,6 @@ const DesktopViewTable = ({ data, props }) => {
     );
 }
 
-type Student = {
-    id: string,
-    first_name: string,
-    last_name: string
-}
-
 const CardPage = ({
     accessToken,
 
@@ -224,7 +216,6 @@ const CardPage = ({
     listErrorMessage,
 }) => {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     const { t } = useTranslation()
     const isDesktop = useMediaQuery("(min-width:600px)");
 
@@ -249,8 +240,8 @@ const CardPage = ({
                 'Authorization': 'Bearer ' + accessToken,
 
             }
-        }).then((res) => setStudentList(res.data.results))
-    }, [])
+        }).then((res) => setStudentList(res.data.results)).catch((e) => console.error(e))
+    }, [accessToken])
 
     // ---- PAGINATION SETTINGS ----- //
     const [listData, setListData] = useState([]);
@@ -266,6 +257,7 @@ const CardPage = ({
     const [formModal, setFormModal] = useState(false)
     const [activateModal, setActivateModal] = useState(false)
 
+    /* eslint-disable */
     useEffect(() => {
         if (listStatus === STATUS.SUCCESS) {
             setListData(listResult.results);
@@ -313,7 +305,7 @@ const CardPage = ({
             toast.error(activateErrorMessage)
             dispatch(activateCardReset())
         }
-    }, [listStatus, createStatus, activateStatus, editStatus])
+    }, [listStatus, createStatus, activateStatus, editStatus]) // eslint-disable-next-line
 
     useEffect(() => {
         const data = {
@@ -321,6 +313,7 @@ const CardPage = ({
         }
         dispatch(cardListRequest(accessToken, data, page))
     }, [page, search])
+    /* eslint-enable */
 
     // Handle text, select, and RFID input changes
     const handleChange = (e) => {

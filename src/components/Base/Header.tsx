@@ -1,9 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch, connect } from "react-redux";
-import { toast } from "react-toastify";
 import { STATUS } from "../../constant";
 import React, { Fragment, useEffect, useState } from "react";
-import { requestForToken, onMessageListener } from '../../firebase/firebase'
 
 import GlobalStyles from "@mui/joy/GlobalStyles";
 import Sheet from "@mui/joy/Sheet";
@@ -12,37 +10,24 @@ import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
 import IconButton from "@mui/joy/IconButton";
 import Avatar from "@mui/joy/Avatar";
-import Tooltip from "@mui/joy/Tooltip";
 import Dropdown from "@mui/joy/Dropdown";
 import Menu from "@mui/joy/Menu";
 import MenuButton from "@mui/joy/MenuButton";
 import MenuItem from "@mui/joy/MenuItem";
 import ListDivider from "@mui/joy/ListDivider";
 
-import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
-import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
 import { toggleSidebar } from "../../utils/sideBarutils";
 import { logoutRequest, notificationsRequest, notificationsReset } from "../../store/actions";
 import { useColorScheme } from "@mui/joy/styles";
-import { NAVIGATE_TO_DASHBOARD, NAVIGATE_TO_LOGINPAGE, NAVIGATE_TO_PROFILEPAGE } from "../../route/types";
-import image from "../../constant/image";
-import { DarkMode, LightMode, Lock, Notifications, Settings } from "@mui/icons-material";
+import { NAVIGATE_TO_DASHBOARD, NAVIGATE_TO_PROFILEPAGE } from "../../route/types";
+import { DarkMode, LightMode, Notifications, Settings } from "@mui/icons-material";
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import {
   Badge,
-  Button,
   CircularProgress,
-  DialogContent,
-  DialogTitle,
   Divider,
-  FormControl,
-  FormLabel,
-  Input,
-  Modal,
-  ModalClose,
-  ModalDialog,
   Switch,
 } from "@mui/joy";
 import { useTranslation } from "react-i18next";
@@ -62,7 +47,7 @@ function ColorSchemeToggle() {
   }
   return (
     <Switch
-      checked={mode == "dark"}
+      checked={mode === "dark"}
       id="toogle-mode"
       startDecorator={mode === "light" ? t("header.switchDark") : t("header.switchLight")}
       onChange={() => {
@@ -86,16 +71,13 @@ function ColorSchemeToggle() {
 }
 
 const Header = ({
-  loginStatus,
   loginResult,
-  loginErrorMessage,
   accessToken,
 
   notificationsStatus,
   notificationsResult,
   notificationsErrorMessage,
 }) => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -104,7 +86,7 @@ const Header = ({
   const [role, setRole] = useState("");
 
   useEffect(() => {
-    if (loginResult != null || loginResult != undefined) {
+    if (loginResult !== null || loginResult !== undefined) {
       setName(loginResult.user.first_name + " " + loginResult.user.last_name)
       setRole(loginResult.user.role)
     }
@@ -125,10 +107,10 @@ const Header = ({
   // ---- NOTIFICATIONS -----
   const [notificationCount, setNotificationCount] = useState(null)
   const [notList, setNotList] = React.useState([]);
-  const [notLoad, setNotLoad] = React.useState(false);
   const [notError, setNotError] = React.useState("");
 
   // --- get message from backedn
+  /* eslint-disable */
   useEffect(() => {
     if (notificationsStatus === STATUS.SUCCESS) {
       setNotList(notificationsResult);
@@ -142,7 +124,7 @@ const Header = ({
 
   useEffect(() => {
     dispatch(notificationsRequest(accessToken, {}))
-  }, [])
+  }, [accessToken])
 
   // get background message
   useEffect(() => {
@@ -168,6 +150,7 @@ const Header = ({
       channel.close();
     };
   }, []);
+  /* eslint-enable */
 
   return (
     <Fragment>
@@ -313,7 +296,7 @@ const Header = ({
                 </Typography>
               </Box>
 
-              {notLoad || notificationsStatus === STATUS.LOADING ? (
+              {notificationsStatus === STATUS.LOADING ? (
                 <CircularProgress size='lg' thickness={3} sx={{ alignSelf: 'center' }} />
               ) : (
                 notList.length > 0 ? notList.map((item, index) => (
@@ -365,7 +348,6 @@ const Header = ({
                 borderColor: 'background.appcolor'
               }}>
               <Avatar
-                src={image.Images.userIcon2}
                 sx={{ maxWidth: "29px", maxHeight: "29px" }}
                 size="sm"
               />
@@ -395,7 +377,6 @@ const Header = ({
                       alignItems: "center",
                     }}>
                     <Avatar
-                      src={image.Images.userIcon2}
                       sx={{ maxWidth: "29px", maxHeight: "29px" }}
                       size="sm"
                     />

@@ -1,20 +1,17 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { Typography, Box, Table, AspectRatio, Card, CardContent, Divider, ButtonGroup, Button, Sheet, Modal, ModalOverflow, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar, Chip, ColorPaletteProp, ListDivider, Autocomplete } from "@mui/joy";
+import React, { useEffect, useState } from "react";
+import { Typography, Box, Divider, Button, Sheet, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar, Autocomplete } from "@mui/joy";
 import { toast } from 'react-toastify';
-import { LoadingView, Main, NotFoundMessage, PageTitle } from "../../../../components";
-import { useLocation, useNavigate } from "react-router-dom";
-import { API_BASE, FILE_BASE, STATUS } from "../../../../constant";
+import { LoadingView, NotFoundMessage } from "../../../../components";
+import { useLocation } from "react-router-dom";
+import { API_BASE, STATUS } from "../../../../constant";
 import { connect, useDispatch } from "react-redux";
-import { useMediaQuery } from "@mui/material";
 import {
     editUserRequest,
     editUserReset,
     parentDetailsRequest,
-    parentDetailsReset,
 } from '../../../../store/actions'
-import { AddCardOutlined, BlockOutlined, CheckCircle, DeleteOutline, DoNotDisturbOn, EditOutlined, FolderOpenOutlined, LocationOn, RemoveRedEyeOutlined, TaskAltOutlined, WarningRounded } from "@mui/icons-material";
+import { EditOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import { formatDate, thousandSeparator } from "../../../../utils";
 import axios from "axios";
 
 function CreateItems(
@@ -23,8 +20,6 @@ function CreateItems(
 ) {
     return { title, value }
 }
-
-
 
 const ParentDetailsPage = ({
     accessToken,
@@ -38,7 +33,6 @@ const ParentDetailsPage = ({
 
 }) => {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     const { t } = useTranslation();
 
     const { state } = useLocation();
@@ -64,6 +58,7 @@ const ParentDetailsPage = ({
     const [studentList, setStudentList] = useState([]);
 
     // function to fetch student data to fetch student data
+    /* eslint-disable */
     useEffect(() => {
         axios.get(API_BASE + "/list/students", {
             timeout: 30000,
@@ -73,7 +68,7 @@ const ParentDetailsPage = ({
                 'Authorization': 'Bearer ' + accessToken,
 
             }
-        }).then((res) => setStudentList(res.data.results))
+        }).then((res) => setStudentList(res.data.results)).catch((e) => console.error(e))
     }, [])
 
     useEffect(() => {
@@ -114,6 +109,7 @@ const ParentDetailsPage = ({
             dispatch(parentDetailsRequest(accessToken, { "parent_id": parentData.parent_id }))
         }
     }, [])
+    /* eslint-enable */
 
 
     // Handle text, select, and RFID input changes

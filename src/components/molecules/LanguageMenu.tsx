@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Avatar, Dropdown, Menu, MenuButton, MenuItem, Typography } from "@mui/joy"
 import image from "../../constant/image"
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import i18n from '../../i18n/i18n.js'
 
 const LanguageMenu = ({ change }) => {
@@ -45,14 +45,14 @@ const LanguageMenu = ({ change }) => {
                     "--ListItem-radius": "var(--joy-radius-sm)",
                 }}>
                 <MenuItem
-                    selected={currentLang == 'sw'}
+                    selected={currentLang === 'sw'}
                     onClick={() => _changeLanguage("sw")}
                     sx={{ display: 'flex' }}>
                     <Avatar src={image.Images.tzFlag} size='sm' sx={{ width: 20, height: 20, backgroundColor: 'transparent', borderRadius: 0 }} />
                     <Typography level='body-xs'>Swahili</Typography>
                 </MenuItem>
                 <MenuItem
-                    selected={currentLang == 'en'}
+                    selected={currentLang === 'en'}
                     onClick={() => _changeLanguage("en")}
                     sx={{ display: 'flex' }}>
                     <Avatar src={image.Images.ukFlag} size='sm' sx={{ width: 20, height: 20, backgroundColor: 'transparent', borderRadius: 0 }} />

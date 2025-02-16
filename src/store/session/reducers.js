@@ -26,6 +26,7 @@ const INITIATE_STATE = {
     transactionErrorMessage: ''
 }
 
+/* eslint-disable */
 export default (state = INITIATE_STATE, { type, payload }) => {
     switch (type) {
         // SCAN CARD

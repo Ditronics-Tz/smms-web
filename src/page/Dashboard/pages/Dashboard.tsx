@@ -1,15 +1,12 @@
-import React, { Fragment, useEffect } from "react";
+import React, {  } from "react";
 import { Typography, Box, Card, Grid } from "@mui/joy";
-import { toast } from 'react-toastify';
-import { LoadingView, Main, PageTitle } from "../../../components";
+import { PageTitle } from "../../../components";
 import { CardContent } from "@mui/material";
 import { Folder, GroupOutlined, PaidOutlined, Person } from "@mui/icons-material";
 import {  NAVIGATE_TO_OPERATORPAGE, NAVIGATE_TO_PARENTPAGE, NAVIGATE_TO_STUDENTPAGE, NAVIGATE_TO_TRANSACTIONPAGE } from "../../../route/types";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
-    const {state} = useLocation();
-    const { name } = state || {};
 
     const cardsItems = [
         {

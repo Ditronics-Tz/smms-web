@@ -62,6 +62,7 @@ const INITIAL_STATE = {
     allNotificationsErrorMessage: "",
 }
 
+/* eslint-disable */
 export default (state = INITIAL_STATE, { type, payload }) => {
     switch (type) {
         // CREATE SCHOOL

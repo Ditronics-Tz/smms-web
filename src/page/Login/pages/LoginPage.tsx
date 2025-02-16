@@ -9,7 +9,6 @@ import GlobalStyles from '@mui/joy/GlobalStyles';
 import CssBaseline from '@mui/joy/CssBaseline';
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
-import Divider from '@mui/joy/Divider';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel, { formLabelClasses } from '@mui/joy/FormLabel';
 import Input from '@mui/joy/Input';
@@ -26,26 +25,13 @@ import { NAVIGATE_TO_DASHBOARD } from '../../../route/types';
 import { toast } from 'react-toastify';
 import { STATUS } from '../../../constant';
 import { LoadingView } from '../../../components';
-import axios from 'axios';
 import LanguageMenu from '../../../components/molecules/LanguageMenu';
 import { ColorSchemeToggle } from '../../../utils';
 import { useTranslation } from 'react-i18next';
 
-interface FormElements extends HTMLFormControlsCollection {
-    email: HTMLInputElement;
-    // usermail: HTMLInputElement;
-    password: HTMLInputElement;
-    // persistent: HTMLInputElement;
-}
-interface SignInFormElement extends HTMLFormElement {
-    readonly elements: FormElements;
-}
-
 const LoginPage = ({
     loginStatus,
-    loginResult,
     loginErrorMessage,
-    accessToken,
 }) => {
 
     const navigate = useNavigate();
@@ -54,10 +40,10 @@ const LoginPage = ({
 
     const [refresh, setRefresh] = useState(false)
 
+    /* eslint-disable */
     const [OTPModal, setOTPModal] = useState(false);
     const [loadOTP, setLoadOTP] = useState(false);
     const [OTP, setOTP] = useState('')
-    const [username, setUsername] = useState('')
 
     useEffect(() => {
         if (loginStatus === STATUS.SUCCESS) {
@@ -72,6 +58,7 @@ const LoginPage = ({
     useEffect(() => {
         console.log("Refresh screen")
     }, [refresh])
+    /* eslint-enable */
 
 
     const handleSubmit = (event) => {
@@ -83,7 +70,7 @@ const LoginPage = ({
             'fcm_token': localStorage.getItem('fcm_token')
         };
         console.log(data)
-        if (data.username != "" && data.password != "") {
+        if (data.username !== "" && data.password !== "") {
             dispatch(loginRequest(data))
 
         } else {
