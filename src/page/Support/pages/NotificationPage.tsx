@@ -236,8 +236,7 @@ const NotificationPage = ({
 
     const handleLabelClick = () => {
         if (dateInputRef.current) {
-            dateInputRef.current.showPicker?.(); // Use showPicker if available
-            dateInputRef.current.focus();
+            dateInputRef.current.showPicker()
         }
     };
 
