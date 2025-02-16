@@ -19,8 +19,8 @@ import {
     scannedListReset,
 } from '../../../store/actions.js'
 import { Box, Button, Card, CardContent, Divider, FormControl, FormLabel, IconButton, iconButtonClasses, Input, List, ListDivider, ListItem, ListItemContent, Option, Select, Sheet, Stack, Table, Typography } from '@mui/joy';
-import { LoadingView, NotFoundMessage, PageTitle } from '../../../components';
-import { InfoOutlined, InfoRounded, PersonAddOutlined, WarningAmber, WarningRounded } from '@mui/icons-material';
+import { LoadingView } from '../../../components';
+import { InfoOutlined } from '@mui/icons-material';
 import { useMediaQuery } from '@mui/material';
 import { formatDate, thousandSeparator } from '../../../utils';
 
@@ -145,10 +145,6 @@ const SessionPage = ({
     scanResult,
     scanErrorMessage,
 
-    sessionStatus,
-    sessionResult,
-    sessionErrorMessage,
-
     scannedStatus,
     scannedResult,
     scannedErrorMessage
@@ -206,10 +202,12 @@ const SessionPage = ({
     }
 
     // ----- Effect to call fetch
+    /* eslint-disable */
     useEffect(() => {
         fetchSessionStatus()
         fetchCanteenList()
     }, [accessToken])
+    /* eslint-enable */
 
     // ---- PAGINATION SETTINGS ----- //
     const [page, setPage] = useState(1);
@@ -222,6 +220,7 @@ const SessionPage = ({
     const pageLength = scannedList.length > 0 ? Math.ceil(totalScan / ITEMS_PER_PAGE) : 1
 
     // ---- Main Effect
+    /* eslint-disable */
     useEffect(() => {
         //  start scan
         if (startStatus === STATUS.SUCCESS) {
@@ -281,6 +280,7 @@ const SessionPage = ({
             dispatch(scannedListRequest(accessToken, { "session_id": sessionData ? sessionData.id : "", "search": search }, page))
         }
     }, [scanStatus, page, search])
+    /* eslint-enable */
 
     const [card_number, setCardNumber] = useState('');
     const inputRef = useRef(null);

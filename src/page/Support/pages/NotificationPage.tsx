@@ -1,17 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack, Chip, ColorPaletteProp, Autocomplete } from "@mui/joy";
-import { AlertModal, LoadingView, NotFoundMessage, PageTitle } from "../../../components";
-import { formatDate, thousandSeparator } from "../../../utils";
+import { Typography, Box, List, ListItem, ListItemContent, Sheet, Table, iconButtonClasses, Button, IconButton, Input, Chip, ColorPaletteProp } from "@mui/joy";
+import { LoadingView, NotFoundMessage, PageTitle } from "../../../components";
+import { formatDate } from "../../../utils";
 
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 import { connect, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
-import { BlockOutlined, CalendarMonthRounded, EditOutlined, PersonAddOutlined, RemoveRedEyeOutlined, TaskAltOutlined } from "@mui/icons-material";
-import { API_BASE, STATUS } from "../../../constant";
+import { CalendarMonthRounded } from "@mui/icons-material";
+import { STATUS } from "../../../constant";
 import { toast } from "react-toastify";
 
 import {
@@ -19,7 +18,6 @@ import {
     allNotificationsReset
 } from "../../../store/actions"
 import { useTranslation } from "react-i18next";
-import axios from "axios";
 
 const MobileViewTable = ({ data, props }) => {
     const { t } = useTranslation();
@@ -197,7 +195,6 @@ const NotificationPage = ({
     listErrorMessage,
 }) => {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     const { t } = useTranslation()
     const isDesktop = useMediaQuery("(min-width:600px)");
 
@@ -212,6 +209,7 @@ const NotificationPage = ({
     const ITEMS_PER_PAGE = 50
     const pageLength = listData.length > 0 ? Math.ceil(totalAllNotifications / ITEMS_PER_PAGE) : 1
 
+    /* eslint-disable */
     useEffect(() => {
         if (listStatus === STATUS.SUCCESS) {
             setListData(listResult.results);
@@ -231,6 +229,7 @@ const NotificationPage = ({
         }
         dispatch(allNotificationsRequest(accessToken, data, page))
     }, [page, search])
+    /* eslint-enable */
 
     // for calender open
     const dateInputRef = useRef<HTMLInputElement | null>(null);

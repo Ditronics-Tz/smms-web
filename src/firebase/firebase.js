@@ -1,5 +1,4 @@
 import { initializeApp } from "firebase/app";
-import { toast } from "react-toastify";
 import { getMessaging, getToken, onMessage, isSupported } from "firebase/messaging";
 
 const firebaseConfig = {

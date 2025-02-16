@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
 import { errorMessage } from '../../utils';
-import { doAdminDetails, doInactiveUsers, doOperatorDetails, doParentDetails, doStudentDetails, doStudentEdit, doStudentList, doUserList } from '../../service/user';
+import { doAdminDetails, doInactiveUsers, doOperatorDetails, doParentDetails, doStudentDetails, doUserList } from '../../service/user';
 
 /* ______ STUDENT SAGAS ________ */
 
@@ -14,7 +14,7 @@ function* userListTask(action) {
 
         const res = yield call(doUserList,payload.token, payload.data, payload.page);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.USER_LIST_SUCCESS,
                 payload: res.data
@@ -44,7 +44,7 @@ function* inactiveUsersTask(action) {
 
         const res = yield call(doInactiveUsers,payload.token, payload.data, payload.page);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.INACTIVE_USERS_SUCCESS,
                 payload: res.data
@@ -74,7 +74,7 @@ function* studentDetailsTask(action) {
 
         const res = yield call(doStudentDetails,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.STUDENT_DETAILS_SUCCESS,
                 payload: res.data
@@ -104,7 +104,7 @@ function* adminDetailsTask(action) {
 
         const res = yield call(doAdminDetails,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.ADMIN_DETAILS_SUCCESS,
                 payload: res.data
@@ -134,7 +134,7 @@ function* operatorDetailsTask(action) {
 
         const res = yield call(doOperatorDetails,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.OPERATOR_DETAILS_SUCCESS,
                 payload: res.data
@@ -164,7 +164,7 @@ function* parentDetailsTask(action) {
 
         const res = yield call(doParentDetails,payload.token, payload.data);
 
-        if (res.status == 200) {
+        if (res.status === 200) {
             yield put({
                 type: STATE.PARENT_DETAILS_SUCCESS,
                 payload: res.data

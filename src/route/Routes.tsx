@@ -157,15 +157,6 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
               </RoleProtectedRoute>
             } />
 
-          {/* card details page */}
-          {/* <Route
-            path={NAVIGATE_TO_CARDDETAILSPAGE}
-            element={
-              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
-                <CardDetailsPage />
-              </RoleProtectedRoute>
-            } /> */}
-
           {/* Session */}
           <Route path={NAVIGATE_TO_SESSIONPAGE} element={
             <RoleProtectedRoute userRole={userRole} allowedRoles={['operator']}>

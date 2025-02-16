@@ -85,7 +85,6 @@ function Toggler({
 
 
 const ListItemComponent = ({ route, action, props, path }) => {
-  const location = useLocation();
   const navigate = useNavigate()
 
   const navTo = () => {
@@ -124,7 +123,6 @@ const ListItemComponent = ({ route, action, props, path }) => {
 };
 
 const DropdowmList = ({ children, props, path }) => {
-  const location = useLocation();
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
@@ -132,8 +130,8 @@ const DropdowmList = ({ children, props, path }) => {
       <Toggler
         route={path}
         renderToggle={({ open, setOpen }) => (
-          <ListItemButton
-            onClick={() => (setOpen(!open), setIsOpen(!open))}
+          <ListItemButton // eslint-disable-next-line
+            onClick={() => (setOpen(!open), setIsOpen(!open))} 
             sx={{
               height: 30,
               backgroundColor: path ? "#FFFFFF30" : "transparent",
@@ -165,7 +163,6 @@ const Sidebar = ({
 }) => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const logOut = () => {
@@ -176,7 +173,7 @@ const Sidebar = ({
   const [isAdmin, setIsAdmin] = React.useState(false)
 
   React.useEffect(() => {
-    if (loginResult != null && loginResult != undefined) {
+    if (loginResult !== null && loginResult !== undefined) {
       setUserRoles(loginResult.user.role)
       setIsAdmin(loginResult.user.is_superuser)
     }
@@ -312,7 +309,7 @@ const Sidebar = ({
             </DropdowmList>}
 
           {/* ------ Manage Resources ------- */}
-          {userRole == 'admin' &&
+          {userRole === 'admin' &&
             <DropdowmList
               path={
                 location.pathname === NAVIGATE_TO_SCHOOLPAGE ||
@@ -362,7 +359,7 @@ const Sidebar = ({
             </DropdowmList>}
 
           {/* Transactions */}
-          {(userRole == 'admin' || userRole == 'parent') &&
+          {(userRole === 'admin' || userRole === 'parent') &&
             <ListItemComponent
               route={NAVIGATE_TO_TRANSACTIONPAGE}
               path={location.pathname === NAVIGATE_TO_TRANSACTIONPAGE}
@@ -374,7 +371,7 @@ const Sidebar = ({
             />}
 
           {/* Sessions */}
-          {userRole == 'operator' &&
+          {userRole === 'operator' &&
             <ListItemComponent
               route={NAVIGATE_TO_SESSIONPAGE}
               path={location.pathname === NAVIGATE_TO_SESSIONPAGE}
@@ -386,7 +383,7 @@ const Sidebar = ({
             />}
 
           {/* Bank deposit */}
-          {userRole == 'admin' && <ListItemComponent
+          {userRole === 'admin' && <ListItemComponent
             route={'#'}
             path={null}
             action={() => null}

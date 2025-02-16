@@ -28,6 +28,7 @@ const INITIAL_STATE = {
     parentDetailsErrorMessage: "",
 }
 
+/* eslint-disable */
 export default (state = INITIAL_STATE, { type, payload }) => {
     switch (type) {
         /* _________ 

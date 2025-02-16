@@ -1,7 +1,6 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment } from "react";
 import { Typography, Box } from "@mui/joy";
-import { toast } from 'react-toastify';
-import { Main, PageTitle } from "../../../components";
+import { PageTitle } from "../../../components";
 
 const SupportPage = () => {
 

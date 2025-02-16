@@ -1,20 +1,17 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { Typography, Box, Table, AspectRatio, Card, CardContent, Divider, ButtonGroup, Button, Sheet, Modal, ModalOverflow, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar, Chip, ColorPaletteProp, ListDivider } from "@mui/joy";
+import React, { useEffect, useState } from "react";
+import { Typography, Box, Table, Divider, Button, Sheet, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar } from "@mui/joy";
 import { toast } from 'react-toastify';
-import { LoadingView, Main, NotFoundMessage, PageTitle } from "../../../../components";
-import { useLocation, useNavigate } from "react-router-dom";
-import { FILE_BASE, STATUS } from "../../../../constant";
+import { LoadingView, NotFoundMessage } from "../../../../components";
+import { useLocation} from "react-router-dom";
+import { STATUS } from "../../../../constant";
 import { connect, useDispatch } from "react-redux";
-import { useMediaQuery } from "@mui/material";
 import {
     editUserRequest,
     editUserReset,
     operatorDetailsRequest,
-    operatorDetailsReset,
 } from '../../../../store/actions'
-import { AddCardOutlined, BlockOutlined, CheckCircle, DeleteOutline, DoNotDisturbOn, EditOutlined, FolderOpenOutlined, LocationOn, RemoveRedEyeOutlined, TaskAltOutlined, WarningRounded } from "@mui/icons-material";
+import { EditOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import { formatDate, thousandSeparator } from "../../../../utils";
 
 function CreateItems(
     title: String,
@@ -37,7 +34,6 @@ const OperatorDetailsPage = ({
     detailsResult
 }) => {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     const { t } = useTranslation();
 
     const { state } = useLocation();
@@ -62,6 +58,7 @@ const OperatorDetailsPage = ({
 
     const [operatorData, setOperatorData] = useState(initiateOperatorData);
 
+    /* eslint-disable */
     useEffect(() => {
         if (detailsStatus === STATUS.SUCCESS) {
             setOperatorData({
@@ -101,6 +98,7 @@ const OperatorDetailsPage = ({
             dispatch(operatorDetailsRequest(accessToken, { "operator_id": operatorData.operator_id }))
         }
     }, [])
+    /* eslint-disable */
 
 
     // Handle text, select, and RFID input changes

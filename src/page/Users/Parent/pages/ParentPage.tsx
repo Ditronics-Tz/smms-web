@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack, ListItemDecorator, Avatar, MenuItem, Divider, Autocomplete } from "@mui/joy";
+import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack, Autocomplete } from "@mui/joy";
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import { LoadingView, NotFoundMessage, PageTitle } from "../../../../components";
@@ -8,13 +8,12 @@ import { formatDate } from "../../../../utils";
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 
 import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { DeleteOutline, PersonAddOutlined, RemoveRedEyeOutlined } from "@mui/icons-material";
-import { API_BASE, FILE_BASE, STATUS } from "../../../../constant";
+import { API_BASE, STATUS } from "../../../../constant";
 import { toast } from "react-toastify";
 
 import {
@@ -266,6 +265,7 @@ const ParentPage = ({
     const [studentList, setStudentList] = useState([]);
 
     // function to fetch student data to fetch student data
+    /* eslint-disable */
     useEffect(() => {
         axios.get(API_BASE + "/list/students", {
             timeout: 30000,
@@ -275,7 +275,7 @@ const ParentPage = ({
                 'Authorization': 'Bearer ' + accessToken,
 
             }
-        }).then((res) => setStudentList(res.data.results))
+        }).then((res) => setStudentList(res.data.results)).catch((e) => console.error(e)) 
     }, [])
 
     // ---- PAGINATION SETTINGS ----- //
@@ -303,7 +303,7 @@ const ParentPage = ({
             dispatch(userListReset());
         }
 
-        if (createStatus == STATUS.SUCCESS) {
+        if (createStatus === STATUS.SUCCESS) {
             toast.success(createResult.message);
             setFormModal(false);
             setParentData(initiateParentData);
@@ -323,6 +323,7 @@ const ParentPage = ({
         }
         dispatch(userListRequest(accessToken, data, page))
     }, [page, search])
+    /* eslint-enable */
 
     // Handle text, select, and RFID input changes
     const handleChange = (e) => {
@@ -331,15 +332,6 @@ const ParentPage = ({
         setParentData((prevData) => ({
             ...prevData,
             [name]: value,
-        }));
-    };
-
-    // Handle file input change
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setParentData((prevData) => ({
-            ...prevData,
-            profile_picture: file,
         }));
     };
 

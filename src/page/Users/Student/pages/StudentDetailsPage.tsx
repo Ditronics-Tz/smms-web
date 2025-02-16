@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Typography, Box, Divider, Button, Sheet, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar, Chip, ColorPaletteProp, ListDivider, Autocomplete } from "@mui/joy";
 import { toast } from 'react-toastify';
 import { LoadingView, NotFoundMessage } from "../../../../components";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation} from "react-router-dom";
 import { API_BASE, FILE_BASE, STATUS } from "../../../../constant";
 import { connect, useDispatch } from "react-redux";
 import classList from '../../../../assets/data/classess.json'
@@ -41,7 +41,6 @@ const StudentDetailsPage = ({
 
 }) => {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     const { t } = useTranslation();
 
     const { state } = useLocation();
@@ -69,6 +68,7 @@ const StudentDetailsPage = ({
     const [parentList, setParentList] = useState([])
 
     // function to fetch parents data to fetch student data
+    /* eslint-disable */
     useEffect(() => {
         axios.get(API_BASE + "/list/parents", {
             timeout: 30000,
@@ -78,7 +78,7 @@ const StudentDetailsPage = ({
                 'Authorization': 'Bearer ' + accessToken,
 
             }
-        }).then((res) => setParentList(res.data.results))
+        }).then((res) => setParentList(res.data.results)).catch((e) => console.error(e))
     }, [])
 
     useEffect(() => {
@@ -121,6 +121,7 @@ const StudentDetailsPage = ({
             dispatch(studentDetailsRequest(accessToken, { "student_id": studentData.student_id }))
         }
     }, [])
+    /* eslint-enable */
 
 
     // Handle text, select, and RFID input changes
