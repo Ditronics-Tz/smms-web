@@ -76,7 +76,7 @@ export default function AppInit () {
                         }}
                     >
                         <Avatar
-                            src={image.Images.logoWhite}
+                            src={image.Images.logo}
                             size='sm'
                             sx={{
                                 maxWidth: 80, maxHeight: 80, backgroundColor: 'primary.500', padding: '5px',

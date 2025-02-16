@@ -128,7 +128,7 @@ const OperatorDetailsPage = ({
             formData.append("email", operatorData.email);
             formData.append("username", operatorData.username);
             formData.append("mobile_number", operatorData.mobile);
-            formData.append("school", operatorData.school);
+            formData.append("school", operatorData.school_value);
             formData.append("role", "operator");
 
             dispatch(editUserRequest(accessToken, formData))
@@ -185,10 +185,10 @@ const OperatorDetailsPage = ({
                                 flexDirection: 'row',
                                 backgroundColor: 'background.body',
                                 p: 2,
-                                gap:{xs: 1, md: 3},
+                                gap: { xs: 1, md: 3 },
                                 borderRadius: 6
                             }}>
-                            <Avatar sx={{height: 160, width: 140, borderRadius: 6}} />
+                            <Avatar sx={{ height: 160, width: 140, borderRadius: 6 }} />
                             {/* <Divider orientation="horizontal" /> */}
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, width: '100%' }}>
                                 <Typography level="h3">{operatorData.first_name + " " + operatorData.middle_name + " " + operatorData.last_name}</Typography>
@@ -361,7 +361,8 @@ const OperatorDetailsPage = ({
                                     {schoolStatus === STATUS.SUCCESS ? schoolList.results.map((item, index) => (
                                         <Option key={index} value={item.id}>{item.name}</Option>
                                     )) : <Option value={null}>{t("school.NoList")}</Option>}
-                                </Select>                            </FormControl>
+                                </Select>
+                            </FormControl>
                         </Stack>
 
                         <Stack gap={4} sx={{ mt: 2 }}>

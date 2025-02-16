@@ -59,7 +59,11 @@ export const STATE = createRequestTypes('STATE',
         'SCANNED_LIST',
         'SESSION_LIST',
         'SCAN_CARD',
-        'TRANSACTIONS'
+        'TRANSACTIONS',
+
+        // notifications
+        'NOTIFICATIONS',
+        'ALL_NOTIFICATIONS',
 
 
     ], suffixTypes);

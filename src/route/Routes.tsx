@@ -12,6 +12,7 @@ import {
   NAVIGATE_TO_DASHBOARD,
   NAVIGATE_TO_INFOPAGE,
   NAVIGATE_TO_LOGINPAGE,
+  NAVIGATE_TO_NOTIFICATIONPAGE,
   NAVIGATE_TO_OPERATORDETAILSPAGE,
   NAVIGATE_TO_OPERATORPAGE,
   NAVIGATE_TO_PARENTDETAILSPAGE,
@@ -27,7 +28,7 @@ import {
 import { STATUS } from "../constant";
 import Error404Page from "../page/ErrorsPages/404Error";
 import { Main } from "../components";
-import { AdminDetailsPage, AdminPage, CanteenItemPage, CardPage, Dashboard, InfoPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, StudentDetailsPage, StudentPage, SupportPage, TransactionPage, SessionPage } from "../page";
+import { AdminDetailsPage, AdminPage, CanteenItemPage, CardPage, Dashboard, InfoPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, StudentDetailsPage, StudentPage, SupportPage, TransactionPage, SessionPage, NotificationPage } from "../page";
 
 // FUNCTION TO DIRECT ONLY AUTH USER TO THEIR PAGES
 const ProtectRoute = ({ status }) => {
@@ -176,6 +177,13 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
           <Route path={NAVIGATE_TO_TRANSACTIONPAGE} element={
             <RoleProtectedRoute userRole={userRole} allowedRoles={['admin', 'parent']}>
               <TransactionPage />
+            </RoleProtectedRoute>
+          } />
+
+          {/* Notifications */}
+          <Route path={NAVIGATE_TO_NOTIFICATIONPAGE} element={
+            <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+              <NotificationPage />
             </RoleProtectedRoute>
           } />
 

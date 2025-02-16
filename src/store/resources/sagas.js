@@ -1,6 +1,6 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
-import { doCreateSchool, doSchoolList, doCreateCard, doCardList, doCreateItem, doItemList, doCardDetails, doDeleteItem, doDeleteSchool, doEditCard, doEditItem, doActivateCard } from '../../service/resources';
+import { doCreateSchool, doSchoolList, doCreateCard, doCardList, doCreateItem, doItemList, doCardDetails, doDeleteItem, doDeleteSchool, doEditCard, doEditItem, doActivateCard, doNotification, doAllNotifications } from '../../service/resources';
 import { errorMessage } from '../../utils';
 
 // Create school
@@ -364,6 +364,67 @@ function* cardDetailsTask(action) {
     }
 }
 
+// notifications Details
+function* notificationsTask(action) {
+    try {
+        yield put({ type: STATE.NOTIFICATIONS_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doNotification,payload.token, payload.data, payload.page);
+
+        if (res.status === 200) {
+            yield put({
+                type: STATE.NOTIFICATIONS_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.NOTIFICATIONS_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.NOTIFICATIONS_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
+
+//ALL notifications
+function* allNotificationsTask(action) {
+    try {
+        yield put({ type: STATE.ALL_NOTIFICATIONS_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doAllNotifications,payload.token, payload.data, payload.page);
+
+        if (res.status === 200) {
+            yield put({
+                type: STATE.ALL_NOTIFICATIONS_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.ALL_NOTIFICATIONS_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.ALL_NOTIFICATIONS_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
 
 function* resourcesSaga() {
     yield takeLatest(STATE.CREATE_SCHOOL_REQUEST, createSchoolTask)
@@ -377,6 +438,8 @@ function* resourcesSaga() {
     yield takeLatest(STATE.EDIT_CARD_REQUEST, editCardTask)
     yield takeLatest(STATE.ACTIVATE_CARD_REQUEST, activateCardTask)
     yield takeLatest(STATE.CARD_LIST_REQUEST, cardListTask);
+    yield takeLatest(STATE.NOTIFICATIONS_REQUEST, notificationsTask);
+    yield takeLatest(STATE.ALL_NOTIFICATIONS_REQUEST, allNotificationsTask);
     yield takeLatest(STATE.CARD_DETAILS_REQUEST, cardDetailsTask);
 }
 

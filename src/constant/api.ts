@@ -1,6 +1,6 @@
 // ----- BASE API ------
 // export const API_BASE = 'http://127.0.0.1:8000';
-// export const API_BASE = 'http://192.168.137.183:8000';
+// export const API_BASE = 'http://192.168.103.29:8000';
 
 
 // FOR PRODUCTION
@@ -48,4 +48,8 @@ export const END_SESSION_URL = '/sessions/end-session';
 export const SESSION_LIST_URL = '/sessions/session-list';
 export const SCANNED_LIST_URL = '/sessions/scanned-data';
 export const SCAN_CARD_URL = '/sessions/scan-card';
-export const TRANSACTIONS_URL = '/session/transactions';
+export const TRANSACTIONS_URL = '/sessions/transaction-list';
+
+// ---- NOTIFICATIONS ----
+export const NOTIFICATIONS_URL = '/resources/notifications/';
+export const ALL_NOTIFICATIONS_URL = '/resources/all-notifications';

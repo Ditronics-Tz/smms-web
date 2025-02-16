@@ -1,4 +1,4 @@
-import { ACTIVATE_CARD_URL, CARD_DETAILS_URL, CARD_LIST_URL, CREATE_CARD_URL, CREATE_ITEM_URL, CREATE_SCHOOL, CREATE_SCHOOL_URL, DELETE_ITEM_URL, DELETE_SCHOOL_URL, EDIT_CARD_URL, EDIT_ITEM_URL, ITEM_LIST_URL, SCHOOL_LIST, SCHOOL_LIST_URL } from "../../constant";
+import { ACTIVATE_CARD_URL, ALL_NOTIFICATIONS_URL, CARD_DETAILS_URL, CARD_LIST_URL, CREATE_CARD_URL, CREATE_ITEM_URL, CREATE_SCHOOL, CREATE_SCHOOL_URL, DELETE_ITEM_URL, DELETE_SCHOOL_URL, EDIT_CARD_URL, EDIT_ITEM_URL, ITEM_LIST_URL, NOTIFICATIONS_URL, SCHOOL_LIST, SCHOOL_LIST_URL } from "../../constant";
 import { listRequest, resourceRequest } from "../calls";
 
 // ---- SCHOOL ----
@@ -50,4 +50,12 @@ export function doCardDetails(token, data){
 
 export function doActivateCard(token, data){
     return resourceRequest(token, ACTIVATE_CARD_URL, data)
+}
+
+export function doNotification(token, data){
+    return resourceRequest(token, NOTIFICATIONS_URL, data)
+}
+
+export function doAllNotifications(token, data, page){
+    return listRequest(token, ALL_NOTIFICATIONS_URL, data, page)
 }

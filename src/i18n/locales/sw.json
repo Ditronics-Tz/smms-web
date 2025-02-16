@@ -60,6 +60,9 @@
         "reject": "Imekataliwa",
         "approved": "Imekubaliwa",
         "send": "Tuma",
+        "sent": "Imetumwa",
+        "failed": "Haijatumwa",
+        "penalt": "Penalt",
         "received": "Imepokelewa",
         "used": "Imetumika",
         "notUsed": "Haijatumika",
@@ -406,21 +409,23 @@
         "title": "Miamala",
         "date": "Tarehe",
         "amount": "Kiasi",
-        "ref": "Ref No",
-        "channel": "Channel",
-        "tranType": "Aina Ya Muamala: ",
-        "receiveLoan": "Pokea Mkopo",
-        "payLoan": "Mkopo",
-        "empty": "Hakuna taarifa za miamala",
-        "emptyDesc": "Hii inaweza kuwa hauna historia ya miamala au tatizo la kimtandao.",
-        "status": "Status",
-        "received": "Received",
-        "sent": "Sent"
+        "student_name": "Jina la Mwanafunzi",
+        "card_number":"Namba ya Kadi",
+        "item_name": "Jina la Bidhaa",
+        "status": "Hali"
     },
     "notification": {
         "title": "Taarifa",
         "notFound": "Hakuna Taarifa",
-        "listTitle": "Taarifa Zako"
+        "listTitle": "Taarifa Zako",
+        "recipient": "Mpokeaji",
+        "status": "Hali",
+        "date": "Tarehe",
+        "type": "Kichwa",
+        "message": "Ujumbe",
+        "reminder": "Reminder",
+        "transaction": "Transaction",
+        "system": "System Info"
     },
     "errors": {
         "1000": "Hitilafu ya mfumo, Ombi limeshindikana",
@@ -450,6 +455,8 @@
         "118": "Mlo umekataliwa. Mwanafunzi amezidi kikomo cha upungufu wa salio kinachoruhusiwa.",
         "119": "Mwanafunzi huyu tayari amenunua bidhaa hii",
         "120": "Kitambulisho cha kikao kinahitajika",
-        "121": "Hakuna orodha ya waliyochanganuliwa kwa kikao hiki"
+        "121": "Hakuna orodha ya waliyochanganuliwa kwa kikao hiki",
+        "122": "Namba ya simu tayari imeshatumika",
+        "123": "Barua pepe (email) imeshatumika"
     }
 }

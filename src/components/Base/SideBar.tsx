@@ -27,6 +27,7 @@ import {
   NAVIGATE_TO_CARDDETAILSPAGE,
   NAVIGATE_TO_CARDPAGE,
   NAVIGATE_TO_DASHBOARD,
+  NAVIGATE_TO_NOTIFICATIONPAGE,
   NAVIGATE_TO_OPERATORDETAILSPAGE,
   NAVIGATE_TO_OPERATORPAGE,
   NAVIGATE_TO_PARENTDETAILSPAGE,
@@ -337,7 +338,7 @@ const Sidebar = ({
               />}
 
               {/* cards */}
-              <ListItemComponent
+              {isAdmin && <ListItemComponent
                 route={NAVIGATE_TO_CARDPAGE}
                 path={location.pathname === NAVIGATE_TO_CARDPAGE ||
                   location.pathname === NAVIGATE_TO_CARDDETAILSPAGE}
@@ -346,7 +347,7 @@ const Sidebar = ({
                   title: t("sidebar.manageCards"),
                   icon: <BadgeOutlined />
                 }}
-              />
+              />}
 
               {/* items */}
               <ListItemComponent
@@ -397,8 +398,8 @@ const Sidebar = ({
 
           {/* Notifications */}
           {isAdmin && <ListItemComponent
-            route={'#'}
-            path={null}
+            route={NAVIGATE_TO_NOTIFICATIONPAGE}
+            path={location.pathname === NAVIGATE_TO_NOTIFICATIONPAGE}
             action={() => null}
             props={{
               title: t("sidebar.notifications"),

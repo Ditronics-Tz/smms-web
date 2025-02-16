@@ -36,6 +36,9 @@ export const NAVIGATE_TO_SESSIONPAGE = '/session';
 // Transactions
 export const NAVIGATE_TO_TRANSACTIONPAGE = '/transactions';
 
+// Notification
+export const NAVIGATE_TO_NOTIFICATIONPAGE = '/all-notifications';
+
 // Profile
 export const NAVIGATE_TO_PROFILEPAGE = '/profile';
 
