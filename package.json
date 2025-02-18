@@ -4,12 +4,12 @@
   "private": true,
   "homepage": "https://adhimkitchen.ditronics.co.tz",
   "dependencies": {
-    "@emotion/react": "^11.11.3",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.15.5",
     "@mui/joy": "^5.0.0-beta.24",
-    "@mui/material": "^5.15.5",
+    "@mui/material": "^6.4.4",
     "@mui/styles": "^5.15.5",
     "@profabric/react-components": "^0.1.7",
     "@reduxjs/toolkit": "^2.2.1",
@@ -42,6 +42,7 @@
     "react-thunk": "^1.0.0",
     "react-toastify": "^10.0.3",
     "react-transition-group": "^4.4.5",
+    "recharts": "^2.15.1",
     "redux-form": "^8.3.10",
     "redux-form-material-ui": "^4.3.4",
     "redux-persist": "^6.0.0",
@@ -75,6 +76,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "typescript": "^5.5.4"
   }
 }

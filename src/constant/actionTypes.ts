@@ -29,6 +29,10 @@ export const STATE = createRequestTypes('STATE',
         'INACTIVE_USERS',
         'ACTIVATE_USER',
 
+        // dashboard
+        'COUNTS',
+        'SALES_SUMMARY',
+        'SALES_TREND',
 
         // resources
         'CREATE_SCHOOL',

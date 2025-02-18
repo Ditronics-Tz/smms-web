@@ -15,6 +15,11 @@ export const CREATE_USER_URL = '/auth/create-user';
 export const EDIT_USER_URL = '/auth/edit-user';
 export const ACTIVATE_USER_URL = '/auth/activate-deactivate-user'
 
+// ---- DASHBOARD URLS -----
+export const COUNTS_URL = "/dashboard/counts";
+export const SALES_SUMMARY_URL = "/dashboard/sales-summary";
+export const SALES_TREND_URL = "/dashboard/sales-trend";
+
 
 // ---- RESOURCES URLS ----- 
 export const CREATE_SCHOOL_URL = "/resources/create-school";
