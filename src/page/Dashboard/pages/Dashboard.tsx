@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/joy";
+import { Box, Button, Typography } from "@mui/joy";
 import AdminDashboard from "./AdminDashboard";
 import { connect } from "react-redux";
+import { fetchPDF } from "../../../utils";
+import { DownloadRounded } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 const Dashboard = ({
     accessToken,
@@ -9,22 +12,36 @@ const Dashboard = ({
 }) => {
 
     const [name, setName] = useState("")
+    const { t } = useTranslation()
 
     useEffect(() => {
-        if (loginResult){
+        if (loginResult) {
             setName(loginResult.user.first_name)
         }
-    },[loginResult])
+    }, [loginResult])
+
+    const generateReport = () => {
+        fetchPDF(accessToken, "/dashboard/end-of-day-report")
+    }
 
     return (
         <Box>
-            <Box sx={{ py: 1}}>
-                <Typography level="title-lg">Welcome Back, {name}</Typography>
-                <Typography level="body-sm">Here is your summary details</Typography>
+            <Box sx={{ display: 'flex', flexDirection: {xs: "column", md: "row"}, justifyContent: "space-between", py: 2 }}>
+                <Box>
+                    <Typography level="title-lg">{t("home.welcome")}, {name}</Typography>
+                    <Typography level="body-sm">{t("home.desc")}</Typography>
+                </Box>
+                <Button
+                    size="sm"
+                    color="success"
+                    startDecorator={<DownloadRounded />}
+                    onClick={generateReport}>
+                    {t("home.download")}
+                </Button>
             </Box>
 
             {/* <LoadingView loading={true}/> */}
-            <AdminDashboard/>
+            <AdminDashboard />
 
 
 
@@ -32,8 +49,8 @@ const Dashboard = ({
     )
 }
 
-const mapStateToProps = ({auth}) => {
-    const {accessToken, loginResult} = auth
+const mapStateToProps = ({ auth }) => {
+    const { accessToken, loginResult } = auth
 
     return {
         accessToken,
@@ -42,4 +59,4 @@ const mapStateToProps = ({auth}) => {
 }
 
 
-export default connect(mapStateToProps,{})(Dashboard)
+export default connect(mapStateToProps, {})(Dashboard)

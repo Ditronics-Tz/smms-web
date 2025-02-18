@@ -21,28 +21,29 @@ import LineGraph from "./LineGraph"
 
 
 const CountsCards = ({ props, data }) => {
+    const { t } = useTranslation()
 
     const cardsItems = [
         {
-            title: 'Total Students',
+            title: t("home.total") + " " + t("home.student"),
             color: '#D1F8EF',
             number: data.students,
             action: NAVIGATE_TO_STUDENTPAGE
         },
         {
-            title: 'Total Parents',
+            title: t("home.total") + " " + t("home.parent"),
             color: '#B6FFA1',
             number: data.parents,
             action: NAVIGATE_TO_PARENTPAGE
         },
         {
-            title: 'Total Purchase',
+            title: t("home.total") + " " + t("home.purchase"),
             color: '#D0DDD0',
             number: data.transactions,
             action: NAVIGATE_TO_TRANSACTIONPAGE
         },
         {
-            title: 'Available Balance',
+            title: t("home.available"),
             color: '#C4D9FF',
             number: "Tsh. " + thousandSeparator(data.total_balance),
             action: '#'
@@ -100,7 +101,7 @@ const CountsCards = ({ props, data }) => {
                                         alignSelf: 'flex-end',
                                         // boxShadow: 'sm'
                                     }}>
-                                    View Details
+                                    {t("home.view")}
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -250,9 +251,9 @@ const AdminDashboard = ({
                         <Typography
                             startDecorator={<TrendingUp />}
                             level="title-md">
-                            Sales Trend
+                            {t("home.trend")}
                         </Typography>
-                        <Typography level="body-sm">This is the sales trend of the week to show total transactions amount per day</Typography>
+                        <Typography level="body-sm">{t("home.trend_desc")}</Typography>
                         <Divider />
                         <LineGraph data={salesTrend} />
                     </CardContent>
@@ -275,20 +276,20 @@ const AdminDashboard = ({
                         flexDirection: 'column',
                     }}>
                         <Typography startDecorator={<MonetizationOnOutlined />} alignSelf="flex-start" level="title-md">
-                            Total Sales Amount
+                            {t("home.total") + " " + t("home.sales")}
                         </Typography>
-                        <Typography level="body-sm">This is the total sales amount in day, month and year</Typography>
+                        <Typography level="body-sm">{t("home.summary_desc")}</Typography>
                         <Divider />
                         <ButtonGroup >
                             {["day", "month", "year"].map((item, index) => (
                                 <Button
                                     key={index}
-                                    variant={item===salesSummary.filter_by ? "solid" : "outlined"}
+                                    variant={item === salesSummary.filter_by ? "solid" : "outlined"}
                                     onClick={() => requestSummary(item)}>
                                     {{
-                                        "day": "Day",
-                                        "month": "Month",
-                                        "year": "Year"
+                                        "day": t("home.day"),
+                                        "month": t("home.month"),
+                                        "year": t("home.year")
                                     }[item]}
                                 </Button>)
                             )}
@@ -298,15 +299,15 @@ const AdminDashboard = ({
                     <CardContent sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 1 }}>
                         <Typography level="title-sm">
                             {{
-                                "day": "Today",
-                                "month": "This Month",
-                                "year": "This Year"
-                            }[salesSummary.filter_by]} Summary
+                                "day": t("home.today"),
+                                "month": t("home.month"),
+                                "year": t("home.year")
+                            }[salesSummary.filter_by]} {t("home.summary")}
                         </Typography>
-                        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1,}}>
+                        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, }}>
                             {[
-                                { title: "Transactions", count: salesSummary.success },
-                                { title: "Penalts", count: salesSummary.penalts }].map((item, index) => (
+                                { title: t("home.transaction"), count: salesSummary.success },
+                                { title: t("home.penalt"), count: salesSummary.penalts }].map((item, index) => (
                                     <Box
                                         key={index}
                                         sx={{
@@ -333,9 +334,9 @@ const AdminDashboard = ({
                                 borderRadius: 8,
                                 p: 1
                             }}>
-                            <Typography level="title-md">Total Amount</Typography>
-                            <Typography fontSize={23}>Tsh. {thousandSeparator(salesSummary.success_amount)}</Typography>
-                            <Typography level="title-sm" color="danger" mt={1}>Total Penalts Amount</Typography>
+                            <Typography level="title-md">{t("home.total") + " " + t("home.amount")}</Typography>
+                            <Typography level="h4" fontSize={23}>Tsh. {thousandSeparator(salesSummary.success_amount)}</Typography>
+                            <Typography level="title-sm" color="danger" mt={1}>{t("home.total") + " " + t("home.penalt") + " " + t("home.amount")}</Typography>
                             <Typography fontSize={14} color="danger">Tsh. {thousandSeparator(salesSummary.penalts_amount)}</Typography>
                         </Sheet>
 
