@@ -33,6 +33,8 @@ export const STATE = createRequestTypes('STATE',
         'COUNTS',
         'SALES_SUMMARY',
         'SALES_TREND',
+        'LAST_SESSION',
+        'PARENT_STUDENTS',
 
         // resources
         'CREATE_SCHOOL',

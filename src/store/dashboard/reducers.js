@@ -12,6 +12,14 @@ const INITIATE_STATE = {
     salesTrendStatus: STATUS.DEFAULT,
     salesTrendResult: null,
     salesTrendErrorMessage: '',
+
+    lastSessionStatus: STATUS.DEFAULT,
+    lastSessionResult: null,
+    lastSessionErrorMessage: '',
+
+    parentStudentsStatus: STATUS.DEFAULT,
+    parentStudentsResult: null,
+    parentStudentsErrorMessage: '',
 }
 
 /* eslint-disable */
@@ -99,6 +107,64 @@ export default (state = INITIATE_STATE, { type, payload }) => {
                 salesTrendStatus: STATUS.DEFAULT,
                 salesTrendResult: null,
                 salesTrendErrorMessage: ''
+            }
+
+
+            // LAST SESSION
+        case STATE.LAST_SESSION_LOADING:
+            return {
+                ...state,
+                lastSessionStatus: STATUS.LOADING
+            }
+
+        case STATE.LAST_SESSION_SUCCESS:
+            return {
+                lastSessionStatus: STATUS.SUCCESS,
+                lastSessionResult: payload,
+                lastSessionErrorMessage: ''
+            }
+
+        case STATE.LAST_SESSION_FAILURE:
+            return {
+                lastSessionStatus: STATUS.ERROR,
+                lastSessionResult: null,
+                lastSessionErrorMessage: payload
+            }
+
+        case STATE.LAST_SESSION_RESET:
+            return {
+                lastSessionStatus: STATUS.DEFAULT,
+                lastSessionResult: null,
+                lastSessionErrorMessage: ''
+            }
+
+
+            // PARENT'S STUDENTS
+        case STATE.PARENT_STUDENTS_LOADING:
+            return {
+                ...state,
+                parentStudentsStatus: STATUS.LOADING
+            }
+
+        case STATE.PARENT_STUDENTS_SUCCESS:
+            return {
+                parentStudentsStatus: STATUS.SUCCESS,
+                parentStudentsResult: payload,
+                parentStudentsErrorMessage: ''
+            }
+
+        case STATE.PARENT_STUDENTS_FAILURE:
+            return {
+                parentStudentsStatus: STATUS.ERROR,
+                parentStudentsResult: null,
+                parentStudentsErrorMessage: payload
+            }
+
+        case STATE.PARENT_STUDENTS_RESET:
+            return {
+                parentStudentsStatus: STATUS.DEFAULT,
+                parentStudentsResult: null,
+                parentStudentsErrorMessage: ''
             }
 
         default:

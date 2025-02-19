@@ -66,7 +66,9 @@
         "received": "Imepokelewa",
         "used": "Imetumika",
         "notUsed": "Haijatumika",
-        "blocked": "Imefungiwa"
+        "blocked": "Imefungiwa",
+        "complete": "Imekamilika",
+        "canceled": "Imesitishwa"
     },
     "login": {
         "title": "Ingia",
@@ -150,7 +152,16 @@
         "this": "Huu",
         "penalt": "Adhabu",
         "transaction": "Miamala",
-        "download": "Pakua Ripoti ya Leo"
+        "download": "Pakua Ripoti ya Leo",
+        "start": "Anzisha",
+        "details": "Taarifa",
+        "child_details": "Taarifa za mtoto wako",
+        "previous_sessions": "Vipindi Vilivyopita",
+        "previous_sessions_desc": "Hii ni orodha ya vipindi vya mwisho ulivyo viendesha",
+        "session": "Vipindi",
+        "number_of_student": "Idadi ya Wanafunzi",
+        "last_session": "Kipindi cha mwisho",
+        "last_session_desc": "Hii ni taarifa ya kipindi ulichoendesha cha mwisho."
     },
     "school": {
         "title": "Dhibiti Shule",
@@ -325,9 +336,9 @@
         "studentName": "Jina la Mwanafunzi",
         "type": "Aina ya Kikao",
         "card_number": "Namba ya Kadi",
-        "lunch": "Chakula cha Mchana",
-        "breakfast": "Chakula cha Asubuhi",
-        "dinner": "Chakula cha Jioni",
+        "lunch": "Mchana",
+        "breakfast": "Asubuhi",
+        "dinner": "Jioni",
         "price": "Bei",
         "scannedList": "Orodha ya Kadi Zilizochanganuliwa",
         "scanned_at": "Ilichanganuliwa Saa",
@@ -435,7 +446,8 @@
         "recipient": "Mpokeaji",
         "status": "Hali",
         "date": "Tarehe",
-        "type": "Kichwa",
+        "head": "Kichwa",
+        "type": "Aina",
         "message": "Ujumbe",
         "reminder": "Reminder",
         "transaction": "Transaction",

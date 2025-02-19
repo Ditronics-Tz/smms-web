@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
 import { errorMessage } from '../../utils';
-import { doCounts, doSalesSummary, doSalesTrend } from '../../service/dashboard';
+import { doCounts, doLastSession, doParentStudents, doSalesSummary, doSalesTrend } from '../../service/dashboard';
 
 // Counts
 function* countsTask(action) {
@@ -63,7 +63,7 @@ function* salesSummaryTask(action) {
     }
 }
 
-// end Session
+// sales trend
 function* salesTrendTask(action) {
     try {
         yield put({ type: STATE.SALES_TREND_LOADING });
@@ -94,11 +94,75 @@ function* salesTrendTask(action) {
 }
 
 
+// sales trens
+function* lastSessionTask(action) {
+    try {
+        yield put({ type: STATE.LAST_SESSION_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doLastSession,payload.token, payload.data);
+
+        if (res.status === 200) {
+            yield put({
+                type: STATE.LAST_SESSION_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.LAST_SESSION_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.LAST_SESSION_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
+
+// sales trens
+function* parentStudentsTask(action) {
+    try {
+        yield put({ type: STATE.PARENT_STUDENTS_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doParentStudents,payload.token, payload.data);
+
+        if (res.status === 200) {
+            yield put({
+                type: STATE.PARENT_STUDENTS_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.PARENT_STUDENTS_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.PARENT_STUDENTS_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
+
 
 function* dashboardSaga() {
     yield takeLatest(STATE.COUNTS_REQUEST, countsTask);
     yield takeLatest(STATE.SALES_SUMMARY_REQUEST, salesSummaryTask);
     yield takeLatest(STATE.SALES_TREND_REQUEST, salesTrendTask); 
+    yield takeLatest(STATE.LAST_SESSION_REQUEST, lastSessionTask);
+    yield takeLatest(STATE.PARENT_STUDENTS_REQUEST, parentStudentsTask);
 }
 
 export default dashboardSaga

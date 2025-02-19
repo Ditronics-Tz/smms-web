@@ -70,13 +70,12 @@ export function scannedListReset(){
 }
 
 // ----- Session List
-export function sessionListRequest(token, data, page){
+export function sessionListRequest(token, data){
     return {
         type: STATE.SESSION_LIST_REQUEST,
         payload: {
             token,
             data,
-            page
         }
     }
 }

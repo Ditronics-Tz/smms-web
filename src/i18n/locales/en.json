@@ -66,7 +66,9 @@
         "received": "Received",
         "used": "Used",
         "notUsed": "Not Used",
-        "blocked": "Blocked"
+        "blocked": "Blocked",
+        "complete": "Completed",
+        "canceled": "Cancelled"
     },
     "login": {
         "title": "Login",
@@ -150,7 +152,16 @@
         "this": "This",
         "penalt": "Penalts",
         "transaction": "Transactions",
-        "download": "Download Today Report"
+        "download": "Download Today Report",
+        "start": "Start",
+        "details": "Details",
+        "child_details": "Your child/children's details",
+        "previous_sessions": "Previous Session",
+        "previous_sessions_desc": "This is the list of last previous sessions you have conducted.",
+        "session": "Sessions",
+        "number_of_student": "Number of Students",
+        "last_session": "Last Session",
+        "last_session_desc": "Here is the details of the last session you have conducted."
     },
     "school": {
         "title": "Manage Schools",
@@ -325,6 +336,7 @@
         "price": "Price",
         "scannedList": "Scanned List",
         "scanned_at": "Scanned At",
+        "status": "Status",
         "success": {
             "title": "Success",
             "start": "Your session is Active!, continue with card scan",
@@ -430,7 +442,8 @@
         "recipient": "Recipient",
         "status": "Status",
         "date": "Date",
-        "type": "Title",
+        "head": "Title",
+        "type": "Type",
         "message": "Message",
         "reminder": "Reminder",
         "transaction": "Transaction",

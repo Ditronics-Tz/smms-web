@@ -50,7 +50,8 @@ const MobileViewTable = ({ data, props }) => {
                     >
                         <ListItemContent sx={{ display: 'flex', gap: 1, alignItems: 'start' }}>
                             <div>
-                                <Typography fontWeight={600} level="title-md">{
+                                <Typography fontWeight={600} level="title-md">{listItem.title}</Typography>
+                                <Typography level="body-sm"><b>{t("notification.type")}: </b> {
                                     {
                                         "transaction": t("notification.transaction"),
                                         "system": t("notification.system"),
@@ -131,9 +132,10 @@ const DesktopViewTable = ({ data, props }) => {
                 >
                     <thead>
                         <tr style={{ textAlign: 'center' }}>
+                            <th style={{ width: 100, padding: '10px 6px' }}>{t("notification.head")}</th>
                             <th style={{ width: 70, padding: '10px 6px' }}>{t("notification.type")}</th>
                             <th style={{ width: 100, padding: '10px 6px', }}>{t("notification.recipient")}</th>
-                            <th style={{ width: 250, padding: '10px 6px', }}>{t("notification.message")}</th>
+                            <th style={{ width: 300, padding: '10px 6px', }}>{t("notification.message")}</th>
                             <th style={{ width: 50, padding: '10px 6px', }}>{t("notification.status")}</th>
                             <th style={{ width: 100, padding: '10px 6px', }}>{t("notification.date")}</th>
                         </tr>
@@ -141,6 +143,9 @@ const DesktopViewTable = ({ data, props }) => {
                     <tbody>
                         {data.map((row, index) => (
                             <tr key={index}>
+                                <td>
+                                    <Typography level="title-sm">{row.title}</Typography>
+                                </td>
                                 <td>
                                     <Typography level="body-sm">{{
                                         "transaction": t("notification.transaction"),
@@ -272,7 +277,7 @@ const NotificationPage = ({
             >
                 <Input
                     size="sm"
-                    placeholder={t("init.search") + t("notification.date") + "/ " + t("notification.status") + "/ " + t("notification.type")}
+                    placeholder={t("init.search") + t("notification.head") + "/ " + t("notification.date") + "/ " + t("notification.status") + "/ " + t("notification.type")}
                     type='text'
                     defaultValue={search}
                     value={search}

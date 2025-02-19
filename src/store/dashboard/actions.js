@@ -50,3 +50,37 @@ export function salesTrendReset() {
         type: STATE.SALES_TREND_RESET
     }
 }
+
+// ------- last session actions ----
+export function lastSessionRequest(token, data) {
+    return {
+        type: STATE.LAST_SESSION_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function lastSessionReset() {
+    return {
+        type: STATE.LAST_SESSION_RESET
+    }
+}
+
+// ------- parent's students actions ----
+export function parentStudentsRequest(token, data) {
+    return {
+        type: STATE.PARENT_STUDENTS_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function parentStudentsReset() {
+    return {
+        type: STATE.PARENT_STUDENTS_RESET
+    }
+}

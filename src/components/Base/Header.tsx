@@ -135,7 +135,7 @@ const Header = ({
       console.log("Background message received: ", event.data);
 
       const newNotification = {
-        type: event.data.notification.title,
+        title: event.data.notification.title,
         message: event.data.notification.body,
         created_at: new Date().toISOString(),
       };
@@ -240,17 +240,12 @@ const Header = ({
               variant="plain"
               size="sm"
               sx={{ maxWidth: '32px', maxHeight: '32px', borderRadius: '9999999px' }}
-              aria-label="Notifications"
             >
               <IconButton
-                id="toggle-mode"
                 size="sm"
                 variant="plain"
                 color="success"
                 sx={{ alignSelf: 'center' }}
-              // onClick={null}
-              // aria-haspopup="true"
-              // aria-expanded={open ? 'true' : 'false'}
               >
                 <Badge size="sm" badgeContent={notificationCount}>
                   <Notifications />
@@ -273,7 +268,6 @@ const Header = ({
                 gap: 1,
                 '--ListItem-radius': 'var(--joy-radius-sm)',
               }}
-              aria-labelledby="toggle-mode"
             >
               {/* notification header */}
               <Box sx={{
@@ -315,12 +309,7 @@ const Header = ({
                     }}
                   >
                     <Typography level='title-sm'>
-                      {{
-                        "transaction": t("notification.transaction"),
-                        "system": t("notification.system"),
-                        "reminder": t("notification.reminder"),
-                        "message": t("notification.message")
-                      }[item.type]}
+                      {item.title}
                     </Typography>
                     <Typography level='body-xs'>{item.message}</Typography>
                     <Divider />

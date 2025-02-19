@@ -3,25 +3,58 @@ import { Box, Button, Typography } from "@mui/joy";
 import AdminDashboard from "./AdminDashboard";
 import { connect } from "react-redux";
 import { fetchPDF } from "../../../utils";
-import { DownloadRounded } from "@mui/icons-material";
+import { DownloadRounded, StartRounded } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { NAVIGATE_TO_SESSIONPAGE } from "../../../route/types";
+import { toast } from "react-toastify";
+import OperatorDashboard from "./OperatorDashboard";
 
 const Dashboard = ({
     accessToken,
     loginResult
 }) => {
+    const navigate = useNavigate()
+    const { t } = useTranslation()
 
     const [name, setName] = useState("")
-    const { t } = useTranslation()
+    const [role, setRole] = useState("")
 
     useEffect(() => {
         if (loginResult) {
             setName(loginResult.user.first_name)
+            setRole(loginResult.user.role)
         }
     }, [loginResult])
 
     const generateReport = () => {
-        fetchPDF(accessToken, "/dashboard/end-of-day-report")
+        if (role === 'admin' || role === 'parent'){
+            return fetchPDF(accessToken, "/dashboard/end-of-day-report")
+        }
+        else if (role === 'operator'){
+            return navigate(NAVIGATE_TO_SESSIONPAGE)
+        }
+        else {
+            toast.error("400 Bad Request")
+            return null
+        }
+    }
+
+    const renderDashboads = () => {
+        if (role === 'admin'){
+            return (
+                <AdminDashboard/>
+            )
+        }
+        else if (role === 'parent'){
+            return null
+        }
+        else if (role === 'operator'){
+            return  <OperatorDashboard/>
+        }
+        else{
+            return null
+        }
     }
 
     return (
@@ -34,14 +67,14 @@ const Dashboard = ({
                 <Button
                     size="sm"
                     color="success"
-                    startDecorator={<DownloadRounded />}
+                    startDecorator={role === 'admin' ? <DownloadRounded /> : <StartRounded/>}
                     onClick={generateReport}>
-                    {t("home.download")}
+                        {role === 'admin' ? t("home.download") : t("home.start") + " " + t("home.session")}
                 </Button>
             </Box>
 
-            {/* <LoadingView loading={true}/> */}
-            <AdminDashboard />
+            {/* Show Dashboard details depend on role */}
+            {renderDashboads()}
 
 
 

@@ -100,7 +100,7 @@ function* sessionListTask(action) {
 
         const { payload } = action;
 
-        const res = yield call(doSessionList,payload.token, payload.data, payload.page);
+        const res = yield call(doSessionList,payload.token, payload.data);
 
         if (res.status === 200) {
             yield put({

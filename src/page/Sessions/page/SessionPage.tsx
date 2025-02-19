@@ -194,7 +194,7 @@ const SessionPage = ({
             })
             .catch((e) => {
                 if (e.response) {
-                    toast.error(e.response.data.message)
+                    console.error(e.response.data.message)
                 } else {
                     console.log(e.message)
                 }
@@ -267,7 +267,7 @@ const SessionPage = ({
             // dispatch(scannedListReset())
         }
         else if (scannedStatus === STATUS.ERROR) {
-            toast.error(scannedErrorMessage)
+            console.error(scannedErrorMessage)
             dispatch(scannedListReset())
         }
 

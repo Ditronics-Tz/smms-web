@@ -19,6 +19,8 @@ export const ACTIVATE_USER_URL = '/auth/activate-deactivate-user'
 export const COUNTS_URL = "/dashboard/counts";
 export const SALES_SUMMARY_URL = "/dashboard/sales-summary";
 export const SALES_TREND_URL = "/dashboard/sales-trend";
+export const LAST_SESSION_URL = "/dashboard/last-session";
+export const PARENT_STUDENTS_URL = "/dashboard/parent-students";
 
 
 // ---- RESOURCES URLS ----- 

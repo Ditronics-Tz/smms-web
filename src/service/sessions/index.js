@@ -16,8 +16,8 @@ export function doEndSession(token, data){
 }
 
 // session list
-export function doSessionList(token, data, page){
-    return listRequest(token, SESSION_LIST_URL, data, page)
+export function doSessionList(token, data){
+    return resourceRequest(token, SESSION_LIST_URL, data)
 }
 
 // scanned list
