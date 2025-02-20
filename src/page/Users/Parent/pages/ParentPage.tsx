@@ -353,9 +353,7 @@ const ParentPage = ({
             formData.append("parent_type", parentData.parent_type);
             formData.append("role", "parent");
 
-            if (parentData.student_ids) {
-                formData.append("student_ids", parentData.student_ids.map(v => v.id))
-            }
+            parentData.student_ids.forEach(value => formData.append('student_ids', value.id));
 
             dispatch(createUserRequest(accessToken, formData))
         } else {

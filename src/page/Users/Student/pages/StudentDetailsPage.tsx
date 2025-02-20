@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Typography, Box, Divider, Button, Sheet, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar, Chip, ColorPaletteProp, ListDivider, Autocomplete } from "@mui/joy";
 import { toast } from 'react-toastify';
 import { LoadingView, NotFoundMessage } from "../../../../components";
-import { useLocation} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { API_BASE, FILE_BASE, STATUS } from "../../../../constant";
 import { connect, useDispatch } from "react-redux";
 import classList from '../../../../assets/data/classess.json'
@@ -13,10 +13,11 @@ import {
     studentDetailsRequest,
     studentDetailsReset,
 } from '../../../../store/actions'
-import { EditOutlined } from "@mui/icons-material";
+import { EditOutlined, RemoveRedEyeOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { formatDate, thousandSeparator } from "../../../../utils";
 import axios from "axios";
+import { NAVIGATE_TO_PARENTDETAILSPAGE } from "../../../../route/types";
 
 function CreateItems(
     title: String,
@@ -41,6 +42,7 @@ const StudentDetailsPage = ({
 
 }) => {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const { t } = useTranslation();
 
     const { state } = useLocation();
@@ -160,9 +162,7 @@ const StudentDetailsPage = ({
             formData.append("school", studentData.school_value);
             formData.append("role", "student");
 
-            if (studentData.parent_ids) {
-                formData.append("parent_ids", studentData.parent_ids.map(v => v.id))
-            }
+            studentData.parent_ids.forEach(value => formData.append('parent_ids', value.id));
 
             // Append file only if selected
             if (studentData.profile_picture) {
@@ -226,7 +226,7 @@ const StudentDetailsPage = ({
                                 width: { xs: '100%', md: '800px' },
                                 backgroundColor: 'background.body',
                                 p: 2,
-                                gap: {xs: 1, md: 3},
+                                gap: { xs: 1, md: 3 },
                                 borderRadius: 6
                             }}>
                             <Avatar
@@ -315,6 +315,13 @@ const StudentDetailsPage = ({
                                                 {parentDetails(item).map((dt, id) => (
                                                     <Typography key={id} level="body-sm"><b>{dt.title}:</b> {dt.value}</Typography>
                                                 ))}
+                                                <Button
+                                                    size="sm"
+                                                    variant="outlined"
+                                                    color="neutral"
+                                                    startDecorator={<RemoveRedEyeOutlined />}
+                                                    onClick={() => navigate(NAVIGATE_TO_PARENTDETAILSPAGE, { state: { id: item.id } })}
+                                                >{t("parent.view")}</Button>
                                                 <Divider />
                                             </Box>
                                         ))}
@@ -417,6 +424,7 @@ const StudentDetailsPage = ({
                                     defaultValue={studentData.parent_ids}
                                     getOptionLabel={(option) => `${option.first_name} ${option.last_name}`}
                                     onChange={(e, value) => setStudentData({ ...studentData, parent_ids: value })}
+                                    isOptionEqualToValue={(option, value) => option.id === value.id}
                                     placeholder={t("init.select") + t("student.parents")}
                                 />
                             </FormControl>

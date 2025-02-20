@@ -66,6 +66,7 @@ export const listRequest = (token, url, data, page) => {
     })
         .then(onSuccess).catch(onError);
 }
+
 export function multipartRequest(token, url, formData) {
     return axios.post(API_BASE + url, formData, {
         timeout: 30000,

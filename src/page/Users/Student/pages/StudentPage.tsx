@@ -347,9 +347,7 @@ const StudentPage = ({
             formData.append("school", studentData.school);
             formData.append("role", "student");
 
-            if (studentData.parent_ids) {
-                formData.append("parent_ids", studentData.parent_ids.map(v => v.id))
-            }
+            studentData.parent_ids.forEach(value => formData.append('parent_ids', value.id));
 
             // Append file only if selected
             if (studentData.profile_picture) {

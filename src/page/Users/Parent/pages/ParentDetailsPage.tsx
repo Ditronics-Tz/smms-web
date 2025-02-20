@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Typography, Box, Divider, Button, Sheet, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar, Autocomplete } from "@mui/joy";
 import { toast } from 'react-toastify';
 import { LoadingView, NotFoundMessage } from "../../../../components";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { API_BASE, STATUS } from "../../../../constant";
 import { connect, useDispatch } from "react-redux";
 import {
@@ -10,9 +10,10 @@ import {
     editUserReset,
     parentDetailsRequest,
 } from '../../../../store/actions'
-import { EditOutlined } from "@mui/icons-material";
+import { EditOutlined, RemoveRedEyeOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
+import { NAVIGATE_TO_STUDENTDETAILSPAGE } from "../../../../route/types";
 
 function CreateItems(
     title: String,
@@ -33,6 +34,7 @@ const ParentDetailsPage = ({
 
 }) => {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const { t } = useTranslation();
 
     const { state } = useLocation();
@@ -69,7 +71,7 @@ const ParentDetailsPage = ({
 
             }
         }).then((res) => setStudentList(res.data.results)).catch((e) => console.error(e))
-    }, [])
+    }, [accessToken])
 
     useEffect(() => {
         if (detailsStatus === STATUS.SUCCESS) {
@@ -140,9 +142,8 @@ const ParentDetailsPage = ({
             formData.append("mobile_number", parentData.mobile);
             formData.append("role", "parent");
 
-            if (parentData.student_ids) {
-                formData.append("student_ids", parentData.student_ids.map(v => v.id))
-            }
+            parentData.student_ids.forEach(value => formData.append('student_ids', value.id));
+
 
             dispatch(editUserRequest(accessToken, formData))
         } else {
@@ -207,7 +208,7 @@ const ParentDetailsPage = ({
                                     flexDirection: 'row',
                                     backgroundColor: 'background.body',
                                     p: 2,
-                                    gap: {xs: 1, md: 3},
+                                    gap: { xs: 1, md: 3 },
                                     borderRadius: 6
                                 }}>
                                 <Avatar sx={{ height: 160, width: 140, borderRadius: 6 }} />
@@ -255,7 +256,15 @@ const ParentDetailsPage = ({
                                         {studentDetails(item).map((dt, id) => (
                                             <Typography key={id} level="body-sm"><b>{dt.title}:</b> {dt.value}</Typography>
                                         ))}
+                                        <Button
+                                            size="sm"
+                                            variant="outlined"
+                                            color="neutral"
+                                            startDecorator={<RemoveRedEyeOutlined />}
+                                            onClick={() => navigate(NAVIGATE_TO_STUDENTDETAILSPAGE, { state: { id: item.id } })}
+                                        >{t("student.view")}</Button>
                                         <Divider />
+
                                     </Box>
                                 ))}
 
@@ -339,6 +348,7 @@ const ParentDetailsPage = ({
                                     value={parentData.student_ids}
                                     defaultValue={parentData.student_ids}
                                     getOptionLabel={(option) => `${option.first_name} ${option.last_name}`}
+                                    isOptionEqualToValue={(option, value) => option.id === value.id}
                                     onChange={(e, value) => setParentData({ ...parentData, student_ids: value })}
                                     placeholder={t("init.select") + t("parent.student")}
                                 />
