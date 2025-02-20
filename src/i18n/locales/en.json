@@ -161,7 +161,14 @@
         "session": "Sessions",
         "number_of_student": "Number of Students",
         "last_session": "Last Session",
-        "last_session_desc": "Here is the details of the last session you have conducted."
+        "last_session_desc": "Here is the details of the last session you have conducted.",
+        "child": "Child",
+        "account_details": "Account Details",
+        "available_balance": "Available Balance",
+        "meal_history": "Meal histories",
+        "meal_history_desc": "Your children's meal histories summary.",
+        "view_more": "View More",
+        "my_details": "My Details"
     },
     "school": {
         "title": "Manage Schools",

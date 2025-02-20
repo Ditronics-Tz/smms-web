@@ -62,7 +62,7 @@
         "send": "Tuma",
         "sent": "Imetumwa",
         "failed": "Haijatumwa",
-        "penalt": "Penalt",
+        "penalt": "Adhabu",
         "received": "Imepokelewa",
         "used": "Imetumika",
         "notUsed": "Haijatumika",
@@ -161,7 +161,14 @@
         "session": "Vipindi",
         "number_of_student": "Idadi ya Wanafunzi",
         "last_session": "Kipindi cha mwisho",
-        "last_session_desc": "Hii ni taarifa ya kipindi ulichoendesha cha mwisho."
+        "last_session_desc": "Hii ni taarifa ya kipindi ulichoendesha cha mwisho.",
+        "child": "Mtoto",
+        "account_details": "Taarifa za Akaunti",
+        "available_balance": "Salio Lililopo",
+        "meal_history": "Historia ya Milo",
+        "meal_history_desc": "Historia ya milo ya mwanao.",
+        "view_more": "Ona zaidi",
+        "my_details": "Taarifa zangu"
     },
     "school": {
         "title": "Dhibiti Shule",

@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { NAVIGATE_TO_SESSIONPAGE } from "../../../route/types";
 import { toast } from "react-toastify";
 import OperatorDashboard from "./OperatorDashboard";
+import ParentDashboard from "./ParentDashboard";
 
 const Dashboard = ({
     accessToken,
@@ -47,7 +48,7 @@ const Dashboard = ({
             )
         }
         else if (role === 'parent'){
-            return null
+            return <ParentDashboard/>
         }
         else if (role === 'operator'){
             return  <OperatorDashboard/>
@@ -67,17 +68,14 @@ const Dashboard = ({
                 <Button
                     size="sm"
                     color="success"
-                    startDecorator={role === 'admin' ? <DownloadRounded /> : <StartRounded/>}
+                    startDecorator={role === 'admin' || role === 'parent' ? <DownloadRounded /> : <StartRounded/>}
                     onClick={generateReport}>
-                        {role === 'admin' ? t("home.download") : t("home.start") + " " + t("home.session")}
+                        {role === 'admin' || role === 'parent' ? t("home.download") : t("home.start") + " " + t("home.session")}
                 </Button>
             </Box>
 
             {/* Show Dashboard details depend on role */}
             {renderDashboads()}
-
-
-
         </Box>
     )
 }
