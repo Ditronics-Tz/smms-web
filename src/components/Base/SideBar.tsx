@@ -34,6 +34,8 @@ import {
   NAVIGATE_TO_PARENTPAGE,
   NAVIGATE_TO_SCHOOLPAGE,
   NAVIGATE_TO_SESSIONPAGE,
+  NAVIGATE_TO_STAFFDETAILSPAGE,
+  NAVIGATE_TO_STAFFPAGE,
   NAVIGATE_TO_STUDENTDETAILSPAGE,
   NAVIGATE_TO_STUDENTPAGE,
   NAVIGATE_TO_TRANSACTIONPAGE,
@@ -254,7 +256,9 @@ const Sidebar = ({
                 location.pathname === NAVIGATE_TO_OPERATORPAGE ||
                 location.pathname === NAVIGATE_TO_OPERATORDETAILSPAGE ||
                 location.pathname === NAVIGATE_TO_PARENTDETAILSPAGE ||
-                location.pathname === NAVIGATE_TO_PARENTPAGE
+                location.pathname === NAVIGATE_TO_PARENTPAGE ||
+                location.pathname === NAVIGATE_TO_STAFFPAGE ||
+                location.pathname ===  NAVIGATE_TO_STAFFDETAILSPAGE
               }
               props={{
                 title: t("sidebar.manageUser"),
@@ -291,6 +295,17 @@ const Sidebar = ({
                 action={() => null}
                 props={{
                   title: t("sidebar.manageParents"),
+                  icon: <SupervisorAccountOutlined />
+                }}
+              />
+
+              {/* Staffs */}
+              <ListItemComponent
+                route={NAVIGATE_TO_STAFFPAGE}
+                path={location.pathname === NAVIGATE_TO_STAFFPAGE || location.pathname === NAVIGATE_TO_STAFFDETAILSPAGE}
+                action={() => null}
+                props={{
+                  title: t("sidebar.manageStaffs"),
                   icon: <SupervisorAccountOutlined />
                 }}
               />
@@ -359,7 +374,7 @@ const Sidebar = ({
             </DropdowmList>}
 
           {/* Transactions */}
-          {(userRole === 'admin' || userRole === 'parent') &&
+          {(userRole === 'admin' || userRole === 'parent' || userRole === 'staff') &&
             <ListItemComponent
               route={NAVIGATE_TO_TRANSACTIONPAGE}
               path={location.pathname === NAVIGATE_TO_TRANSACTIONPAGE}

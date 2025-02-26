@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
 import { errorMessage } from '../../utils';
-import { doAdminDetails, doInactiveUsers, doOperatorDetails, doParentDetails, doStudentDetails, doUserList } from '../../service/user';
+import { doAdminDetails, doInactiveUsers, doOperatorDetails, doParentDetails, doStaffDetails, doStudentDetails, doUserList } from '../../service/user';
 
 /* ______ STUDENT SAGAS ________ */
 
@@ -186,6 +186,36 @@ function* parentDetailsTask(action) {
 }
 
 
+// staff Details
+function* staffDetailsTask(action) {
+    try {
+        yield put({ type: STATE.STAFF_DETAILS_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doStaffDetails,payload.token, payload.data);
+
+        if (res.status === 200) {
+            yield put({
+                type: STATE.STAFF_DETAILS_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.STAFF_DETAILS_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.STAFF_DETAILS_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
 
 function* userSaga() {
     yield takeLatest(STATE.USER_LIST_REQUEST, userListTask);
@@ -194,6 +224,7 @@ function* userSaga() {
     yield takeLatest(STATE.ADMIN_DETAILS_REQUEST, adminDetailsTask);
     yield takeLatest(STATE.OPERATOR_DETAILS_REQUEST, operatorDetailsTask);
     yield takeLatest(STATE.PARENT_DETAILS_REQUEST, parentDetailsTask);
+    yield takeLatest(STATE.STAFF_DETAILS_REQUEST, staffDetailsTask);
 }
 
 export default userSaga;

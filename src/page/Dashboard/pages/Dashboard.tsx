@@ -10,6 +10,7 @@ import { NAVIGATE_TO_SESSIONPAGE } from "../../../route/types";
 import { toast } from "react-toastify";
 import OperatorDashboard from "./OperatorDashboard";
 import ParentDashboard from "./ParentDashboard";
+import StaffDashboard from "./StaffDashboard";
 
 const Dashboard = ({
     accessToken,
@@ -29,7 +30,7 @@ const Dashboard = ({
     }, [loginResult])
 
     const generateReport = () => {
-        if (role === 'admin' || role === 'parent'){
+        if (role === 'admin' || role === 'parent' || role === 'staff'){
             return fetchPDF(accessToken, "/dashboard/end-of-day-report")
         }
         else if (role === 'operator'){
@@ -53,6 +54,9 @@ const Dashboard = ({
         else if (role === 'operator'){
             return  <OperatorDashboard/>
         }
+        else if (role === 'staff'){
+            return <StaffDashboard/>
+        }
         else{
             return null
         }
@@ -68,9 +72,9 @@ const Dashboard = ({
                 <Button
                     size="sm"
                     color="success"
-                    startDecorator={role === 'admin' || role === 'parent' ? <DownloadRounded /> : <StartRounded/>}
+                    startDecorator={role === 'admin' || role === 'parent' || role === 'staff' ? <DownloadRounded /> : <StartRounded/>}
                     onClick={generateReport}>
-                        {role === 'admin' || role === 'parent' ? t("home.download") : t("home.start") + " " + t("home.session")}
+                        {role === 'admin' || role === 'parent' || role === 'staff' ? t("home.download") : t("home.start") + " " + t("home.session")}
                 </Button>
             </Box>
 

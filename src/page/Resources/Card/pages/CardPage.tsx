@@ -50,7 +50,7 @@ const MobileViewTable = ({ data, props }) => {
                         <ListItemContent sx={{ display: 'flex', gap: 2, alignItems: 'start' }}>
                             <div>
                                 <Typography fontWeight={600} gutterBottom>{listItem.card_number}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("card.student")}:</b> {listItem.student_or_staff.first_name + " " + listItem.student_or_staff.last_name}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("card.student")}:</b> {listItem.student_or_staff.first_name + " " + listItem.student_or_staff.last_name} ({listItem.student_or_staff.role})</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("card.control_number")}:</b> {listItem.control_number}</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("card.balance")}:</b> Tsh. {thousandSeparator(listItem.balance)}</Typography>
                                 <Dropdown>
@@ -134,7 +134,8 @@ const DesktopViewTable = ({ data, props }) => {
                     <thead>
                         <tr style={{ textAlign: 'center' }}>
                             <th style={{ width: 70, padding: '10px 6px' }}>{t("card.card_number")}</th>
-                            <th style={{ width: 100, padding: '10px 6px', }}>{t("card.student")}</th>
+                            <th style={{ width: 100, padding: '10px 6px', }}>{t("card.student")} /{t("card.staff")}</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("card.role")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("card.control_number")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("card.balance")} (Tsh)</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("card.issued")}</th>
@@ -151,6 +152,9 @@ const DesktopViewTable = ({ data, props }) => {
                                 </td>
                                 <td>
                                     <Typography level="body-sm">{row.student_or_staff.first_name + " " + row.student_or_staff.last_name}</Typography>
+                                </td>
+                                <td>
+                                    <Typography level="body-sm">{row.student_or_staff.role}</Typography>
                                 </td>
                                 <td>
                                     <Typography level="body-sm">{row.control_number}</Typography>
@@ -225,15 +229,16 @@ const CardPage = ({
         student: null,
         balance: 0.0,
         issued_date: null,
-        school_number: ''
     }
 
     const [cardData, setCardData] = useState(initiateCardData);
     const [studentList, setStudentList] = useState([]);
-    const [schoolList, setSchoolList] = useState([]);
+    const [staffList, setStaffList] = useState([]);
+    const [options, setOptions] = useState('')
 
     // function to fetch student data to fetch student data
     useEffect(() => {
+        // Fetch Student List
         axios.get(API_BASE + "/list/students", {
             timeout: 30000,
             headers: {
@@ -244,7 +249,9 @@ const CardPage = ({
             }
         }).then((res) => setStudentList(res.data.results)).catch((e) => console.error(e))
 
-        axios.get(API_BASE + "/list/schools", {
+
+        // Fetch Staff List
+        axios.get(API_BASE + "/list/staffs", {
             timeout: 30000,
             headers: {
                 'Accept': 'application/json',
@@ -252,7 +259,7 @@ const CardPage = ({
                 'Authorization': 'Bearer ' + accessToken,
 
             }
-        }).then((res) => setSchoolList(res.data.results)).catch((e) => console.error(e))
+        }).then((res) => setStaffList(res.data.results)).catch((e) => console.error(e))
     }, [accessToken])
 
     // ---- PAGINATION SETTINGS ----- //
@@ -346,7 +353,6 @@ const CardPage = ({
                 "student_or_staff": cardData.student.id,
                 "issued_date": cardData.issued_date,
                 "balance": cardData.balance,
-                "school_number": cardData.school_number
             }
             if (cardData.card_id) {
                 dispatch(editCardRequest(accessToken, { ...data, "card_id": cardData.card_id }))
@@ -380,8 +386,7 @@ const CardPage = ({
             card_number: item.card_number,
             student: item.student_or_staff,
             balance: item.balance,
-            issued_date: item.issued_date,
-            school_number: item.school_number
+            issued_date: item.issued_date
         })
 
         setFormModal(true)
@@ -536,8 +541,22 @@ const CardPage = ({
                                 <FormLabel>{t("card.card_number")}</FormLabel>
                                 <Input type="number" name="card_number" value={cardData.card_number} onChange={handleChange} placeholder={t("init.placeholder") + t("card.card_number")} />
                             </FormControl>
+                        </Stack>
+
+                        <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
+                             {/* select Student or staff */}
+                             <FormControl sx={{ flex: 1 }} required>
+                                <FormLabel>{t("card.options")}</FormLabel>
+                                <Select name="school" defaultValue={options} value={options}
+                                    placeholder={t("init.select") + t("card.options")}
+                                    onChange={(e, value) => setOptions(value)}>
+                                        <Option value={'student'}>{t("card.student")}</Option>
+                                        <Option value={'staff'}>{t("card.staff")}</Option>
+                                </Select>
+                            </FormControl>
 
                             {/* studentr */}
+                            {options === 'student' &&
                             <FormControl sx={{ flex: 1 }} required>
                                 <FormLabel>{t("card.student")}</FormLabel>
                                 <Autocomplete
@@ -548,21 +567,21 @@ const CardPage = ({
                                     onChange={(e, value) => setCardData({ ...cardData, student: value })}
                                     placeholder={t("init.select") + t("card.student")}
                                 />
-                            </FormControl>
-                        </Stack>
-
-                        <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
-                            {/* school name */}
+                            </FormControl>}
+                            
+                            {/* staff */}
+                            {options ==='staff' && 
                             <FormControl sx={{ flex: 1 }} required>
-                                <FormLabel>{t("student.schoolName")}</FormLabel>
-                                <Select name="school" defaultValue={cardData.school_number} value={cardData.school_number}
-                                    placeholder={t("init.select") + t("student.schoolName")}
-                                    onChange={(e, value) => setCardData({ ...cardData, school_number: value })}>
-                                    {schoolList.length > 0 ? schoolList.map((item, index) => (
-                                        <Option key={index} value={item.number}>{item.name}</Option>
-                                    )) : <Option value={null}>{t("school.NoList")}</Option>}
-                                </Select>
-                            </FormControl>
+                                <FormLabel>{t("card.staff")}</FormLabel>
+                                <Autocomplete
+                                    options={staffList}
+                                    value={cardData.student}
+                                    defaultValue={cardData.student}
+                                    getOptionLabel={(option) => `${option.first_name} ${option.last_name}`}
+                                    onChange={(e, value) => setCardData({ ...cardData, student: value })}
+                                    placeholder={t("init.select") + t("card.staff")}
+                                />
+                            </FormControl>}
                         </Stack>
 
 

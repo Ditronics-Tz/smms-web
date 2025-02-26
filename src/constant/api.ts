@@ -1,10 +1,10 @@
 // ----- BASE API ------
-// export const API_BASE = 'http://127.0.0.1:8000';
+export const API_BASE = 'http://127.0.0.1:8000';
 // export const API_BASE = 'http://192.168.103.29:8000';
 
 
 // FOR PRODUCTION
-export const API_BASE = 'https://backend1.ditronics.co.tz'
+// export const API_BASE = 'https://backend1.ditronics.co.tz'
 export const FILE_BASE =  API_BASE;
 
 // ---- AUTH URLS ------
@@ -21,6 +21,7 @@ export const SALES_SUMMARY_URL = "/dashboard/sales-summary";
 export const SALES_TREND_URL = "/dashboard/sales-trend";
 export const LAST_SESSION_URL = "/dashboard/last-session";
 export const PARENT_STUDENTS_URL = "/dashboard/parent-students";
+export const STAFF_VIEW_URL = "/dashboard/staff-view";
 
 
 // ---- RESOURCES URLS ----- 
@@ -47,6 +48,7 @@ export const STUDENT_DETAILS_URL = '/resources/student-details';
 export const ADMIN_DETAILS_URL = '/resources/admin-details';
 export const PARENT_DETAILS_URL = '/resources/parent-details';
 export const OPERATOR_DETAILS_URL = '/resources/operator-details';
+export const STAFF_DETAILS_URL = '/resources/staff-details';
 
 
 // ---- SESSION URLS -----

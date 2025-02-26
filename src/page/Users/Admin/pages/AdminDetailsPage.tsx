@@ -3,7 +3,7 @@ import { Typography, Box, Divider, Button, Sheet, Modal, ModalDialog, ModalClose
 import { toast } from 'react-toastify';
 import { LoadingView, NotFoundMessage } from "../../../../components";
 import { useLocation } from "react-router-dom";
-import { STATUS } from "../../../../constant";
+import { API_BASE, STATUS } from "../../../../constant";
 import { connect, useDispatch } from "react-redux";
 import {
     editUserRequest,
@@ -12,6 +12,7 @@ import {
 } from '../../../../store/actions'
 import { EditOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
 
 function CreateItems(
     title: String,
@@ -25,9 +26,6 @@ const AdminDetailsPage = ({
     editStatus,
     editResult,
     editErrorMessage,
-
-    schoolList,
-    schoolStatus,
 
     detailsStatus,
     detailsErrorMessage,
@@ -57,6 +55,20 @@ const AdminDetailsPage = ({
     const [formModal, setFormModal] = useState(false);
 
     const [adminData, setAdminData] = useState(initiateAdminData);
+    const [schoolList, setSchoolList] = useState([])
+
+    useEffect(() => {
+        // Fetch School list
+        axios.get(API_BASE + "/list/schools", {
+            timeout: 30000,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken,
+
+            }
+        }).then((res) => setSchoolList(res.data.results)).catch((e) => console.error(e))
+    }, [accessToken])
 
     /* eslint-disable */
     useEffect(() => {
@@ -126,7 +138,7 @@ const AdminDetailsPage = ({
             formData.append("email", adminData.email);
             formData.append("username", adminData.username);
             formData.append("mobile_number", adminData.mobile);
-            formData.append("school", adminData.school);
+            formData.append("school", adminData.school_value);
             formData.append("role", "admin");
 
             dispatch(editUserRequest(accessToken, formData))
@@ -183,10 +195,10 @@ const AdminDetailsPage = ({
                                 flexDirection: 'row',
                                 backgroundColor: 'background.body',
                                 p: 2,
-                                gap: {xs: 1, md: 3},
+                                gap: { xs: 1, md: 3 },
                                 borderRadius: 6
                             }}>
-                            <Avatar sx={{height: 160, width: 140, borderRadius: 6}} />
+                            <Avatar sx={{ height: 160, width: 140, borderRadius: 6 }} />
                             {/* <Divider orientation="horizontal" /> */}
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, width: '100%' }}>
                                 <Typography level="h3">{adminData.first_name + " " + adminData.middle_name + " " + adminData.last_name}</Typography>
@@ -297,10 +309,11 @@ const AdminDetailsPage = ({
                                 <Select name="school" defaultValue={adminData.school_value} value={adminData.school_value}
                                     placeholder={t("init.select") + t("student.schoolName")}
                                     onChange={(e, value) => setAdminData({ ...adminData, school_value: value })}>
-                                    {schoolStatus === STATUS.SUCCESS ? schoolList.results.map((item, index) => (
+                                    {schoolList.length > 0 ? schoolList.map((item, index) => (
                                         <Option key={index} value={item.id}>{item.name}</Option>
                                     )) : <Option value={null}>{t("school.NoList")}</Option>}
-                                </Select>                            </FormControl>
+                                </Select>
+                            </FormControl>
                         </Stack>
 
                         <Stack gap={4} sx={{ mt: 2 }}>

@@ -106,3 +106,21 @@ export function parentDetailsReset(){
         type: STATE.PARENT_DETAILS_RESET
     }
 }
+
+
+// staff details action
+export function staffDetailsRequest(token, data){
+    return {
+        type: STATE.STAFF_DETAILS_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function staffDetailsReset(){
+    return {
+        type: STATE.STAFF_DETAILS_RESET
+    }
+}

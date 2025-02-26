@@ -1,4 +1,4 @@
-import { COUNTS_URL, LAST_SESSION_URL,  PARENT_STUDENTS_URL, SALES_SUMMARY_URL, SALES_TREND_URL } from "../../constant";
+import { COUNTS_URL, LAST_SESSION_URL,  PARENT_STUDENTS_URL, SALES_SUMMARY_URL, SALES_TREND_URL, STAFF_DETAILS_URL, STAFF_VIEW_URL } from "../../constant";
 import {  resourceRequest } from "../calls";
 
 // counts
@@ -24,4 +24,9 @@ export function doLastSession(token, data){
 // parent's students
 export function doParentStudents(token, data){
     return resourceRequest(token, PARENT_STUDENTS_URL, data)
+}
+
+// staff view
+export function doStaffView(token, data){
+    return resourceRequest(token, STAFF_VIEW_URL, data)
 }

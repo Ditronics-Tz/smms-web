@@ -20,6 +20,8 @@ import {
   NAVIGATE_TO_PROFILEPAGE,
   NAVIGATE_TO_SCHOOLPAGE,
   NAVIGATE_TO_SESSIONPAGE,
+  NAVIGATE_TO_STAFFDETAILSPAGE,
+  NAVIGATE_TO_STAFFPAGE,
   NAVIGATE_TO_STUDENTDETAILSPAGE,
   NAVIGATE_TO_STUDENTPAGE,
   NAVIGATE_TO_SUPPORTPAGE,
@@ -28,7 +30,7 @@ import {
 import { STATUS } from "../constant";
 import Error404Page from "../page/ErrorsPages/404Error";
 import { Main } from "../components";
-import { AdminDetailsPage, AdminPage, CanteenItemPage, CardPage, Dashboard, InfoPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, StudentDetailsPage, StudentPage, SupportPage, TransactionPage, SessionPage, NotificationPage } from "../page";
+import { AdminDetailsPage, AdminPage, CanteenItemPage, CardPage, Dashboard, InfoPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, StudentDetailsPage, StudentPage, SupportPage, TransactionPage, SessionPage, NotificationPage, StaffDetailsPage, StaffPage } from "../page";
 
 // FUNCTION TO DIRECT ONLY AUTH USER TO THEIR PAGES
 const ProtectRoute = ({ status }) => {
@@ -91,6 +93,24 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
             element={
               <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
                 <ParentDetailsPage />
+              </RoleProtectedRoute>
+            } />
+
+          {/* staff list */}
+          <Route
+            path={NAVIGATE_TO_STAFFPAGE}
+            element={
+              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+                <StaffPage />
+              </RoleProtectedRoute>
+            } />
+
+          {/* staff details */}
+          <Route
+            path={NAVIGATE_TO_STAFFDETAILSPAGE}
+            element={
+              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+                <StaffDetailsPage />
               </RoleProtectedRoute>
             } />
 
@@ -166,7 +186,7 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
 
           {/* Transactions */}
           <Route path={NAVIGATE_TO_TRANSACTIONPAGE} element={
-            <RoleProtectedRoute userRole={userRole} allowedRoles={['admin', 'parent']}>
+            <RoleProtectedRoute userRole={userRole} allowedRoles={['admin', 'parent', 'staff']}>
               <TransactionPage />
             </RoleProtectedRoute>
           } />

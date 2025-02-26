@@ -26,6 +26,10 @@ const INITIAL_STATE = {
     parentDetailsStatus: STATUS.DEFAULT,
     parentDetailsResult: null,
     parentDetailsErrorMessage: "",
+
+    staffDetailsStatus: STATUS.DEFAULT,
+    staffDetailsResult: null,
+    staffDetailsErrorMessage: "",
 }
 
 /* eslint-disable */
@@ -63,7 +67,7 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 userListErrorMessage: ""
             }
 
-             //INACTIVE_USERS
+        //INACTIVE_USERS
         case STATE.INACTIVE_USERS_LOADING:
             return {
                 ...state,
@@ -119,8 +123,8 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 studentDetailsErrorMessage: ""
             }
 
-        
-            
+
+
         // ADMIN DETAILS
         case STATE.ADMIN_DETAILS_LOADING:
             return {
@@ -149,7 +153,7 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 adminDetailsErrorMessage: ""
             }
 
-            // OPERATOR DETAILS
+        // OPERATOR DETAILS
         case STATE.OPERATOR_DETAILS_LOADING:
             return {
                 ...state,
@@ -177,7 +181,7 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 operatorDetailsErrorMessage: ""
             }
 
-            // PARENT DETAILS
+        // PARENT DETAILS
         case STATE.PARENT_DETAILS_LOADING:
             return {
                 ...state,
@@ -203,6 +207,35 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 parentDetailsStatus: STATUS.DEFAULT,
                 parentDetailsResult: null,
                 parentDetailsErrorMessage: ""
+            }
+
+
+        // STAFF DETAILS
+        case STATE.STAFF_DETAILS_LOADING:
+            return {
+                ...state,
+                staffDetailsStatus: STATUS.LOADING
+            }
+        case STATE.STAFF_DETAILS_SUCCESS:
+            return {
+                ...state,
+                staffDetailsStatus: STATUS.SUCCESS,
+                staffDetailsResult: payload,
+                staffDetailsErrorMessage: ""
+            }
+        case STATE.STAFF_DETAILS_FAILURE:
+            return {
+                ...state,
+                staffDetailsStatus: STATUS.ERROR,
+                staffDetailsResult: null,
+                staffDetailsErrorMessage: payload,
+            }
+        case STATE.STAFF_DETAILS_RESET:
+            return {
+                ...state,
+                staffDetailsStatus: STATUS.DEFAULT,
+                staffDetailsResult: null,
+                staffDetailsErrorMessage: ""
             }
 
         default:

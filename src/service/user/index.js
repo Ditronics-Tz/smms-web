@@ -1,4 +1,4 @@
-import { STUDENT_DETAILS_URL, USERS_LIST_URL, ADMIN_DETAILS_URL, OPERATOR_DETAILS_URL, PARENT_DETAILS_URL, INACTIVE_USERS_URL } from "../../constant";
+import { STUDENT_DETAILS_URL, USERS_LIST_URL, ADMIN_DETAILS_URL, OPERATOR_DETAILS_URL, PARENT_DETAILS_URL, INACTIVE_USERS_URL, STAFF_DETAILS_URL } from "../../constant";
 import { listRequest, resourceRequest } from "../calls";
 
 // user list call
@@ -29,4 +29,9 @@ export function doOperatorDetails(token, data){
 // parent details
 export function doParentDetails(token, data){
     return resourceRequest(token, PARENT_DETAILS_URL, data)
+}
+
+// parent details
+export function doStaffDetails(token, data){
+    return resourceRequest(token, STAFF_DETAILS_URL, data)
 }

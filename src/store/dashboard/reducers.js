@@ -20,6 +20,10 @@ const INITIATE_STATE = {
     parentStudentsStatus: STATUS.DEFAULT,
     parentStudentsResult: null,
     parentStudentsErrorMessage: '',
+
+    staffViewStatus: STATUS.DEFAULT,
+    staffViewResult: null,
+    staffViewErrorMessage: '',
 }
 
 /* eslint-disable */
@@ -110,7 +114,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
             }
 
 
-            // LAST SESSION
+        // LAST SESSION
         case STATE.LAST_SESSION_LOADING:
             return {
                 ...state,
@@ -139,7 +143,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
             }
 
 
-            // PARENT'S STUDENTS
+        // PARENT'S STUDENTS
         case STATE.PARENT_STUDENTS_LOADING:
             return {
                 ...state,
@@ -165,6 +169,35 @@ export default (state = INITIATE_STATE, { type, payload }) => {
                 parentStudentsStatus: STATUS.DEFAULT,
                 parentStudentsResult: null,
                 parentStudentsErrorMessage: ''
+            }
+
+
+        // PARENT'S STUDENTS
+        case STATE.STAFF_VIEW_LOADING:
+            return {
+                ...state,
+                staffViewStatus: STATUS.LOADING
+            }
+
+        case STATE.STAFF_VIEW_SUCCESS:
+            return {
+                staffViewStatus: STATUS.SUCCESS,
+                staffViewResult: payload,
+                staffViewErrorMessage: ''
+            }
+
+        case STATE.STAFF_VIEW_FAILURE:
+            return {
+                staffViewStatus: STATUS.ERROR,
+                staffViewResult: null,
+                staffViewErrorMessage: payload
+            }
+
+        case STATE.STAFF_VIEW_RESET:
+            return {
+                staffViewStatus: STATUS.DEFAULT,
+                staffViewResult: null,
+                staffViewErrorMessage: ''
             }
 
         default:

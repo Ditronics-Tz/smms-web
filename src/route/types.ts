@@ -22,6 +22,10 @@ export const NAVIGATE_TO_STUDENTDETAILSPAGE = '/student-details'
 export const NAVIGATE_TO_PARENTPAGE = '/parent-manage';
 export const NAVIGATE_TO_PARENTDETAILSPAGE = '/parent-details';
 
+// Staff
+export const NAVIGATE_TO_STAFFPAGE = '/staff-manage';
+export const NAVIGATE_TO_STAFFDETAILSPAGE = '/staff-details';
+
 // Operator
 export const NAVIGATE_TO_OPERATORPAGE = '/operator-manage';
 export const NAVIGATE_TO_OPERATORDETAILSPAGE = '/operator-details';

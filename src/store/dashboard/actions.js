@@ -84,3 +84,21 @@ export function parentStudentsReset() {
         type: STATE.PARENT_STUDENTS_RESET
     }
 }
+
+
+// ------- staff view actions ----
+export function staffViewRequest(token, data) {
+    return {
+        type: STATE.STAFF_VIEW_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function staffViewReset() {
+    return {
+        type: STATE.STAFF_VIEW_RESET
+    }
+}

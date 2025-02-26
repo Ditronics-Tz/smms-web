@@ -35,6 +35,7 @@ export const STATE = createRequestTypes('STATE',
         'SALES_TREND',
         'LAST_SESSION',
         'PARENT_STUDENTS',
+        'STAFF_VIEW',
 
         // resources
         'CREATE_SCHOOL',
@@ -58,6 +59,7 @@ export const STATE = createRequestTypes('STATE',
         'ADMIN_DETAILS',
         'OPERATOR_DETAILS',
         'PARENT_DETAILS',
+        'STAFF_DETAILS',
 
         // session
         'START_SESSION',
