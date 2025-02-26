@@ -337,8 +337,6 @@ const StudentPage = ({
         if (studentData.first_name) {
             const formData = new FormData();
 
-            // Append non-file data
-            // formData.append("student_id", studentData.student_id);
             formData.append("first_name", studentData.first_name);
             formData.append("middle_name", studentData.middle_name);
             formData.append("last_name", studentData.last_name);
@@ -347,7 +345,9 @@ const StudentPage = ({
             formData.append("school", studentData.school);
             formData.append("role", "student");
 
-            studentData.parent_ids.forEach(value => formData.append('parent_ids', value.id));
+            if (studentData.parent_ids !== null){
+                studentData.parent_ids.forEach(value => formData.append('parent_ids', value.id));
+            }
 
             // Append file only if selected
             if (studentData.profile_picture) {

@@ -275,7 +275,7 @@ const ParentPage = ({
                 'Authorization': 'Bearer ' + accessToken,
 
             }
-        }).then((res) => setStudentList(res.data.results)).catch((e) => console.error(e)) 
+        }).then((res) => setStudentList(res.data.results)).catch((e) => console.error(e))
     }, [])
 
     // ---- PAGINATION SETTINGS ----- //
@@ -353,7 +353,9 @@ const ParentPage = ({
             formData.append("parent_type", parentData.parent_type);
             formData.append("role", "parent");
 
-            parentData.student_ids.forEach(value => formData.append('student_ids', value.id));
+            if (parentData.student_ids !== null) {
+                parentData.student_ids.forEach(value => formData.append('student_ids', value.id));
+            }
 
             dispatch(createUserRequest(accessToken, formData))
         } else {

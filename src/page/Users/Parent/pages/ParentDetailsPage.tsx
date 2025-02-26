@@ -3,7 +3,7 @@ import { Typography, Box, Divider, Button, Sheet, Modal, ModalDialog, ModalClose
 import { toast } from 'react-toastify';
 import { LoadingView, NotFoundMessage } from "../../../../components";
 import { useLocation, useNavigate } from "react-router-dom";
-import { API_BASE, STATUS } from "../../../../constant";
+import { API_BASE, FILE_BASE, STATUS } from "../../../../constant";
 import { connect, useDispatch } from "react-redux";
 import {
     editUserRequest,
@@ -196,62 +196,75 @@ const ParentDetailsPage = ({
                     gap: 4
                 }}>
                     {/* Details */}
-                    <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
-                        <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: "column", md: "row" } }}>
-                            {/* parent details */}
-                            <Sheet
-                                variant="outlined"
+                    <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', md: 'row' } }}>
+                        {/* parent details */}
+                        <Sheet
+                            variant="outlined"
 
-                                sx={{
-                                    display: 'flex',
-                                    width: { xs: '100%', md: '600px' },
-                                    flexDirection: 'row',
-                                    backgroundColor: 'background.body',
-                                    p: 2,
-                                    gap: { xs: 1, md: 3 },
-                                    borderRadius: 6
-                                }}>
-                                <Avatar sx={{ height: 160, width: 140, borderRadius: 6 }} />
-                                <Divider orientation="horizontal" />
-                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, width: '100%' }}>
-                                    <Typography level="h3">{parentData.first_name + " " + parentData.middle_name + " " + parentData.last_name}</Typography>
-                                    <Divider />
-                                    {rows.map((item, index) => (
-                                        <Typography key={index} level="body-sm"><b>{item.title}:</b> {item.value}</Typography>
-                                    ))}
-                                    <Divider />
-                                    <Button
-                                        size="sm"
-                                        color="success"
-                                        variant="outlined"
-                                        // sx={{ alignSelf: 'flex-end' }}
-                                        startDecorator={<EditOutlined />}
-                                        onClick={() => setFormModal(true)}>
-                                        {t("parent.edit")}
-                                    </Button>
-                                </Box>
-                            </Sheet>
-                        </Box>
+                            sx={{
+                                display: 'flex',
+                                width: { xs: '100%', md: '600px' },
+                                flexDirection: { xs: 'column', md: 'row' },
+                                alignItems: 'center',
+                                backgroundColor: 'background.body',
+                                p: 2,
+                                gap: { xs: 1, md: 3 },
+                                borderRadius: 6
+                            }}>
+                            <Avatar sx={{ height: 160, width: 140, borderRadius: 6 }} />
+                            <Divider orientation="horizontal" />
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, width: '100%' }}>
+                                <Typography level="h3">{parentData.first_name + " " + parentData.middle_name + " " + parentData.last_name}</Typography>
+                                <Divider />
+                                {rows.map((item, index) => (
+                                    <Typography key={index} level="body-sm"><b>{item.title}:</b> {item.value}</Typography>
+                                ))}
+                                <Divider />
+                                <Button
+                                    size="sm"
+                                    color="success"
+                                    variant="outlined"
+                                    // sx={{ alignSelf: 'flex-end' }}
+                                    startDecorator={<EditOutlined />}
+                                    onClick={() => setFormModal(true)}>
+                                    {t("parent.edit")}
+                                </Button>
+                            </Box>
+                        </Sheet>
 
 
                         {/* Parent*/}
                         {parentData.student_ids.length > 0 &&
-                            <Sheet
-                                variant="outlined"
+                            <Box
                                 sx={{
                                     display: 'flex',
-                                    flexDirection: 'column',
-                                    maxWidth: { xs: '100%', md: '600px' },
-                                    backgroundColor: 'background.body',
+                                    flexDirection: {xs: 'column', md: 'row'},
                                     p: 2,
                                     gap: 1,
                                     borderRadius: 6
                                 }}>
-                                <Typography level="h4">{t("student.details")}</Typography>
+                                <Typography level="title-md">{t("parent.student")}</Typography>
 
                                 <Divider />
                                 {parentData.student_ids.map((item, index) => (
-                                    <Box key={index} sx={{ display: 'flex', flexDirection: 'column', gap: 0.6 }}>
+                                    <Sheet
+                                        variant="outlined"
+                                        key={index}
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            width: { xs: '100%', md: '200px' },
+                                            backgroundColor: 'background.body',
+                                            p: 2,
+                                            gap: 1,
+                                            borderRadius: 6
+                                        }}>
+                                        <Avatar
+                                            src={FILE_BASE + item.profile_picture}
+                                            sx={{ height: 80, width: 80, borderRadius: 100 }} />
+
                                         <Typography level="title-md">{item.first_name + " " + item.last_name}</Typography>
                                         {studentDetails(item).map((dt, id) => (
                                             <Typography key={id} level="body-sm"><b>{dt.title}:</b> {dt.value}</Typography>
@@ -265,10 +278,10 @@ const ParentDetailsPage = ({
                                         >{t("student.view")}</Button>
                                         <Divider />
 
-                                    </Box>
+                                    </Sheet>
                                 ))}
 
-                            </Sheet>}
+                            </Box>}
                     </Box>
                 </Box>
                 :

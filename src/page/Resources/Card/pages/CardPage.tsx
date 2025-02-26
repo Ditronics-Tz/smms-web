@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack, Chip, ColorPaletteProp, Autocomplete } from "@mui/joy";
+import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, Option, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack, Chip, ColorPaletteProp, Autocomplete, Select } from "@mui/joy";
 import { AlertModal, LoadingView, NotFoundMessage, PageTitle } from "../../../../components";
 import { formatDate, thousandSeparator } from "../../../../utils";
 
@@ -50,7 +50,7 @@ const MobileViewTable = ({ data, props }) => {
                         <ListItemContent sx={{ display: 'flex', gap: 2, alignItems: 'start' }}>
                             <div>
                                 <Typography fontWeight={600} gutterBottom>{listItem.card_number}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("card.student")}:</b> {listItem.student.first_name + " " + listItem.student.last_name}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("card.student")}:</b> {listItem.student_or_staff.first_name + " " + listItem.student_or_staff.last_name}</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("card.control_number")}:</b> {listItem.control_number}</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("card.balance")}:</b> Tsh. {thousandSeparator(listItem.balance)}</Typography>
                                 <Dropdown>
@@ -150,7 +150,7 @@ const DesktopViewTable = ({ data, props }) => {
                                     <Typography level="body-sm">{row.card_number}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-sm">{row.student.first_name + " " + row.student.last_name}</Typography>
+                                    <Typography level="body-sm">{row.student_or_staff.first_name + " " + row.student_or_staff.last_name}</Typography>
                                 </td>
                                 <td>
                                     <Typography level="body-sm">{row.control_number}</Typography>
@@ -225,10 +225,12 @@ const CardPage = ({
         student: null,
         balance: 0.0,
         issued_date: null,
+        school_number: ''
     }
 
     const [cardData, setCardData] = useState(initiateCardData);
     const [studentList, setStudentList] = useState([]);
+    const [schoolList, setSchoolList] = useState([]);
 
     // function to fetch student data to fetch student data
     useEffect(() => {
@@ -236,11 +238,21 @@ const CardPage = ({
             timeout: 30000,
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + accessToken,
 
             }
         }).then((res) => setStudentList(res.data.results)).catch((e) => console.error(e))
+
+        axios.get(API_BASE + "/list/schools", {
+            timeout: 30000,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken,
+
+            }
+        }).then((res) => setSchoolList(res.data.results)).catch((e) => console.error(e))
     }, [accessToken])
 
     // ---- PAGINATION SETTINGS ----- //
@@ -331,9 +343,10 @@ const CardPage = ({
         if (cardData.card_number && cardData.student) {
             const data = {
                 "card_number": cardData.card_number,
-                "student": cardData.student.id,
+                "student_or_staff": cardData.student.id,
                 "issued_date": cardData.issued_date,
-                "balance": cardData.balance
+                "balance": cardData.balance,
+                "school_number": cardData.school_number
             }
             if (cardData.card_id) {
                 dispatch(editCardRequest(accessToken, { ...data, "card_id": cardData.card_id }))
@@ -365,9 +378,10 @@ const CardPage = ({
         setCardData({
             card_id: item.id,
             card_number: item.card_number,
-            student: item.student,
+            student: item.student_or_staff,
             balance: item.balance,
-            issued_date: item.issued_date
+            issued_date: item.issued_date,
+            school_number: item.school_number
         })
 
         setFormModal(true)
@@ -536,6 +550,21 @@ const CardPage = ({
                                 />
                             </FormControl>
                         </Stack>
+
+                        <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
+                            {/* school name */}
+                            <FormControl sx={{ flex: 1 }} required>
+                                <FormLabel>{t("student.schoolName")}</FormLabel>
+                                <Select name="school" defaultValue={cardData.school_number} value={cardData.school_number}
+                                    placeholder={t("init.select") + t("student.schoolName")}
+                                    onChange={(e, value) => setCardData({ ...cardData, school_number: value })}>
+                                    {schoolList.length > 0 ? schoolList.map((item, index) => (
+                                        <Option key={index} value={item.number}>{item.name}</Option>
+                                    )) : <Option value={null}>{t("school.NoList")}</Option>}
+                                </Select>
+                            </FormControl>
+                        </Stack>
+
 
                         <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
                             {/* balance */}

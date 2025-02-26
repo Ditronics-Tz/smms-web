@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box, Table, Divider, Button, Sheet, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar } from "@mui/joy";
+import { Typography, Box, Table, Divider, Button, Sheet, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar, CardContent, ColorPaletteProp, Card } from "@mui/joy";
 import { toast } from 'react-toastify';
 import { LoadingView, NotFoundMessage } from "../../../../components";
-import { useLocation} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { STATUS } from "../../../../constant";
 import { connect, useDispatch } from "react-redux";
 import {
@@ -10,8 +10,9 @@ import {
     editUserReset,
     operatorDetailsRequest,
 } from '../../../../store/actions'
-import { EditOutlined } from "@mui/icons-material";
+import { EditOutlined, TimerOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
+import { formatDate } from "../../../../utils";
 
 function CreateItems(
     title: String,
@@ -179,14 +180,15 @@ const OperatorDetailsPage = ({
 
                             sx={{
                                 display: 'flex',
-                                width: { xs: '100%', md: '600px' },
-                                flexDirection: 'row',
+                                // width: ,
+                                flexDirection: {xs: 'column', md: 'row'},
+                                alignItems:'center',
                                 backgroundColor: 'background.body',
                                 p: 2,
                                 gap: { xs: 1, md: 3 },
                                 borderRadius: 6
                             }}>
-                            <Avatar sx={{ height: 160, width: 140, borderRadius: 6 }} />
+                            <Avatar sx={{ height: 120, width: 120, borderRadius: 6 }} />
                             {/* <Divider orientation="horizontal" /> */}
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, width: '100%' }}>
                                 <Typography level="h3">{operatorData.first_name + " " + operatorData.middle_name + " " + operatorData.last_name}</Typography>
@@ -210,61 +212,59 @@ const OperatorDetailsPage = ({
 
                         {/* Students */}
                         {operatorData.sessions.length > 0 &&
-                            <Sheet
-                                className="OrderTableContainer"
-                                variant="outlined"
+                            <Card
                                 sx={{
-                                    maxWidth: "600px",
-                                    borderRadius: 'sm',
-                                    flexShrink: 1,
-                                    overflow: 'auto',
-                                    minHeight: 0,
-                                }}
-                            >
-                                <Table
-                                    aria-labelledby="tableTitle"
-                                    stickyHeader
-                                    hoverRow
-                                    sx={{
-                                        '--TableCell-headBackground': 'var(--joy-palette-background-level2)',
-                                        '--Table-headerUnderlineThickness': '1px',
-                                        '--TableRow-hoverBackground': 'var(--joy-palette-background-level1)',
-                                        '--TableCell-paddingY': '4px',
-                                        '--TableCell-paddingX': '8px',
-                                    }}>
-                                    <thead>
-                                        <tr>
-                                            <th style={{ width: '40%', fontSize: 18 }}>{t("operator.student")}</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    {operatorData.sessions.map((item, index) => (
-                                        <tbody key={index}>
-                                            <tr>
-                                                <td><b>{t("operator.firstName")}</b></td>
-                                                <td>{item.first_name}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>{t("operator.lastName")}</b></td>
-                                                <td>{item.last_name}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>{t("operator.gender")}</b></td>
-                                                <td>{item.gender}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>{t("operator.schoolName")}</b></td>
-                                                <td>{item.school}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>{t("operator.classRoom")}</b></td>
-                                                <td>{item.class_room}</td>
-                                            </tr>
-                                            <tr style={{ height: '15px' }}></tr>
+                                    display: { xs: 'none', md: 'flex' },
+                                    justifyContent: 'center',
+                                    // alignItems: 'center',
+                                    boxShadow: 'sm',
+                                    backgroundColor: 'background.body'
+                                }}>
+                                <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                    <Typography
+                                        startDecorator={<TimerOutlined />}
+                                        level="title-md">
+                                        {t("session.title")}
+                                    </Typography>
+                                    <Divider />
+                                    <Table>
+                                        <thead>
+                                            <th style={{ padding: "10px 6px", width: 50 }}>{t("session.type")}</th>
+                                            <th style={{ padding: "10px 6px", width: 50 }}>{t("session.status")}</th>
+                                            <th style={{ padding: "10px 6px", width: 80 }}>{t("session.start_at")}</th>
+                                            <th style={{ padding: "10px 6px", width: 80 }}>{t("session.end_at")}</th>
+                                        </thead>
+                                        <tbody>
+                                            {operatorData.sessions.map((item, index) => (
+                                                <tr>
+                                                    <td>{{
+                                                        "lunch": t("session.lunch"),
+                                                        "dinner": t("session.dinner"),
+                                                        "breakfast": t("session.breakfast")
+                                                    }[item.type]}</td>
+                                                    <td><Typography
+                                                        color={
+                                                            {
+                                                                "completed": 'success',
+                                                                "active": 'neutral',
+                                                                "cancelled": 'danger',
+                                                            }[item.status] as ColorPaletteProp
+                                                        }
+                                                    >
+                                                        {{
+                                                            "active": t("status.active"),
+                                                            "completed": t("status.complete"),
+                                                            "cancelled": t("status.cancelled")
+                                                        }[item.status]}
+                                                    </Typography></td>
+                                                    <td>{formatDate(item.start_at)}</td>
+                                                    <td>{formatDate(item.end_at)}</td>
+                                                </tr>
+                                            ))}
                                         </tbody>
-                                    ))}
-                                </Table>
-                            </Sheet>}
+                                    </Table>
+                                </CardContent>
+                            </Card>}
                     </Box>
                 </Box>
                 :

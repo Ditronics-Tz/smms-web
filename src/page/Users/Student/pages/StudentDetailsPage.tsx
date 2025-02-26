@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box, Divider, Button, Sheet, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar, Chip, ColorPaletteProp, ListDivider, Autocomplete } from "@mui/joy";
+import { Typography, Box, Divider, Button, Sheet, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, Stack, FormControl, FormLabel, Input, Select, Option, Avatar, Chip, ColorPaletteProp, ListDivider, Autocomplete, Table, ListItem, List, ListItemContent } from "@mui/joy";
 import { toast } from 'react-toastify';
 import { LoadingView, NotFoundMessage } from "../../../../components";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ import { EditOutlined, RemoveRedEyeOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { formatDate, thousandSeparator } from "../../../../utils";
 import axios from "axios";
-import { NAVIGATE_TO_PARENTDETAILSPAGE } from "../../../../route/types";
+import { NAVIGATE_TO_PARENTDETAILSPAGE, NAVIGATE_TO_TRANSACTIONPAGE } from "../../../../route/types";
 
 function CreateItems(
     title: String,
@@ -26,6 +26,140 @@ function CreateItems(
     return { title, value }
 }
 
+const MobileViewTable = ({ data, props }) => {
+    const { t } = useTranslation();
+    return (
+        <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+            {data.map((listItem, index) => (
+                <List
+                    key={index}
+                    size="sm"
+                    sx={{
+                        '--ListItem-paddingX': 0,
+                    }}
+                >
+                    <ListItem
+                        variant="outlined"
+                        color={
+                            {
+                                "successful": "success",
+                                "failed": "danger",
+                                "penalt": "warning",
+                                "pending": "neutral"
+                            }[listItem.transaction_status] as ColorPaletteProp}
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'start',
+                            p: 1,
+                            borderRadius: 4,
+                            boxShadow: 'sm'
+                        }}
+                    >
+                        <ListItemContent sx={{ display: 'flex', gap: 1, alignItems: 'start' }}>
+                            <div>
+                                <Typography fontWeight={600} level="title-md">{listItem.item_name}</Typography>
+                                <Typography fontSize={11} gutterBottom>{formatDate(listItem.transaction_date)}</Typography>
+                            </div>
+                        </ListItemContent>
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'flex-end',
+                            rowGap: 1
+                        }}>
+                            <Typography fontWeight={600} level="title-md" gutterBottom>Tsh. {thousandSeparator(listItem.amount)}</Typography>
+                            <Chip
+                                variant="solid"
+                                size="sm"
+                                color={
+                                    {
+                                        "successful": "success",
+                                        "failed": "danger",
+                                        "penalt": "warning",
+                                        "pending": "neutral"
+                                    }[listItem.transaction_status] as ColorPaletteProp
+                                }
+                            >
+                                {{
+                                    "successful": t("status.success"),
+                                    "failed": t("status.failed"),
+                                    "penalt": t("status.penalt"),
+                                    "pending": t("status.pending")
+                                }[listItem.transaction_status]}
+                            </Chip>
+                        </Box>
+
+                    </ListItem>
+                </List>
+            ))}
+        </Box>
+    )
+}
+
+const DesktopViewTable = ({ data, props }) => {
+    const { t } = useTranslation()
+    return (
+        <Sheet
+            className="OrderTableContainer"
+            variant="outlined"
+            sx={{
+                display: { xs: 'none', md: 'flex', lg: 'flex' },
+                // maxWidth: '600px',
+                borderRadius: 'sm',
+                flexShrink: 1,
+                overflow: 'auto',
+                minHeight: 0,
+            }}>
+            <Table >
+                <thead>
+                    <tr style={{ textAlign: 'center' }}>
+                        <th style={{ width: 70, padding: '10px 6px' }}>{t("transaction.item_name")}</th>
+                        <th style={{ width: 60, padding: '10px 6px', }}>{t("transaction.amount")} (Tsh)</th>
+                        <th style={{ width: 50, padding: '10px 6px', }}>{t("transaction.status")}</th>
+                        <th style={{ width: 100, padding: '10px 6px', }}>{t("transaction.date")}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {data.map((row, index) => (
+                        <tr key={index}>
+                            <td>
+                                <Typography level="body-sm">{row.item_name}</Typography>
+                            </td>
+                            <td>
+                                <Typography level="body-sm">{thousandSeparator(row.amount)}</Typography>
+                            </td>
+                            <td>
+                                <Typography
+                                    level='title-sm'
+                                    color={
+                                        {
+                                            "successful": "success",
+                                            "failed": "danger",
+                                            "penalt": "warning",
+                                            "pending": "neutral"
+                                        }[row.transaction_status] as ColorPaletteProp
+                                    }
+                                >
+                                    {{
+                                        "successful": t("status.success"),
+                                        "failed": t("status.failed"),
+                                        "penalt": t("status.penalt"),
+                                        "pending": t("status.pending")
+                                    }[row.transaction_status]}
+                                </Typography>
+                            </td>
+                            <td>
+                                <Typography level="body-sm">{formatDate(row.transaction_date)}</Typography>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
+        </Sheet>
+    );
+}
 
 
 const StudentDetailsPage = ({
@@ -60,7 +194,8 @@ const StudentDetailsPage = ({
         rfid_card: null,
         parent_ids: null,
         profile_picture: null,
-        profile_picture_url: ""
+        profile_picture_url: "",
+        transactions: []
     }
 
 
@@ -98,6 +233,7 @@ const StudentDetailsPage = ({
                 rfid_card: detailsResult.rfid_card,
                 parent_ids: detailsResult.parents,
                 profile_picture_url: detailsResult.profile_picture,
+                transactions: detailsResult.transactions,
             });
         }
         else if (detailsStatus === STATUS.ERROR) {
@@ -191,9 +327,9 @@ const StudentDetailsPage = ({
     ]
 
     const parentDetails = (item) => [
-        CreateItems(t("student.gender"), { 'M': t("student.male"), 'F': t("student.female") }[item.gender]),
-        CreateItems(t("parent.email"), item.email),
-        CreateItems(t("parent.mobile"), item.mobile_number),
+        CreateItems("", { 'mother': t("parent.mother"), 'father': t("parent.father"), 'guardian': t("parent.guardian") }[item.parent_type]),
+        CreateItems("", item.email),
+        CreateItems("", item.mobile_number),
     ]
 
 
@@ -208,22 +344,23 @@ const StudentDetailsPage = ({
                 <Box sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'flex-start',
+                    width: '100%',
                     maxWidth: "1200px",
-                    gap: 4
+                    gap: 2
                 }}>
 
                     {/* Details */}
-                    <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
+                    <Box sx={{ display: 'flex', gap: 1, flexDirection: { xs: 'column', md: 'row' } }}>
                         {/* student details */}
                         <Sheet
                             variant="outlined"
 
                             sx={{
                                 display: 'flex',
-                                flexDirection: 'row',
-                                width: { xs: '100%', md: '800px' },
+                                flexDirection: {xs: 'column', md: 'row'},
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                minWidth: { xs: '100%', md: '600px' },
                                 backgroundColor: 'background.body',
                                 p: 2,
                                 gap: { xs: 1, md: 3 },
@@ -231,11 +368,11 @@ const StudentDetailsPage = ({
                             }}>
                             <Avatar
                                 src={FILE_BASE + studentData.profile_picture_url}
-                                sx={{ height: 160, width: 140, borderRadius: 6 }} />
+                                sx={{ height: 140, width: 140, borderRadius: 100 }} />
 
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, width: '100%' }}>
                                 <Typography level="h3">{studentData.first_name + " " + studentData.middle_name + " " + studentData.last_name}</Typography>
-                                <Divider />
+                                {/* <Divider /> */}
                                 {rows.map((item, index) => (
                                     <Typography level="body-sm" key={index}><b>{item.title}:</b> {item.value}</Typography>
                                 ))}
@@ -244,93 +381,119 @@ const StudentDetailsPage = ({
                                     size="sm"
                                     color="neutral"
                                     variant="outlined"
-                                    sx={{ alignSelf: 'flex-start', borderRadius: 100 }}
+                                    sx={{  borderRadius: 100, mt: 2  }}
                                     startDecorator={<EditOutlined />}
                                     onClick={() => setFormModal(true)}>
                                     {t("student.edit")}
                                 </Button>
                             </Box>
                         </Sheet>
-                        <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: "column", md: "row" } }}>
-                            {studentData.rfid_card &&
-                                <Sheet
-                                    variant="outlined"
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        maxWidth: { xs: 'unset', md: '400px' },
-                                        backgroundColor: 'background.level1',
-                                        p: 2,
-                                        borderRadius: 'sm',
-                                        gap: 0.5
-                                    }}>
 
-                                    <Typography level='title-md'>{t("student.card")}</Typography>
-                                    <ListDivider sx={{ mb: 1 }} />
+                        {/* Parent*/}
+                        {studentData.parent_ids.length > 0 &&
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    p: 2,
+                                    gap: 1,
+                                    borderRadius: 6
+                                }}>
+                                <Typography level="title-sm">{t("parent.details")}</Typography>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, width: '100%' }}>
+                                    {studentData.parent_ids.map((item, index) => (
+                                        <Sheet
+                                            key={index}
+                                            variant="soft"
+                                            sx={{
+                                                flex: 1,
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                width: {xs: '100%', md: '200px'},
+                                                gap: 0.6,
+                                                backgroundColor: 'background.body',
+                                                p: 1,
+                                                borderRadius: 'lg',
+                                                boxShadow: 'sm'
+                                            }}>
+                                            <Avatar size="lg" />
+                                            <Typography level="title-md">{item.first_name + " " + item.last_name}</Typography>
+                                            {parentDetails(item).map((dt, id) => (
+                                                <Typography key={id} level="body-sm"><b>{dt.title}</b> {dt.value}</Typography>
+                                            ))}
+                                            <Button
+                                                size="sm"
+                                                variant="outlined"
+                                                color="neutral"
+                                                sx={{borderRadius: 100, py: 0.1, px: 1, fontSize: 12}}
+                                                onClick={() => navigate(NAVIGATE_TO_PARENTDETAILSPAGE, { state: { id: item.id } })}
+                                            >{t("parent.view")}</Button>
+                                        </Sheet>
+                                    ))}
+                                </Box>
 
-                                    <Typography level="title-sm" textAlign={"center"}>{t("student.balance")}</Typography>
-                                    <Typography level="h3" textAlign={"center"}>Tsh. {thousandSeparator(studentData.rfid_card.balance)}</Typography>
-                                    <Chip
-                                        variant="solid"
-                                        size="sm"
-                                        sx={{ alignSelf: 'center', mb: 1 }}
-                                        color={
-                                            {
-                                                true: 'success',
-                                                false: 'danger'
-                                            }[studentData.rfid_card.is_active] as ColorPaletteProp
-                                        }
-                                    >
-                                        {{
-                                            true: t("status.active"),
-                                            false: t("status.inactive")
-                                        }[studentData.rfid_card.is_active]}
-                                    </Chip>
+                            </Box>}
+                    </Box>
 
-                                    <Divider />
-                                    <Typography ><b>{t("student.card_number")}:</b> {studentData.rfid_card.card_number}</Typography>
-                                    <Typography ><b>{t("student.controlNumber")}:</b> {studentData.rfid_card.control_number}</Typography>
-                                    <Typography ><b>{t("student.issue")}:</b> {formatDate(studentData.rfid_card.issued_date)}</Typography>
-                                </Sheet>}
 
-                            {/* Parent*/}
-                            {studentData.parent_ids.length > 0 &&
-                                <Sheet
-                                    variant="outlined"
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                        width: { xs: 'unset', md: '400px' },
-                                        backgroundColor: 'background.body',
-                                        p: 2,
-                                        gap: 1,
-                                        borderRadius: 6
-                                    }}>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, width: '100%' }}>
-                                        <Typography level="h4">{t("parent.details")}</Typography>
-                                        <Divider />
-                                        {studentData.parent_ids.map((item, index) => (
-                                            <Box key={index} sx={{ display: 'flex', flexDirection: 'column', gap: 0.6, width: '100%' }}>
-                                                <Typography level="title-md">{item.first_name + " " + item.last_name}</Typography>
-                                                {parentDetails(item).map((dt, id) => (
-                                                    <Typography key={id} level="body-sm"><b>{dt.title}:</b> {dt.value}</Typography>
-                                                ))}
-                                                <Button
-                                                    size="sm"
-                                                    variant="outlined"
-                                                    color="neutral"
-                                                    startDecorator={<RemoveRedEyeOutlined />}
-                                                    onClick={() => navigate(NAVIGATE_TO_PARENTDETAILSPAGE, { state: { id: item.id } })}
-                                                >{t("parent.view")}</Button>
-                                                <Divider />
-                                            </Box>
-                                        ))}
+                    <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: "column", md: "row" } }}>
+                        {studentData.rfid_card &&
+                            <Sheet
+                                variant="outlined"
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    minWidth: { xs: 'unset', md: '400px' },
+                                    backgroundColor: 'background.popup',
+                                    p: 2,
+                                    boxShadow: 'md',
+                                    // borderRadius: 'sm',
+                                    gap: 0.5
+                                }}>
+
+                                <Typography level='title-md'>{t("student.card")}</Typography>
+                                <ListDivider sx={{ mb: 1 }} />
+
+                                <Typography level="title-sm" textAlign={"center"}>{t("student.balance")}</Typography>
+                                <Typography level="h3" textAlign={"center"}>Tsh. {thousandSeparator(studentData.rfid_card.balance)}</Typography>
+                                <Chip
+                                    variant="solid"
+                                    size="sm"
+                                    sx={{ alignSelf: 'center', mb: 1 }}
+                                    color={
+                                        {
+                                            true: 'success',
+                                            false: 'danger'
+                                        }[studentData.rfid_card.is_active] as ColorPaletteProp
+                                    }
+                                >
+                                    {{
+                                        true: t("status.active"),
+                                        false: t("status.inactive")
+                                    }[studentData.rfid_card.is_active]}
+                                </Chip>
+
+                                <Divider />
+                                <Typography ><b>{t("student.card_number")}:</b> {studentData.rfid_card.card_number}</Typography>
+                                <Typography ><b>{t("student.controlNumber")}:</b> {studentData.rfid_card.control_number}</Typography>
+                                <Typography ><b>{t("student.issue")}:</b> {formatDate(studentData.rfid_card.issued_date)}</Typography>
+                            </Sheet>}
+
+                        {studentData.transactions.length > 0 &&
+                            <Sheet>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <Box>
+                                        <Typography level='title-md'>{t("transaction.title")}</Typography>
                                     </Box>
-
-                                </Sheet>}
-                        </Box>
-
-
+                                    <Button size='sm' color='neutral' variant='plain' onClick={() => navigate(NAVIGATE_TO_TRANSACTIONPAGE)}>
+                                        {t("home.view_more")}
+                                    </Button>
+                                </Box>
+                                <MobileViewTable props={null} data={studentData.transactions} />
+                                <DesktopViewTable props={null} data={studentData.transactions} />
+                            </Sheet>}
 
                     </Box>
 

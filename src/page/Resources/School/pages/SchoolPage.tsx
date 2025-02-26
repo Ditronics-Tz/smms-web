@@ -44,6 +44,7 @@ const MobileViewTable = ({ data, props }) => {
                         <ListItemContent sx={{ display: 'flex', gap: 2, alignItems: 'start' }}>
                             <div>
                                 <Typography fontWeight={600} gutterBottom>{listItem.name}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>ID:</b> {listItem.number}</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("school.location")}:</b> {listItem.location}</Typography>
                             </div>
                         </ListItemContent>
@@ -103,7 +104,7 @@ const DesktopViewTable = ({ data, props }) => {
                 >
                     <thead>
                         <tr style={{ textAlign: 'center' }}>
-                            {/* <th style={{ width: 50, padding: '10px 6px' }}></th> */}
+                            <th style={{ width: 50, padding: '10px 6px' }}>ID</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("school.name")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("school.location")}</th>
                             <th style={{ width: 80, padding: '10px 6px', }}>Actions</th>
@@ -112,6 +113,9 @@ const DesktopViewTable = ({ data, props }) => {
                     <tbody>
                         {data.map((row, index) => (
                             <tr key={index}>
+                                <td>
+                                    <Typography level="body-sm">{row.number}</Typography>
+                                </td>
                                 <td>
                                     <Typography level="body-sm">{row.name}</Typography>
                                 </td>
