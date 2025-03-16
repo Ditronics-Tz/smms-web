@@ -307,9 +307,6 @@
         "schoolName": "Jina la Shule",
         "classRoom": "Darasa",
         "profile": "Picha",
-        "card": "Taarifa za Kadi",
-        "card_number": "Nambari ya Kadi",
-        "controlNumber": "Nambari ya Udhibiti",
         "item": "Bidhaa",
         "joined": "Amesajiliwa Tarehe",
         "startAt": "Kuanza",
@@ -340,9 +337,6 @@
         "schoolName": "Jina la Shule",
         "classRoom": "Darasa",
         "profile": "Picha",
-        "card": "Taarifa za Kadi",
-        "card_number": "Nambari ya Kadi",
-        "controlNumber": "Nambari ya Udhibiti",
         "item": "Bidhaa",
         "joined": "Amesajiliwa Tarehe",
         "startAt": "Kuanza",
@@ -526,6 +520,10 @@
         "120": "Kitambulisho cha kikao kinahitajika",
         "121": "Hakuna orodha ya waliyochanganuliwa kwa kikao hiki",
         "122": "Namba ya simu tayari imeshatumika",
-        "123": "Barua pepe (email) imeshatumika"
+        "123": "Barua pepe (email) imeshatumika",
+        "124": "Barua pepe (email) inahitajika",
+        "125": "Barua pepe (email) haipo",
+        "126": "Tafadhari jaza neno la siri la zamani na neno la siri jipya",
+        "127": "Neno la siri la zamani si sahihi"
     }
 }

@@ -522,6 +522,10 @@
         "120": "Session ID is required",
         "121": "Not Scanned list for this session",
         "122": "Mobile number already exists",
-        "123": "Email already exists"
+        "123": "Email already exists",
+        "124": "Email is required",
+        "125": "Email does not exist",
+        "126": "Please insert old password and new password",
+        "127": "Old password is incorrect"
     }
 }
