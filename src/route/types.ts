@@ -2,6 +2,7 @@
 /* -------------- AMBASSADOR ROUTES ----------------- */
 // Login
 export const NAVIGATE_TO_LOGINPAGE = '/login';
+export const NAVIGATE_TO_FORGOTPASSWORDPAGE = '/forgot-password';
 
 // Dashboard
 export const NAVIGATE_TO_DASHBOARD = '/';

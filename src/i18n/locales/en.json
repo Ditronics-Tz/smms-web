@@ -81,22 +81,22 @@
         "noEmail": "You don't have email, please insert email to get OTP for login",
         "password": "Password",
         "passwordPlaceholder": "Enter your password",
-        "forgot": "Forgot your password?",
+        "forgot": "Forget your password?",
         "loginButton": "LOGIN",
         "emptyErr": "Please fill out all fields",
         "alertmessage": "Please fill the reference number to continue"
     },
     "forget": {
         "title": "Forget Password",
-        "desc": "Please enter your NIDA number and mobile number you use to login",
+        "desc": "Please enter your email to reset your password, you will receive a new password to your email",
         "switch": "Return to",
         "signin": "Sign In",
-        "mobile": "Mobile number",
-        "mobilePlaceholder": "Enter your mobile number",
-        "button": "Request",
-        "back": "Back to ",
-        "success": "Successful reset password and sent to your mobile",
-        "error": "Please fill all fields"
+        "email": "Email",
+        "emailPlaceholder": "Enter your email",
+        "button": "SUBMIT",
+        "back": "Back to Login",
+        "success": "Successful reset password and sent to your email",
+        "error": "Please enter your email"
     },
     "header": {
         "home": "Home",

@@ -22,6 +22,14 @@ const INITIAL_STATE = {
     activateUserStatus: STATUS.DEFAULT,
     activateUserResult: null,
     activateUserErrorMessage: "",
+
+    forgotPasswordStatus: STATUS.DEFAULT,
+    forgotPasswordResult: null,
+    forgotPasswordErrorMessage: "",
+
+    changePasswordStatus: STATUS.DEFAULT,
+    changePasswordResult: null,
+    changePasswordErrorMessage: ""
 }
 
 /* eslint-disable */
@@ -170,7 +178,63 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 activateUserResult: null,
                 activateUserErrorMessage: ""
             }
-            
+
+
+        // FORGOT PASSWORD
+        case STATE.FORGOT_PASSWORD_LOADING:
+            return {
+                ...state,
+                forgotPasswordStatus: STATUS.LOADING
+            }
+        case STATE.FORGOT_PASSWORD_SUCCESS:
+            return {
+                ...state,
+                forgotPasswordStatus: STATUS.SUCCESS,
+                forgotPasswordResult: payload,
+                forgotPasswordErrorMessage: ""
+            }
+        case STATE.FORGOT_PASSWORD_FAILURE:
+            return {
+                ...state,
+                forgotPasswordStatus: STATUS.ERROR,
+                forgotPasswordResult: null,
+                forgotPasswordErrorMessage: payload,
+            }
+        case STATE.FORGOT_PASSWORD_RESET:
+            return {
+                ...state,
+                forgotPasswordStatus: STATUS.DEFAULT,
+                forgotPasswordResult: null,
+                forgotPasswordErrorMessage: ""
+            }
+
+        // CHANGE PASSWORD
+        case STATE.CHANGE_PASSWORD_LOADING:
+            return {
+                ...state,
+                changePasswordStatus: STATUS.LOADING
+            }
+        case STATE.CHANGE_PASSWORD_SUCCESS:
+            return {
+                ...state,
+                changePasswordStatus: STATUS.SUCCESS,
+                changePasswordResult: payload,
+                changePasswordErrorMessage: ""
+            }
+        case STATE.CHANGE_PASSWORD_FAILURE:
+            return {
+                ...state,
+                changePasswordStatus: STATUS.ERROR,
+                changePasswordResult: null,
+                changePasswordErrorMessage: payload,
+            }
+        case STATE.CHANGE_PASSWORD_RESET:
+            return {
+                ...state,
+                changePasswordStatus: STATUS.DEFAULT,
+                changePasswordResult: null,
+                changePasswordErrorMessage: ""
+            }
 
         default:
             return state;

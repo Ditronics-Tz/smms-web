@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect, useDispatch } from "react-redux";
 import {
-    loginRequest, loginReset,
+    loginRequest, loginReset, forgotPasswordRequest, forgotPasswordReset
 } from "../../../store/actions"
 
 import { CssVarsProvider } from '@mui/joy/styles';
@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 import image from '../../../constant/image';
-import { NAVIGATE_TO_DASHBOARD, NAVIGATE_TO_FORGOTPASSWORDPAGE } from '../../../route/types';
+import { NAVIGATE_TO_DASHBOARD, NAVIGATE_TO_LOGINPAGE } from '../../../route/types';
 import { toast } from 'react-toastify';
 import { STATUS } from '../../../constant';
 import { LoadingView } from '../../../components';
@@ -29,9 +29,10 @@ import LanguageMenu from '../../../components/molecules/LanguageMenu';
 import { ColorSchemeToggle } from '../../../utils';
 import { useTranslation } from 'react-i18next';
 
-const LoginPage = ({
-    loginStatus,
-    loginErrorMessage,
+const ForgotPasswordPage = ({
+    forgotPasswordStatus,
+    forgotPasswordErrorMessage,
+    forgotPasswordResult,
 }) => {
 
     const navigate = useNavigate();
@@ -41,19 +42,19 @@ const LoginPage = ({
     const [refresh, setRefresh] = useState(false)
 
     /* eslint-disable */
-    const [OTPModal, setOTPModal] = useState(false);
-    const [loadOTP, setLoadOTP] = useState(false);
-    const [OTP, setOTP] = useState('')
+    const [email, setEmail] = useState('')
 
     useEffect(() => {
-        if (loginStatus === STATUS.SUCCESS) {
-            navigate(NAVIGATE_TO_DASHBOARD, { replace: true });
+        if (forgotPasswordStatus === STATUS.SUCCESS) {
+            toast.success(t("forget.success"))
+            dispatch(forgotPasswordReset());
+            navigate(NAVIGATE_TO_LOGINPAGE, { replace: true });
         }
-        else if (loginStatus === STATUS.ERROR) {
-            toast.error(loginErrorMessage)
-            dispatch(loginReset());
+        else if (forgotPasswordStatus === STATUS.ERROR) {
+            toast.error(forgotPasswordErrorMessage)
+            dispatch(forgotPasswordReset());
         }
-    }, [loginStatus])
+    }, [forgotPasswordStatus])
 
     useEffect(() => {
         console.log("Refresh screen")
@@ -65,13 +66,11 @@ const LoginPage = ({
         event.preventDefault();
         const formElements = event.currentTarget.elements;
         const data = {
-            'username': formElements.email.value,
-            'password': formElements.password.value,
-            'fcm_token': localStorage.getItem('fcm_token')
+            'email': formElements.email.value
         };
         console.log(data)
-        if (data.username !== "" && data.password !== "") {
-            dispatch(loginRequest(data))
+        if (data.email) {
+            dispatch(forgotPasswordRequest({"email" : data.email}));
 
         } else {
             toast.error(t("login.emptyErr"));
@@ -79,7 +78,7 @@ const LoginPage = ({
     }
 
     const checkLoading = () => {
-        if (loginStatus === STATUS.LOADING){
+        if (forgotPasswordStatus === STATUS.LOADING){
             return true
         }
         else {
@@ -170,30 +169,26 @@ const LoginPage = ({
                         <Box
                             sx={styles.form}
                         >
-                            <Stack sx={{ mb: 2 }}>
-                                <Typography textAlign='center' level="h3">{t("login.title")}</Typography>
+                            <Stack sx={{ mb: 2, gap:1 }}>
+                                <Typography textAlign='center' level="h3">{t("forget.title")}</Typography>
+                                <Typography textAlign='center' level="body-sm">{t("forget.desc")}</Typography>
                             </Stack>
 
-
-                            <Stack component='form' onSubmit={handleSubmit} gap={4} sx={{ mt: 2 }} noValidate>
+                            <Stack component='form' onSubmit={handleSubmit} gap={4} sx={{ mt: 2 }}>
                                 <FormControl required>
-                                    <FormLabel>{t("login.username")}</FormLabel>
-                                    <Input type="text" name="email" placeholder={t("login.usernamePlaceholder")} sx={styles.input} />
-                                </FormControl>
-                                <FormControl required>
-                                    <FormLabel>{t("login.password")}</FormLabel>
-                                    <Input type="password" name="password" placeholder={t("login.passwordPlaceholder")} sx={styles.input} />
+                                    <FormLabel>{t("forget.email")}</FormLabel>
+                                    <Input type="text" name="email" placeholder={t("forget.emailPlaceholder")} sx={styles.input} />
                                 </FormControl>
                                 <Stack gap={4} sx={{ mt: 2 }}>
                                     <Button type="submit" fullWidth sx={styles.button}>
-                                        {t("login.loginButton")}
+                                        {t("forget.button")}
                                     </Button>
                                 </Stack>
                             </Stack>
                             <Divider>Or</Divider>
-                            <Stack gap={4} sx={{ mt: 1 }}>
-                                <Button variant='soft' color='neutral' sx={{borderColor: "blue"}} fullWidth onClick={() => navigate(NAVIGATE_TO_FORGOTPASSWORDPAGE, { replace: true })}>
-                                    {t("login.forgot")}
+                            <Stack gap={4} sx={{ mt: 2 }}>
+                                <Button variant='soft' color='neutral' sx={{borderColor: "blue"}}  fullWidth onClick={() => navigate(NAVIGATE_TO_LOGINPAGE, { replace: true })}>
+                                    {t("forget.back")}
                                 </Button>
                             </Stack>
                         </Box>
@@ -206,53 +201,6 @@ const LoginPage = ({
                     </Box>
                 </Box>
             </Box>
-
-            {/* OTP MODAL */}
-            <Modal open={OTPModal} >
-                <ModalDialog
-                    aria-labelledby="nested-modal-title"
-                    aria-describedby="nested-modal-description"
-                    sx={(theme) => ({
-                        [theme.breakpoints.only('xs')]: {  // ----------------> FOR MOBILE
-                            top: 'unset',
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            // borderRadius: 0,
-                            borderTopLeftRadius: 20,
-                            borderTopRightRadius: 20,
-                            transform: 'none',
-                            maxWidth: 'unset',
-                        },
-                    })}>
-                    <ModalClose variant="outlined" component="button" onClick={() => setOTPModal(false)} />
-                    <DialogTitle>OTP Verification</DialogTitle>
-                    <DialogContent>Please enter OTP that has been sent to your email.</DialogContent>
-                    <form
-                        onSubmit={null}
-                    >
-                        <FormControl sx={{ pb: 1 }}>
-                            {/* <FormLabel></FormLabel> */}
-                            <Input
-                                autoFocus
-                                type="password"
-                                required
-                                value={OTP}
-                                defaultValue={OTP}
-                                placeholder='Insert OTP here'
-                                onChange={(event) => setOTP(event.target.value)}
-                            />
-                        </FormControl>
-
-                        <Button
-                            startDecorator={loadOTP && <CircularProgress />}
-                            type="submit"
-                            fullWidth>
-                            {loadOTP ? "LOADING..." : "CONFIRM"}
-                        </Button>
-                    </form>
-                </ModalDialog>
-            </Modal>
 
         </CssVarsProvider>
     );
@@ -344,20 +292,20 @@ const styles = {
 
 const mapStateToProps = ({ auth }) => {
     const {
-        loginStatus,
-        loginResult,
-        loginErrorMessage,
+        forgotPasswordStatus,
+        forgotPasswordResult,
+        forgotPasswordErrorMessage,
         accessToken,
     } = auth
 
 
     return {
-        loginStatus,
-        loginResult,
-        loginErrorMessage,
+        forgotPasswordStatus,
+        forgotPasswordResult,
+        forgotPasswordErrorMessage,
         accessToken,
     }
 }
 
 // export default LoginPage
-export default connect(mapStateToProps, {})(LoginPage)
+export default connect(mapStateToProps, {})(ForgotPasswordPage)

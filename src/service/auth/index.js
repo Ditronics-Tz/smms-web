@@ -1,4 +1,4 @@
-import { LOGOUT_URL, LOGIN_URL, REFRESH_URL, CREATE_USER_URL, EDIT_USER_URL, ACTIVATE_USER_URL } from '../../constant';
+import { LOGOUT_URL, LOGIN_URL, REFRESH_URL, CREATE_USER_URL, EDIT_USER_URL, ACTIVATE_USER_URL, FORGOT_PASSWORD_URL, CHANGE_PASSWORD_URL } from '../../constant';
 import {guestRequest, multipartRequest, resourceRequest} from '../calls'
 
 // create user
@@ -29,4 +29,14 @@ export function doLogout (data) {
 // refreshtoken call
 export function doRefreshToken(data){
     return guestRequest(REFRESH_URL, data)
+}
+
+// forgot password
+export function doForgotPassword(data){
+    return guestRequest(FORGOT_PASSWORD_URL, data)
+}
+
+// change password
+export function doChangePassword(token, data){
+    return resourceRequest(token, CHANGE_PASSWORD_URL, data)
 }

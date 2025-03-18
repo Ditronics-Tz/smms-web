@@ -96,3 +96,37 @@ export function tokenReset(){
         type: STATE.TOKEN_RESET
     }
 }
+
+// forgot password action
+export function forgotPasswordRequest(data){
+    return {
+        type: STATE.FORGOT_PASSWORD_REQUEST,
+        payload: {
+            data
+        }
+    }
+}
+
+export function forgotPasswordReset(){
+    return {
+        type: STATE.FORGOT_PASSWORD_RESET
+    }
+}
+
+// change password action
+export function changePasswordRequest(token, data){
+    return {
+        type: STATE.CHANGE_PASSWORD_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function changePasswordReset(){
+    return {
+        type: STATE.CHANGE_PASSWORD_RESET
+    }
+}
+// End of src/store/auth/actions.js

@@ -13,7 +13,9 @@ export const LOGOUT_URL = "/auth/logout";
 export const REFRESH_URL = "/auth/token/refresh";
 export const CREATE_USER_URL = '/auth/create-user';
 export const EDIT_USER_URL = '/auth/edit-user';
-export const ACTIVATE_USER_URL = '/auth/activate-deactivate-user'
+export const ACTIVATE_USER_URL = '/auth/activate-deactivate-user';
+export const FORGOT_PASSWORD_URL = '/auth/forgot-password';
+export const CHANGE_PASSWORD_URL = '/auth/change-password';
 
 // ---- DASHBOARD URLS -----
 export const COUNTS_URL = "/dashboard/counts";

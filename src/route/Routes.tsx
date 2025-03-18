@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 
-import { LoginPage } from "../page/Login";
+import { ForgetPasswordPage, LoginPage } from "../page/Login";
 
 import {
   ERROR_404_PAGE,
@@ -10,6 +10,7 @@ import {
   NAVIGATE_TO_CANTEENITEMPAGE,
   NAVIGATE_TO_CARDPAGE,
   NAVIGATE_TO_DASHBOARD,
+  NAVIGATE_TO_FORGOTPASSWORDPAGE,
   NAVIGATE_TO_INFOPAGE,
   NAVIGATE_TO_LOGINPAGE,
   NAVIGATE_TO_NOTIFICATIONPAGE,
@@ -54,6 +55,7 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
     <Routes key={location.pathname} location={location}>
 
       <Route path={NAVIGATE_TO_LOGINPAGE} element={<LoginPage />} />
+      <Route path={NAVIGATE_TO_FORGOTPASSWORDPAGE} element={<ForgetPasswordPage/>} />
 
       <Route path="/" element={<ProtectRoute status={loginStatus} />}>
         <Route path='/' element={<Main />}>

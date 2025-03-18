@@ -88,15 +88,15 @@
     },
     "forget": {
         "title": "Sahau Neno siri",
-        "desc": "Tafadhari ingiza namba yako ya NIDA na namba ya simu unayotumia kuingia.",
+        "desc": "Tafadhari ingiza barua pepe yako ili kubadili nenosiri lako, utatumiwa nenosiri jipya kwenye email yako",
         "switch": "Rudi kwenye",
         "signin": "Ingia",
-        "mobile": "Namba ya simu",
-        "mobilePlaceholder": "Weka namba yako ya simu",
-        "button": "Tuma",
-        "back": "Rudi kwenye ",
-        "success": "Imefanikiwa kubadili nenosiri na kutuma kwenye namba yako ya simu",
-        "error": "Tafadhari jaza taarifa zote"
+        "email": "Barua Pepe",
+        "emailPlaceholder": "Ingiza barua pepe yako",
+        "button": "TUMA",
+        "back": "Rudi Kwenye Kuingia",
+        "success": "Imefanikiwa kubadili nenosiri na kutuma kwenye barua pepe yako",
+        "error": "Tafadhari jaza barua pepe yako"
     },
     "header": {
         "home": "Nyumbani",

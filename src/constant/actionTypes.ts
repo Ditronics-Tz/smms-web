@@ -28,6 +28,8 @@ export const STATE = createRequestTypes('STATE',
         'USER_LIST',
         'INACTIVE_USERS',
         'ACTIVATE_USER',
+        'FORGOT_PASSWORD',
+        'CHANGE_PASSWORD',
 
         // dashboard
         'COUNTS',

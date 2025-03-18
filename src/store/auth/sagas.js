@@ -1,6 +1,6 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
-import { doActivateUser, doCreateUser, doEditUser, doLogin, doRefreshToken } from '../../service/auth';
+import { doActivateUser, doChangePassword, doCreateUser, doEditUser, doForgotPassword, doLogin, doRefreshToken } from '../../service/auth';
 import { errorMessage } from '../../utils';
 
 // login
@@ -154,12 +154,74 @@ function* activateUserTask(action) {
 }
 
 
+// forgot password
+function* forgotPasswordTask(action) {
+    try {
+        yield put({ type: STATE.FORGOT_PASSWORD_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doForgotPassword, payload.data);
+
+        if (res.status === 200) {
+            yield put({
+                type: STATE.FORGOT_PASSWORD_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.FORGOT_PASSWORD_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.FORGOT_PASSWORD_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
+// change password
+function* changePasswordTask(action) {
+    try {
+        yield put({ type: STATE.CHANGE_PASSWORD_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doChangePassword, payload.token, payload.data);
+
+        if (res.status === 200) {
+            yield put({
+                type: STATE.CHANGE_PASSWORD_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.CHANGE_PASSWORD_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.CHANGE_PASSWORD_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
 function* authSaga() {
     yield takeLatest(STATE.LOGIN_REQUEST, loginTask);
     yield takeLatest(STATE.TOKEN_REQUEST, tokenTask);
     yield takeLatest(STATE.CREATE_USER_REQUEST, createUserTask);
     yield takeLatest(STATE.EDIT_USER_REQUEST, editUserTask);
     yield takeLatest(STATE.ACTIVATE_USER_REQUEST, activateUserTask);
+    yield takeLatest(STATE.FORGOT_PASSWORD_REQUEST, forgotPasswordTask);
+    yield takeLatest(STATE.CHANGE_PASSWORD_REQUEST, changePasswordTask);
 }
 
 export default authSaga;
