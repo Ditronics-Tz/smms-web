@@ -14,5 +14,5 @@ docker compose up -d
 
 echo "Application started successfully!"
 echo "Access the application at: http://localhost:3000"
-echo "To view logs: docker-compose logs -f smms-web"
-echo "To stop: docker-compose down"
+echo "To view logs: docker compose logs -f smms-web"
+echo "To stop: docker compose down"
