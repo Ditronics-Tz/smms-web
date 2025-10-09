@@ -12,10 +12,14 @@ COPY package*.json ./
 
 # Install dependencies with increased memory and timeout
 RUN npm config set registry https://registry.npmjs.org/ && \
-    npm install --verbose --legacy-peer-deps
+    npm install --verbose --legacy-peer-deps && \
+    npm install ajv@^8.0.0 --save-dev
 
 # Copy source code
 COPY . .
+
+# Set Node options to handle legacy dependencies
+ENV NODE_OPTIONS="--openssl-legacy-provider --max-old-space-size=4096"
 
 # Build the application
 RUN npm run build
