@@ -1,15 +1,18 @@
 # Multi-stage build for production
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Set working directory
 WORKDIR /app
 
+# Install dependencies needed for building native modules
+RUN apk add --no-cache python3 make g++
+
 # Copy package files
 COPY package*.json ./
 
-# Clear npm cache and install dependencies
-RUN npm cache clean --force && \
-    npm install --silent --no-audit --no-fund
+# Install dependencies with increased memory and timeout
+RUN npm config set registry https://registry.npmjs.org/ && \
+    npm install --verbose --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -18,7 +21,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 
 # Install serve to serve the built app
 RUN npm install -g serve
