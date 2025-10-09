@@ -1,5 +1,5 @@
 # Multi-stage build for production
-FROM node:20-alpine AS builder
+FROM node:18-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -7,25 +7,29 @@ WORKDIR /app
 # Install dependencies needed for building native modules
 RUN apk add --no-cache python3 make g++
 
+# Set Node options to handle legacy dependencies
+ENV NODE_OPTIONS="--openssl-legacy-provider --max-old-space-size=4096"
+ENV GENERATE_SOURCEMAP=false
+ENV CI=false
+
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies with increased memory and timeout
+# Clean install with timeout and retries
 RUN npm config set registry https://registry.npmjs.org/ && \
-    npm install --verbose --legacy-peer-deps && \
-    npm install ajv@^8.0.0 --save-dev
+    npm config set fetch-timeout 300000 && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000 && \
+    npm install --no-audit --no-fund --legacy-peer-deps
 
 # Copy source code
 COPY . .
-
-# Set Node options to handle legacy dependencies
-ENV NODE_OPTIONS="--openssl-legacy-provider --max-old-space-size=4096"
 
 # Build the application
 RUN npm run build
 
 # Production stage
-FROM node:20-alpine AS production
+FROM node:18-alpine AS production
 
 # Install serve to serve the built app
 RUN npm install -g serve
