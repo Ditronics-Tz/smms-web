@@ -430,6 +430,7 @@
     },
     "changePin": {
         "title": "Badili Nenosiri",
+        "desc": "Badili nenosiri lako hapa",
         "old": "Nenosiri ya sasa",
         "new": "Nenosiri mpya",
         "confirm": "Rudia Nenosiri",

@@ -415,6 +415,8 @@
     },
     "setting": {
         "title": "Profile & Settings",
+        "profile": "Profile",
+        "profileDesc": "Your profile details",
         "setting": "Settings",
         "desc": "Customization and Helps",
         "help": "Help & Support",
@@ -431,6 +433,7 @@
     },
     "changePin": {
         "title": "Change Password",
+        "desc": "Ensure your account is using a long, random password to stay secure.",
         "old": "Old Password",
         "new": "New Password",
         "confirm": "Confirm Password",
