@@ -1,16 +1,24 @@
+# =============================================================================
+# Docker Compose Configuration for Development
+# Provides hot-reload development environment with volume mounting
+# =============================================================================
 version: '3.8'
 
 services:
-  smms-web:
+  # Development service with hot-reload
+  smms-web-dev:
     build:
       context: .
       dockerfile: Dockerfile
-      target: production
-    container_name: smms-web-prod
+      target: development
+    container_name: smms-web-dev
     ports:
-      - "3000:3000"
+      # Bind to localhost only for security (127.0.0.1:3000:3000)
+      - "127.0.0.1:3000:3000"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
       - REACT_APP_FIREBASE_API_KEY=${REACT_APP_FIREBASE_API_KEY}
       - REACT_APP_FIREBASE_AUTH_DOMAIN=${REACT_APP_FIREBASE_AUTH_DOMAIN}
       - REACT_APP_FIREBASE_PROJECT_ID=${REACT_APP_FIREBASE_PROJECT_ID}
@@ -19,15 +27,22 @@ services:
       - REACT_APP_FIREBASE_APP_ID=${REACT_APP_FIREBASE_APP_ID}
       - REACT_APP_FIREBASE_MEASUREMENT_ID=${REACT_APP_FIREBASE_MEASUREMENT_ID}
       - REACT_APP_VAPID_KEY=${REACT_APP_VAPID_KEY}
-    restart: unless-stopped
+    volumes:
+      # Mount source code for hot-reload
+      - ./src:/app/src
+      - ./public:/app/public
+      # Preserve node_modules in container (don't override with host)
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+    networks:
+      - smms-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
-    networks:
-      - smms-network
+      start_period: 60s
 
 networks:
   smms-network:

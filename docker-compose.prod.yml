@@ -1,0 +1,56 @@
+# =============================================================================
+# Docker Compose Production Configuration
+# Optimized for production deployment with nginx serving static files
+# Usage: docker-compose -f docker-compose.prod.yml up -d
+# =============================================================================
+version: '3.8'
+
+services:
+  # Production service with nginx
+  smms-web-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+      args:
+        # Build-time environment variables (baked into build)
+        - REACT_APP_FIREBASE_API_KEY=${REACT_APP_FIREBASE_API_KEY}
+        - REACT_APP_FIREBASE_AUTH_DOMAIN=${REACT_APP_FIREBASE_AUTH_DOMAIN}
+        - REACT_APP_FIREBASE_PROJECT_ID=${REACT_APP_FIREBASE_PROJECT_ID}
+        - REACT_APP_FIREBASE_STORAGE_BUCKET=${REACT_APP_FIREBASE_STORAGE_BUCKET}
+        - REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${REACT_APP_FIREBASE_MESSAGING_SENDER_ID}
+        - REACT_APP_FIREBASE_APP_ID=${REACT_APP_FIREBASE_APP_ID}
+        - REACT_APP_FIREBASE_MEASUREMENT_ID=${REACT_APP_FIREBASE_MEASUREMENT_ID}
+        - REACT_APP_VAPID_KEY=${REACT_APP_VAPID_KEY}
+        - NODE_ENV=production
+    image: smms-web:prod
+    container_name: smms-web-prod
+    ports:
+      # Bind to localhost only for security
+      # nginx runs on port 80 internally, mapped to 3000 on host
+      - "127.0.0.1:3000:80"
+    restart: unless-stopped
+    networks:
+      - smms-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+    # Resource limits (adjust based on your needs)
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+        reservations:
+          cpus: '0.5'
+          memory: 128M
+
+networks:
+  smms-network:
+    driver: bridge
