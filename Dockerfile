@@ -49,20 +49,41 @@ RUN apt-get update && apt-get install -y \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
+# Accept build arguments for React environment variables
+ARG NODE_ENV=production
+ARG REACT_APP_FIREBASE_API_KEY
+ARG REACT_APP_FIREBASE_AUTH_DOMAIN
+ARG REACT_APP_FIREBASE_PROJECT_ID
+ARG REACT_APP_FIREBASE_STORAGE_BUCKET
+ARG REACT_APP_FIREBASE_MESSAGING_SENDER_ID
+ARG REACT_APP_FIREBASE_APP_ID
+ARG REACT_APP_FIREBASE_MEASUREMENT_ID
+ARG REACT_APP_VAPID_KEY
+
 # Set Node options for build optimization
 ENV NODE_OPTIONS="--openssl-legacy-provider --max-old-space-size=4096"
 ENV GENERATE_SOURCEMAP=false
 ENV CI=false
 
+# Set environment variables from build args (baked into build)
+ENV NODE_ENV=${NODE_ENV}
+ENV REACT_APP_FIREBASE_API_KEY=${REACT_APP_FIREBASE_API_KEY}
+ENV REACT_APP_FIREBASE_AUTH_DOMAIN=${REACT_APP_FIREBASE_AUTH_DOMAIN}
+ENV REACT_APP_FIREBASE_PROJECT_ID=${REACT_APP_FIREBASE_PROJECT_ID}
+ENV REACT_APP_FIREBASE_STORAGE_BUCKET=${REACT_APP_FIREBASE_STORAGE_BUCKET}
+ENV REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${REACT_APP_FIREBASE_MESSAGING_SENDER_ID}
+ENV REACT_APP_FIREBASE_APP_ID=${REACT_APP_FIREBASE_APP_ID}
+ENV REACT_APP_FIREBASE_MEASUREMENT_ID=${REACT_APP_FIREBASE_MEASUREMENT_ID}
+ENV REACT_APP_VAPID_KEY=${REACT_APP_VAPID_KEY}
+
 # Copy package files first for better layer caching
 COPY package*.json ./
 
-# Install dependencies with optimizations
+# Install ALL dependencies (including dev deps needed for build)
 RUN npm config set registry https://registry.npmjs.org/ && \
     npm config set fetch-timeout 300000 && \
     npm config set fetch-retry-mintimeout 20000 && \
     npm config set fetch-retry-maxtimeout 120000 && \
-    npm ci --only=production --legacy-peer-deps && \
     npm install --legacy-peer-deps
 
 # Copy application source
@@ -71,8 +92,7 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Prune dev dependencies to reduce size
-RUN npm prune --production
+# No need to prune since we only copy build/ to production stage
 
 # -----------------------------------------------------------------------------
 # Stage 3: Production (nginx-alpine for minimal size)
