@@ -97,7 +97,7 @@ make rebuild-prod  # Full rebuild without cache
 
 ## 🔐 Security Features
 
-- ✅ Localhost-only binding (127.0.0.1)
+- ✅ Localhost-only binding (localhost)
 - ✅ Non-root user execution
 - ✅ Security headers (CSP, XSS protection)
 - ✅ No secrets in image

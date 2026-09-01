@@ -9,7 +9,7 @@ Successfully implemented a complete, production-ready Docker configuration for t
 ### Core Requirements ✅
 - [x] Multi-stage Dockerfile (development, builder, production)
 - [x] Optimized for <150MB production image (nginx:alpine)
-- [x] Localhost-only binding (127.0.0.1:3000) for security
+- [x] Localhost-only binding (localhost:3000) for security
 - [x] Development mode with hot-reload
 - [x] Production mode with nginx serving static files
 - [x] SPA routing support (fallback to index.html)
@@ -62,8 +62,8 @@ Stage 3: Production (nginx:alpine)
 ```
 
 ### Port Mapping
-- **Development**: Container 3000 → Host 127.0.0.1:3000
-- **Production**: Container 80 → Host 127.0.0.1:3000
+- **Development**: Container 3000 → Host localhost:3000
+- **Production**: Container 80 → Host localhost:3000
 - **Security**: Bound to localhost only (not 0.0.0.0)
 
 ### Image Size Target
@@ -77,7 +77,7 @@ Stage 3: Production (nginx:alpine)
 ## 🔐 Security Features
 
 ### 1. Network Security
-- Localhost-only binding (127.0.0.1:3000)
+- Localhost-only binding (localhost:3000)
 - Not accessible from external IPs without reverse proxy
 - Production-ready for secure deployment
 

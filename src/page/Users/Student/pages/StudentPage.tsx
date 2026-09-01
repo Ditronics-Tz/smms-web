@@ -13,7 +13,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
-import { DeleteOutline, PersonAddOutlined, RemoveRedEyeOutlined } from "@mui/icons-material";
+import { DeleteOutline, PersonAddOutlined, RemoveRedEyeOutlined, FileUploadOutlined } from "@mui/icons-material";
 import { API_BASE, FILE_BASE, STATUS } from "../../../../constant";
 import { toast } from "react-toastify";
 
@@ -24,7 +24,7 @@ import {
     createUserReset,
 } from "../../../../store/actions"
 import { useTranslation } from "react-i18next";
-import { NAVIGATE_TO_STUDENTDETAILSPAGE } from "../../../../route/types";
+import { NAVIGATE_TO_STUDENTDETAILSPAGE, NAVIGATE_TO_STUDENTIMPORTPAGE } from "../../../../route/types";
 import axios from "axios";
 
 const MobileViewTable = ({ data, props }) => {
@@ -407,6 +407,15 @@ const StudentPage = ({
                     sx={{ width: 'auto' }}
                     onClick={openAddForm}>
                     {t("student.add")}
+                </Button>
+
+                <Button
+                    startDecorator={<FileUploadOutlined />}
+                    color="neutral"
+                    variant="soft"
+                    sx={{ width: 'auto' }}
+                    onClick={() => navigate(NAVIGATE_TO_STUDENTIMPORTPAGE)}>
+                    {t("student.import")}
                 </Button>
 
                 <Input

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Typography, Box, List, ListItem, ListItemContent, Sheet, Table, iconButtonClasses, Button, IconButton, Input, Chip, ColorPaletteProp } from "@mui/joy";
-import { LoadingView, NotFoundMessage, PageTitle } from "../../../components";
+import { LoadingView, NotFoundMessage, PageTitle, ReverseTransactionModal } from "../../../components";
 import { formatDate, thousandSeparator } from "../../../utils";
 
 import SearchIcon from '@mui/icons-material/Search';
@@ -9,15 +9,23 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 import { connect, useDispatch } from "react-redux";
 import { useMediaQuery } from "@mui/material";
-import { CalendarMonthRounded } from "@mui/icons-material";
+import { CalendarMonthRounded, UndoRounded } from "@mui/icons-material";
 import { STATUS } from "../../../constant";
 import { toast } from "react-toastify";
 
 import {
     transactionsRequest,
-    transactionsReset
+    transactionsReset,
+    reverseTransactionRequest,
+    reverseTransactionReset
 } from "../../../store/actions"
 import { useTranslation } from "react-i18next";
+import branding from "../../../config/branding";
+
+const getTxnId = (row) => row.id ?? row.transaction_id;
+const isReversalEntry = (row) => row.transaction_type === 'reversal' || row.reversal_of != null || row.original_transaction_id != null;
+const isReversed = (row) => row.transaction_status === 'reversed' || row.is_reversed === true || row.reversed === true || row.reversal != null;
+const getOriginalId = (row) => row.reversal_of ?? row.original_transaction_id;
 
 const MobileViewTable = ({ data, props }) => {
     const { t } = useTranslation();
@@ -38,7 +46,8 @@ const MobileViewTable = ({ data, props }) => {
                                 "successful": "success",
                                 "failed": "danger",
                                 "penalt": "warning",
-                                "pending": "neutral"
+                                "pending": "neutral",
+                                "reversed": "neutral"
                             }[listItem.transaction_status] as ColorPaletteProp}
                         sx={{
                             display: 'flex',
@@ -64,7 +73,19 @@ const MobileViewTable = ({ data, props }) => {
                             alignItems: 'flex-end',
                             rowGap: 1
                         }}>
-                            <Typography fontWeight={600} level="title-md" gutterBottom>Tsh. {thousandSeparator(listItem.amount)}</Typography>
+<Typography
+                                fontWeight={600}
+                                level="title-md"
+                                gutterBottom
+                                color={isReversalEntry(listItem) ? "danger" : "neutral"}
+                            >
+                                {branding.CURRENCY_SYMBOL} {isReversalEntry(listItem) ? "-" : ""}{thousandSeparator(listItem.amount)}
+                            </Typography>
+                            {isReversalEntry(listItem) && getOriginalId(listItem) != null &&
+                                <Typography level="body-xs" color="neutral">
+                                    {t("transaction.linkedOriginal", { id: getOriginalId(listItem) })}
+                                </Typography>
+                            }
                             <Chip
                                 variant="solid"
                                 size="sm"
@@ -73,7 +94,8 @@ const MobileViewTable = ({ data, props }) => {
                                         "successful": "success",
                                         "failed": "danger",
                                         "penalt": "warning",
-                                        "pending": "neutral"
+                                        "pending": "neutral",
+                                        "reversed": "neutral"
                                     }[listItem.transaction_status] as ColorPaletteProp
                                 }
                             >
@@ -81,9 +103,21 @@ const MobileViewTable = ({ data, props }) => {
                                     "successful": t("status.success"),
                                     "failed": t("status.failed"),
                                     "penalt": t("status.penalt"),
-                                    "pending": t("status.pending")
+                                    "pending": t("status.pending"),
+                                    "reversed": t("status.reversed")
                                 }[listItem.transaction_status]}
                             </Chip>
+                            {props.canReverse(listItem) &&
+                                <IconButton
+                                    size="sm"
+                                    variant="plain"
+                                    color="danger"
+                                    title={t("transaction.reverse")}
+                                    onClick={() => props.onReverse(listItem)}
+                                >
+                                    <UndoRounded />
+                                </IconButton>
+                            }
                         </Box>
 
                     </ListItem>
@@ -131,9 +165,10 @@ const DesktopViewTable = ({ data, props }) => {
                             <th style={{ width: 70, padding: '10px 6px' }}>{t("transaction.item_name")}</th>
                             <th style={{ width: 100, padding: '10px 6px', }}>{t("transaction.student_name")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.card_number")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.amount")} (Tsh)</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.amount")} ({branding.CURRENCY_SYMBOL})</th>
                             <th style={{ width: 50, padding: '10px 6px', }}>{t("transaction.status")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.date")}</th>
+                            {props.isAdmin && <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.reverse")}</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -149,7 +184,14 @@ const DesktopViewTable = ({ data, props }) => {
                                     <Typography level="body-sm">{row.card_number}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-sm">{thousandSeparator(row.amount)}</Typography>
+                                    <Typography level="body-sm" color={isReversalEntry(row) ? "danger" : "neutral"}>
+                                        {isReversalEntry(row) ? "-" : ""}{thousandSeparator(row.amount)}
+                                    </Typography>
+                                    {isReversalEntry(row) && getOriginalId(row) != null &&
+                                        <Typography level="body-xs" color="neutral">
+                                            {t("transaction.linkedOriginal", { id: getOriginalId(row) })}
+                                        </Typography>
+                                    }
                                 </td>
                                 <td>
                                     <Chip
@@ -160,21 +202,38 @@ const DesktopViewTable = ({ data, props }) => {
                                                 "successful": "success",
                                                 "failed": "danger",
                                                 "penalt": "warning",
-                                                "pending": "neutral"
+                                                "pending": "neutral",
+                                                "reversed": "neutral"
                                             }[row.transaction_status] as ColorPaletteProp
                                         }
                                     >
-                                        {{
-                                            "successful": t("status.success"),
-                                            "failed": t("status.failed"),
-                                            "penalt": t("status.penalt"),
-                                            "pending": t("status.pending")
-                                        }[row.transaction_status]}
+{{
+                                                "successful": t("status.success"),
+                                                "failed": t("status.failed"),
+                                                "penalt": t("status.penalt"),
+                                                "pending": t("status.pending"),
+                                                "reversed": t("status.reversed")
+                                            }[row.transaction_status]}
                                     </Chip>
                                 </td>
                                 <td>
                                     <Typography level="body-sm">{formatDate(row.transaction_date)}</Typography>
                                 </td>
+                                {props.isAdmin &&
+                                    <td>
+                                        {props.canReverse(row) &&
+                                            <IconButton
+                                                size="sm"
+                                                variant="plain"
+                                                color="danger"
+                                                title={t("transaction.reverse")}
+                                                onClick={() => props.onReverse(row)}
+                                            >
+                                                <UndoRounded />
+                                            </IconButton>
+                                        }
+                                    </td>
+                                }
                             </tr>
                         ))}
                     </tbody>
@@ -191,6 +250,11 @@ const TransactionPage = ({
     listStatus,
     listResult,
     listErrorMessage,
+
+    reverseStatus,
+    reverseErrorMessage,
+
+    loginRole,
 }) => {
     const dispatch = useDispatch()
     const { t } = useTranslation()
@@ -203,6 +267,26 @@ const TransactionPage = ({
     const [totalTransactions, setTotalTransactions] = useState(0);
     const [nextPage, setNextPage] = useState(null);
     const [previousPage, setPreviousPage] = useState(null);
+
+    // ---- REVERSE SETTINGS ----- //
+    const [reverseTarget, setReverseTarget] = useState(null);
+    const reversing = reverseStatus === STATUS.LOADING;
+    const isAdmin = loginRole === 'admin';
+
+    const canReverse = (row) => isAdmin && !!getTxnId(row) && !isReversalEntry(row) && !isReversed(row);
+
+    const handleCloseReverse = () => {
+        if (!reversing) {
+            setReverseTarget(null);
+        }
+    };
+
+    const handleConfirmReverse = (reason) => {
+        dispatch(reverseTransactionRequest(accessToken, {
+            transaction_id: getTxnId(reverseTarget),
+            reason
+        }));
+    };
 
     const ITEMS_PER_PAGE = 50
     const pageLength = listData.length > 0 ? Math.ceil(totalTransactions / ITEMS_PER_PAGE) : 1
@@ -227,6 +311,22 @@ const TransactionPage = ({
         }
         dispatch(transactionsRequest(accessToken, data, page))
     }, [page, search])
+    /* eslint-enable */
+
+    /* eslint-disable */
+    useEffect(() => {
+        if (reverseStatus === STATUS.SUCCESS) {
+            toast.success(t("transaction.reverseSuccess"));
+            dispatch(reverseTransactionReset());
+            setReverseTarget(null);
+            dispatch(transactionsRequest(accessToken, { 'search': search }, page));
+        }
+        else if (reverseStatus === STATUS.ERROR) {
+            toast.error(reverseErrorMessage);
+            dispatch(reverseTransactionReset());
+            setReverseTarget(null);
+        }
+    }, [reverseStatus])
     /* eslint-enable */
 
     // for calender open
@@ -293,8 +393,8 @@ const TransactionPage = ({
 
             {listData.length > 0 ? <>
                 {/* ------ render different view depend on plafform -------- */}
-                <MobileViewTable data={listData} props={{ edit: null, activate: null }} />
-                <DesktopViewTable data={listData} props={{ edit: null, activate: null }} />
+                <MobileViewTable data={listData} props={{ edit: null, activate: null, isAdmin, canReverse, onReverse: setReverseTarget }} />
+                <DesktopViewTable data={listData} props={{ edit: null, activate: null, isAdmin, canReverse, onReverse: setReverseTarget }} />
 
                 {/* Pagination */}
                 {totalTransactions > ITEMS_PER_PAGE
@@ -358,18 +458,30 @@ const TransactionPage = ({
             </> :
                 <NotFoundMessage />
             }
+
+            <ReverseTransactionModal
+                open={!!reverseTarget}
+                target={reverseTarget}
+                loading={reversing}
+                onClose={handleCloseReverse}
+                onConfirm={handleConfirmReverse}
+            />
         </Box>
     )
 }
 
 const mapStateToProps = ({ auth, session }) => {
-    const { accessToken
+    const { accessToken,
+        loginResult
     } = auth
 
     const {
         transactionsStatus: listStatus,
         transactionsResult: listResult,
         transactionsErrorMessage: listErrorMessage,
+
+        reverseStatus,
+        reverseErrorMessage,
     } = session
 
     return {
@@ -377,7 +489,12 @@ const mapStateToProps = ({ auth, session }) => {
 
         listStatus,
         listResult,
-        listErrorMessage
+        listErrorMessage,
+
+        reverseStatus,
+        reverseErrorMessage,
+
+        loginRole: loginResult ? loginResult.user.role : ""
     }
 }
 export default connect(mapStateToProps, {})(TransactionPage)

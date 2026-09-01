@@ -103,3 +103,55 @@ export function transactionsReset(){
         type: STATE.TRANSACTIONS_RESET
     }
 }
+
+// ----- Reverse Transaction
+export function reverseTransactionRequest(token, data){
+    return {
+        type: STATE.REVERSE_TRANSACTION_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function reverseTransactionReset(){
+    return {
+        type: STATE.REVERSE_TRANSACTION_RESET
+    }
+}
+
+// ----- Deposit / Top-up request
+export function depositRequest(token, data){
+    return {
+        type: STATE.DEPOSIT_REQUEST_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function depositRequestReset(){
+    return {
+        type: STATE.DEPOSIT_REQUEST_RESET
+    }
+}
+
+// ----- Deposit / Top-up requests list
+export function depositListRequest(token, data, page){
+    return {
+        type: STATE.DEPOSIT_LIST_REQUEST,
+        payload: {
+            token,
+            data,
+            page
+        }
+    }
+}
+
+export function depositListReset(){
+    return {
+        type: STATE.DEPOSIT_LIST_RESET
+    }
+}

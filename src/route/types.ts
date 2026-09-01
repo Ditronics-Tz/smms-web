@@ -13,11 +13,11 @@ export const NAVIGATE_TO_SCHOOLPAGE = '/schools';
 // Item
 export const NAVIGATE_TO_CANTEENITEMPAGE = '/item-page'
 export const NAVIGATE_TO_CARDPAGE = '/card-page';
-export const NAVIGATE_TO_CARDDETAILSPAGE = '/card-details';
 
 // Student
 export const NAVIGATE_TO_STUDENTPAGE = '/student-manage';
 export const NAVIGATE_TO_STUDENTDETAILSPAGE = '/student-details'
+export const NAVIGATE_TO_STUDENTIMPORTPAGE = '/students-import';
 
 // Parent
 export const NAVIGATE_TO_PARENTPAGE = '/parent-manage';
@@ -40,6 +40,12 @@ export const NAVIGATE_TO_SESSIONPAGE = '/session';
 
 // Transactions
 export const NAVIGATE_TO_TRANSACTIONPAGE = '/transactions';
+
+// Spend
+export const NAVIGATE_TO_SPENDPAGE = '/spend';
+
+// Top up
+export const NAVIGATE_TO_TOPUPPAGE = '/top-up';
 
 // Notification
 export const NAVIGATE_TO_NOTIFICATIONPAGE = '/all-notifications';
