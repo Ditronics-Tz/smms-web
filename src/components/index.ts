@@ -6,6 +6,7 @@ import AppInit from "./organic/AppInit";
 import PageTitle from "./Base/PageTitle";
 import NotFoundMessage from "./molecules/notFoundMessage";
 import AlertModal from "./molecules/AlertModal";
+import ReverseTransactionModal from "./molecules/ReverseTransactionModal";
 
 export {
     SideBar,
@@ -15,5 +16,6 @@ export {
     AppInit,
     PageTitle,
     NotFoundMessage,
-    AlertModal
+    AlertModal,
+    ReverseTransactionModal
 }

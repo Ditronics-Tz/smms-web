@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
+import branding from "../../../config/branding";
 import { connect, useDispatch } from "react-redux"
 import { API_BASE, STATUS } from '../../../constant';
 import { toast } from 'react-toastify';
@@ -17,12 +18,19 @@ import {
     scanCardReset,
     scannedListRequest,
     scannedListReset,
+    reverseTransactionRequest,
+    reverseTransactionReset,
 } from '../../../store/actions.js'
 import { Box, Button, Card, CardContent, Divider, FormControl, FormLabel, IconButton, iconButtonClasses, Input, List, ListDivider, ListItem, ListItemContent, Option, Select, Sheet, Stack, Table, Typography } from '@mui/joy';
-import { LoadingView } from '../../../components';
-import { InfoOutlined } from '@mui/icons-material';
+import { LoadingView, ReverseTransactionModal } from '../../../components';
+import { InfoOutlined, UndoRounded } from '@mui/icons-material';
 import { useMediaQuery } from '@mui/material';
 import { formatDate, thousandSeparator } from '../../../utils';
+
+const getTxnId = (row) => row.id ?? row.transaction_id;
+const isReversalEntry = (row) => row.transaction_type === 'reversal' || row.reversal_of != null || row.original_transaction_id != null;
+const isReversed = (row) => row.transaction_status === 'reversed' || row.is_reversed === true || row.reversed === true || row.reversal != null;
+const getOriginalId = (row) => row.reversal_of ?? row.original_transaction_id;
 
 
 const MobileViewTable = ({ data, props }) => {
@@ -49,7 +57,15 @@ const MobileViewTable = ({ data, props }) => {
                                 <Typography fontWeight={600} gutterBottom>{listItem.card_number}</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("session.studentName")}:</b> {listItem.student_name}</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("session.card_number")}:</b> {listItem.card_number}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("session.item")}:</b> {listItem.item_name} - Tsh. {thousandSeparator(listItem.item_price || 0.0)}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("session.item")}:</b> {listItem.item_name} - {isReversalEntry(listItem) ? "-" : ""}{branding.CURRENCY_SYMBOL} {thousandSeparator(listItem.item_price || 0.0)}</Typography>
+                                {isReversalEntry(listItem) && getOriginalId(listItem) != null &&
+                                    <Typography level="body-xs" color="neutral">{t("transaction.linkedOriginal", { id: getOriginalId(listItem) })}</Typography>}
+                                {isReversed(listItem) && !isReversalEntry(listItem) &&
+                                    <Typography level="body-xs" color="neutral">{t("status.reversed")}</Typography>}
+                                {props.canReverse(listItem) &&
+                                    <IconButton size="sm" variant="plain" color="danger" title={t("transaction.reverse")} onClick={() => props.onReverse(listItem)} sx={{ mt: 0.5 }}>
+                                        <UndoRounded />
+                                    </IconButton>}
                                 <Typography level='body-xs'>{formatDate(listItem.scanned_at)}</Typography>
                             </div>
                         </ListItemContent>
@@ -99,8 +115,9 @@ const DesktopViewTable = ({ data, props }) => {
                             <th style={{ width: 70, padding: '10px 6px' }}>{t("session.card_number")}</th>
                             <th style={{ width: 100, padding: '10px 6px', }}>{t("session.studentName")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("session.item")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("session.price")} (Tsh)</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("session.price")} ({branding.CURRENCY_SYMBOL})</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("session.scanned_at")}</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.reverse")}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -116,10 +133,26 @@ const DesktopViewTable = ({ data, props }) => {
                                     <Typography level="body-sm">{row.item_name}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-sm">{thousandSeparator(row.item_price || 0.0)}</Typography>
+                                    <Typography level="body-sm" color={isReversalEntry(row) ? "danger" : "neutral"}>
+                                        {isReversalEntry(row) ? "-" : ""}{thousandSeparator(row.item_price || 0.0)}
+                                    </Typography>
+                                    {isReversalEntry(row) && getOriginalId(row) != null &&
+                                        <Typography level="body-xs" color="neutral">
+                                            {t("transaction.linkedOriginal", { id: getOriginalId(row) })}
+                                        </Typography>}
+                                    {isReversed(row) && !isReversalEntry(row) &&
+                                        <Typography level="body-xs" color="neutral">
+                                            {t("status.reversed")}
+                                        </Typography>}
                                 </td>
                                 <td>
                                     <Typography level="body-sm">{formatDate(row.scanned_at)}</Typography>
+                                </td>
+                                <td>
+                                    {props.canReverse(row) &&
+                                        <IconButton size="sm" variant="plain" color="danger" title={t("transaction.reverse")} onClick={() => props.onReverse(row)}>
+                                            <UndoRounded />
+                                        </IconButton>}
                                 </td>
                             </tr>
                         ))}
@@ -147,7 +180,10 @@ const SessionPage = ({
 
     scannedStatus,
     scannedResult,
-    scannedErrorMessage
+    scannedErrorMessage,
+
+    reverseStatus,
+    reverseErrorMessage,
 }) => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -158,6 +194,24 @@ const SessionPage = ({
     const [items, setItems] = useState([]);
     const [item_id, setItemID] = useState('');
     const [sessionType, setSessionType] = useState('');
+
+    // ---- REVERSE SETTINGS ----- //
+    const [reverseTarget, setReverseTarget] = useState(null);
+    const reversing = reverseStatus === STATUS.LOADING;
+    const canReverse = (row) => !!getTxnId(row) && !isReversalEntry(row) && !isReversed(row);
+
+    const handleCloseReverse = () => {
+        if (!reversing) {
+            setReverseTarget(null);
+        }
+    };
+
+    const handleConfirmReverse = (reason) => {
+        dispatch(reverseTransactionRequest(accessToken, {
+            transaction_id: getTxnId(reverseTarget),
+            reason
+        }));
+    };
 
     const SessionTypes = [
         { value: "breakfast", label: t("session.breakfast") },
@@ -282,6 +336,24 @@ const SessionPage = ({
     }, [scanStatus, page, search])
     /* eslint-enable */
 
+    /* eslint-disable */
+    useEffect(() => {
+        if (reverseStatus === STATUS.SUCCESS) {
+            toast.success(t("transaction.reverseSuccess"));
+            dispatch(reverseTransactionReset());
+            setReverseTarget(null);
+            if (sessionData) {
+                dispatch(scannedListRequest(accessToken, { "session_id": sessionData.id, "search": search }, page));
+            }
+        }
+        else if (reverseStatus === STATUS.ERROR) {
+            toast.error(reverseErrorMessage);
+            dispatch(reverseTransactionReset());
+            setReverseTarget(null);
+        }
+    }, [reverseStatus])
+    /* eslint-enable */
+
     const [card_number, setCardNumber] = useState('');
     const inputRef = useRef(null);
 
@@ -398,7 +470,7 @@ const SessionPage = ({
                     <FormControl>
                         <FormLabel>{t("session.item")}</FormLabel>
                         <Select placeholder={t("init.select") + t("session.item")} value={item_id} onChange={(e, v) => setItemID(v)}>
-                            {items.length > 0 && items.map((item, index) => (<Option key={index} value={item.id} >{item.name} Tsh. {thousandSeparator(item.price)}</Option>))}
+                            {items.length > 0 && items.map((item, index) => (<Option key={index} value={item.id} >{item.name} {branding.CURRENCY_SYMBOL} {thousandSeparator(item.price)}</Option>))}
                         </Select>
                     </FormControl>
                     <FormControl required>
@@ -545,8 +617,8 @@ const SessionPage = ({
                     {/* ------ Scanned List ----- */}
 
                     {/* ------ render different view depend on plafform -------- */}
-                    <MobileViewTable data={scannedList} props={{ edit: null }} />
-                    <DesktopViewTable data={scannedList} props={{ edit: null }} />
+                    <MobileViewTable data={scannedList} props={{ edit: null, canReverse, onReverse: setReverseTarget }} />
+                    <DesktopViewTable data={scannedList} props={{ edit: null, canReverse, onReverse: setReverseTarget }} />
 
                     {/* Pagination */}
                     {totalScan > ITEMS_PER_PAGE
@@ -608,6 +680,14 @@ const SessionPage = ({
                     }
 
                 </Box>}
+
+            <ReverseTransactionModal
+                open={!!reverseTarget}
+                target={reverseTarget}
+                loading={reversing}
+                onClose={handleCloseReverse}
+                onConfirm={handleConfirmReverse}
+            />
         </Box>
     )
 }
@@ -637,7 +717,10 @@ const mapStateToProps = ({ auth, session }) => {
 
         scannedListStatus: scannedStatus,
         scannedListResult: scannedResult,
-        scannedListErrorMessage: scannedErrorMessage
+        scannedListErrorMessage: scannedErrorMessage,
+
+        reverseStatus,
+        reverseErrorMessage,
     } = session
 
     return {
@@ -661,7 +744,10 @@ const mapStateToProps = ({ auth, session }) => {
 
         scannedStatus,
         scannedResult,
-        scannedErrorMessage
+        scannedErrorMessage,
+
+        reverseStatus,
+        reverseErrorMessage
     }
 }
 

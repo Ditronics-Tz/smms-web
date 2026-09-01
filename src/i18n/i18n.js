@@ -3,6 +3,7 @@ import sw from './locales/sw.json';
 
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import branding from "../config/branding";
 
 // the translations
 // (tip move them in a JSON file and import them,
@@ -17,7 +18,7 @@ const resources = {
 };
 
 // const lang = retrieveData('language') || "en";
-const lang = localStorage.getItem('language') || 'en'
+const lang = localStorage.getItem('language') || branding.DEFAULT_LOCALE
 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next

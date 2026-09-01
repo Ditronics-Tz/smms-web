@@ -9,7 +9,7 @@ import { useDispatch, connect } from "react-redux";
 
 import { toast } from 'react-toastify';
 import { STATUS } from './constant';
-import { requestForToken} from '../src/firebase/firebase'
+import { requestForToken } from './firebase/firebase'
 
 
 //import MainRoute from './route/Mainroute';

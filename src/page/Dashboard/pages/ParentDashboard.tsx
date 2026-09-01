@@ -1,6 +1,7 @@
 import { Avatar, Box, Button, Card, Chip, ColorPaletteProp, Divider, List, ListItem, ListItemContent, Sheet, Table, Typography } from '@mui/joy';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import branding from "../../../config/branding";
 import { connect, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FILE_BASE, STATUS } from '../../../constant';
@@ -15,9 +16,13 @@ import {
 import { toast } from 'react-toastify';
 import { LoadingView } from '../../../components';
 import { formatDate, thousandSeparator } from '../../../utils';
-import { NAVIGATE_TO_TRANSACTIONPAGE } from '../../../route/types';
+import { NAVIGATE_TO_TOPUPPAGE, NAVIGATE_TO_SPENDPAGE, NAVIGATE_TO_TRANSACTIONPAGE } from '../../../route/types';
+import { BarChartOutlined, AccountBalanceWalletOutlined } from '@mui/icons-material';
 
-const RenderStudentSlides = ({ data }) => {
+const getChildId = (item) => item?.id ?? item?.student_id ?? item?.user?.id ?? ""
+const getCardId = (item) => item?.rfid_card?.id ?? item?.rfid_card?.card_id ?? ""
+
+const RenderStudentSlides = ({ data, props }) => {
     const { t } = useTranslation()
 
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -109,7 +114,7 @@ const RenderStudentSlides = ({ data }) => {
                             {/* <Divider /> */}
                             <Box>
                                 <Typography textAlign={'center'} level="title-sm" >{t("home.available_balance")}</Typography>
-                                <Typography my={1.5} fontFamily={"Roboto"} textAlign={'center'} level="h2">Tsh. {thousandSeparator(item.rfid_card.balance)}</Typography>
+                                <Typography my={1.5} fontFamily={"Roboto"} textAlign={'center'} level="h2">{branding.CURRENCY_SYMBOL} {thousandSeparator(item.rfid_card.balance)}</Typography>
                             </Box>
                             <Divider />
                             <Box sx={{
@@ -121,6 +126,24 @@ const RenderStudentSlides = ({ data }) => {
                                 <Typography fontSize={13}><b>{t("student.controlNumber")}:</b> {item.rfid_card.control_number}</Typography>
                                 <Typography fontSize={13}><b>{t("student.issue")}:</b> {formatDate(item.rfid_card.issued_date)}</Typography>
                             </Box>
+                            <Button
+                                size='sm'
+                                variant='soft'
+                                color='primary'
+                                startDecorator={<BarChartOutlined />}
+                                disabled={!getChildId(item)}
+                                onClick={() => props.navigateToSpend(getChildId(item))}>
+                                {t("home.view_spend")}
+                            </Button>
+                            <Button
+                                size='sm'
+                                variant='soft'
+                                color='success'
+                                startDecorator={<AccountBalanceWalletOutlined />}
+                                disabled={!getCardId(item)}
+                                onClick={() => props.navigateToTopUp(getCardId(item))}>
+                                {t("home.top_up")}
+                            </Button>
                         </Sheet>}
                 </Box>
             ))}
@@ -172,7 +195,7 @@ const MobileViewTable = ({ data, props }) => {
                             alignItems: 'flex-end',
                             rowGap: 1
                         }}>
-                            <Typography fontWeight={600} level="title-md" gutterBottom>Tsh. {thousandSeparator(listItem.amount)}</Typography>
+                            <Typography fontWeight={600} level="title-md" gutterBottom>{branding.CURRENCY_SYMBOL} {thousandSeparator(listItem.amount)}</Typography>
                             <Chip
                                 variant="solid"
                                 size="sm"
@@ -220,7 +243,7 @@ const DesktopViewTable = ({ data, props }) => {
                     <tr style={{ textAlign: 'center' }}>
                         <th style={{ width: 70, padding: '10px 6px' }}>{t("transaction.item_name")}</th>
                         <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.student_name")}</th>
-                        <th style={{ width: 60, padding: '10px 6px', }}>{t("transaction.amount")} (Tsh)</th>
+                        <th style={{ width: 60, padding: '10px 6px', }}>{t("transaction.amount")} ({branding.CURRENCY_SYMBOL})</th>
                         <th style={{ width: 50, padding: '10px 6px', }}>{t("transaction.status")}</th>
                         <th style={{ width: 100, padding: '10px 6px', }}>{t("transaction.date")}</th>
                     </tr>
@@ -360,7 +383,10 @@ const ParentDashboard = ({
                     width: { xs: 'auto', md: '70%' }
                 }}>
                     {/* render parent's kids details */}
-                    {parentStudents.length > 0 && <RenderStudentSlides data={parentStudents} />}
+                    {parentStudents.length > 0 && <RenderStudentSlides data={parentStudents} props={{
+                        navigateToSpend: (childId) => navigate(NAVIGATE_TO_SPENDPAGE + '?child=' + childId),
+                        navigateToTopUp: (cardId) => navigate(NAVIGATE_TO_TOPUPPAGE + '?card=' + cardId)
+                    }} />}
 
                     {/* Transactions */}
                     {transactionList.length > 0 &&

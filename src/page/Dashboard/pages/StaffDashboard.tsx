@@ -1,10 +1,10 @@
 import { Avatar, Box, Button, Card, Chip, ColorPaletteProp, Divider, List, ListItem, ListItemContent, Sheet, Table, Typography } from '@mui/joy';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import branding from "../../../config/branding";
 import { connect, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FILE_BASE, STATUS } from '../../../constant';
-import SwipeableViews from 'react-swipeable-views';
 
 import {
     staffViewRequest,
@@ -86,7 +86,7 @@ const RenderStaffDetails = ({ item }) => {
                     {/* <Divider /> */}
                     <Box>
                         <Typography textAlign={'center'} level="title-sm" >{t("home.available_balance")}</Typography>
-                        <Typography my={1.5} fontFamily={"Roboto"} textAlign={'center'} level="h2">Tsh. {thousandSeparator(item.rfid_card.balance)}</Typography>
+                        <Typography my={1.5} fontFamily={"Roboto"} textAlign={'center'} level="h2">{branding.CURRENCY_SYMBOL} {thousandSeparator(item.rfid_card.balance)}</Typography>
                     </Box>
                     <Divider />
                     <Box sx={{
@@ -147,7 +147,7 @@ const MobileViewTable = ({ data, props }) => {
                             alignItems: 'flex-end',
                             rowGap: 1
                         }}>
-                            <Typography fontWeight={600} level="title-md" gutterBottom>Tsh. {thousandSeparator(listItem.amount)}</Typography>
+                            <Typography fontWeight={600} level="title-md" gutterBottom>{branding.CURRENCY_SYMBOL} {thousandSeparator(listItem.amount)}</Typography>
                             <Chip
                                 variant="solid"
                                 size="sm"
@@ -194,7 +194,7 @@ const DesktopViewTable = ({ data, props }) => {
                 <thead>
                     <tr style={{ textAlign: 'center' }}>
                         <th style={{ width: 70, padding: '10px 6px' }}>{t("transaction.item_name")}</th>
-                        <th style={{ width: 60, padding: '10px 6px', }}>{t("transaction.amount")} (Tsh)</th>
+                        <th style={{ width: 60, padding: '10px 6px', }}>{t("transaction.amount")} ({branding.CURRENCY_SYMBOL})</th>
                         <th style={{ width: 50, padding: '10px 6px', }}>{t("transaction.status")}</th>
                         <th style={{ width: 100, padding: '10px 6px', }}>{t("transaction.date")}</th>
                     </tr>
@@ -258,7 +258,7 @@ const StaffDashboard = ({
 
     const [transactionList, setTransactionList] = useState([]);
     const [staffViews, setStaffViews] = useState([]);
-    const [userDetails, setUserDetails] = useState({
+    const [, setUserDetails] = useState({
         name: "",
         email: '',
         mobile: "",

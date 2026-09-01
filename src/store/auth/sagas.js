@@ -1,6 +1,6 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
-import { doActivateUser, doChangePassword, doCreateUser, doEditUser, doForgotPassword, doLogin, doRefreshToken } from '../../service/auth';
+import { doActivateUser, doChangePassword, doCreateUser, doEditUser, doForgotPassword, doImportCommit, doImportPreview, doLogin, doRefreshToken } from '../../service/auth';
 import { errorMessage } from '../../utils';
 
 // login
@@ -214,6 +214,66 @@ function* changePasswordTask(action) {
     }
 }
 
+// Import students preview
+function* importPreviewTask(action) {
+    try {
+        yield put({ type: STATE.IMPORT_PREVIEW_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doImportPreview,payload.token, payload.data);
+
+        if (res.status === 200 || res.status === 201) {
+            yield put({
+                type: STATE.IMPORT_PREVIEW_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.IMPORT_PREVIEW_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.IMPORT_PREVIEW_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
+// Import students commit
+function* importCommitTask(action) {
+    try {
+        yield put({ type: STATE.IMPORT_COMMIT_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doImportCommit,payload.token, payload.data);
+
+        if (res.status === 200 || res.status === 201) {
+            yield put({
+                type: STATE.IMPORT_COMMIT_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.IMPORT_COMMIT_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.IMPORT_COMMIT_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
 function* authSaga() {
     yield takeLatest(STATE.LOGIN_REQUEST, loginTask);
     yield takeLatest(STATE.TOKEN_REQUEST, tokenTask);
@@ -222,6 +282,8 @@ function* authSaga() {
     yield takeLatest(STATE.ACTIVATE_USER_REQUEST, activateUserTask);
     yield takeLatest(STATE.FORGOT_PASSWORD_REQUEST, forgotPasswordTask);
     yield takeLatest(STATE.CHANGE_PASSWORD_REQUEST, changePasswordTask);
+    yield takeLatest(STATE.IMPORT_PREVIEW_REQUEST, importPreviewTask);
+    yield takeLatest(STATE.IMPORT_COMMIT_REQUEST, importCommitTask);
 }
 
 export default authSaga;

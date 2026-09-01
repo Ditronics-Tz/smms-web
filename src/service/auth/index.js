@@ -1,4 +1,4 @@
-import { LOGOUT_URL, LOGIN_URL, REFRESH_URL, CREATE_USER_URL, EDIT_USER_URL, ACTIVATE_USER_URL, FORGOT_PASSWORD_URL, CHANGE_PASSWORD_URL } from '../../constant';
+import { LOGOUT_URL, LOGIN_URL, REFRESH_URL, CREATE_USER_URL, EDIT_USER_URL, ACTIVATE_USER_URL, FORGOT_PASSWORD_URL, CHANGE_PASSWORD_URL, IMPORT_PREVIEW_URL, IMPORT_COMMIT_URL } from '../../constant';
 import {guestRequest, multipartRequest, resourceRequest} from '../calls'
 
 // create user
@@ -39,4 +39,14 @@ export function doForgotPassword(data){
 // change password
 export function doChangePassword(token, data){
     return resourceRequest(token, CHANGE_PASSWORD_URL, data)
+}
+
+// import students preview (multipart file or json rows)
+export function doImportPreview(token, data){
+    return multipartRequest(token, IMPORT_PREVIEW_URL, data)
+}
+
+// import students commit
+export function doImportCommit(token, data){
+    return resourceRequest(token, IMPORT_COMMIT_URL, data)
 }

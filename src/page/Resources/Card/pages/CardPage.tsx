@@ -26,6 +26,7 @@ import {
     activateCardReset,
 } from "../../../../store/actions"
 import { useTranslation } from "react-i18next";
+import branding from "../../../../config/branding";
 import axios from "axios";
 
 const MobileViewTable = ({ data, props }) => {
@@ -52,7 +53,7 @@ const MobileViewTable = ({ data, props }) => {
                                 <Typography fontWeight={600} gutterBottom>{listItem.card_number}</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("card.student")}:</b> {listItem.student_or_staff.first_name + " " + listItem.student_or_staff.last_name} ({listItem.student_or_staff.role})</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("card.control_number")}:</b> {listItem.control_number}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("card.balance")}:</b> Tsh. {thousandSeparator(listItem.balance)}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("card.balance")}:</b> {branding.CURRENCY_SYMBOL} {thousandSeparator(listItem.balance)}</Typography>
                                 <Dropdown>
                                     <MenuButton variant="plain" size="sm">More ...</MenuButton>
                                     <Menu placement="bottom-end" sx={{ p: 1 }}>
@@ -137,7 +138,7 @@ const DesktopViewTable = ({ data, props }) => {
                             <th style={{ width: 100, padding: '10px 6px', }}>{t("card.student")} /{t("card.staff")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("card.role")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("card.control_number")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("card.balance")} (Tsh)</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("card.balance")} ({branding.CURRENCY_SYMBOL})</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("card.issued")}</th>
                             <th style={{ width: 50, padding: '10px 6px', }}>{t("card.status")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("card.created")}</th>

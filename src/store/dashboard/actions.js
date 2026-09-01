@@ -102,3 +102,20 @@ export function staffViewReset() {
         type: STATE.STAFF_VIEW_RESET
     }
 }
+
+// ------- child spend actions ----
+export function childSpendRequest(token, data) {
+    return {
+        type: STATE.CHILD_SPEND_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function childSpendReset() {
+    return {
+        type: STATE.CHILD_SPEND_RESET
+    }
+}

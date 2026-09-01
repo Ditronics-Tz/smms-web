@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import { connect, useDispatch } from "react-redux"
 import { STATUS } from "../../../constant"
 import { useTranslation } from "react-i18next"
+import branding from "../../../config/branding";
 
 import {
     countsRequest,
@@ -30,17 +31,17 @@ const CountsCards = ({ props, data }) => {
         {
             title: t("home.this") + " " + t("home.week") + " " + t("home.sales"),
             color: '#B6FFA1',
-            number: 'Tsh. ' + thousandSeparator(data.price_week || 0)
+            number: branding.CURRENCY_SYMBOL + ' ' + thousandSeparator(data.price_week || 0)
         },
         {
             title: t("home.today") + " " + t("home.sales"),
             color: '#D0DDD0',
-            number: 'Tsh. ' + thousandSeparator(data.price_today || 0)
+            number: branding.CURRENCY_SYMBOL + ' ' + thousandSeparator(data.price_today || 0)
         },
         // {
         //     title: t("home.available"),
         //     color: '#C4D9FF',
-        //     number: "Tsh. " + thousandSeparator(data.total_balance)
+        //     number: branding.CURRENCY_SYMBOL + " " + thousandSeparator(data.total_balance)
         // }
     ]
     return (
@@ -347,7 +348,7 @@ const OperatorDashboard = ({
                             <Typography level="title-sm" color="success" mt={1}>{t("home.number_of_student")}</Typography>
                             <Typography fontSize={18} color="success">{lastSession.student_count}</Typography>
                             <Typography level="title-md">{t("home.total") + " " + t("home.sales") + " " + t("home.amount")}</Typography>
-                            <Typography level="h4" fontSize={23}>Tsh. {thousandSeparator(lastSession.total_price)}</Typography>
+                            <Typography level="h4" fontSize={23}>{branding.CURRENCY_SYMBOL} {thousandSeparator(lastSession.total_price)}</Typography>
                         </Sheet>
 
                     </CardContent>
