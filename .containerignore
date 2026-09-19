@@ -1,0 +1,92 @@
+# =============================================================================
+# Docker Ignore File - Optimized for React TypeScript Projects
+# Excludes files that shouldn't be copied into Docker images
+# =============================================================================
+
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+# NOTE: yarn.lock is intentionally NOT ignored: the Containerfile builder
+# installs with `yarn --frozen-lockfile` for a deterministic tree.
+
+# Build outputs
+build
+dist
+.next
+out
+*.tsbuildinfo
+
+# Testing
+coverage
+.nyc_output
+*.test.ts
+*.test.tsx
+*.test.js
+*.test.jsx
+*.spec.ts
+*.spec.tsx
+*.spec.js
+*.spec.jsx
+
+# Environment files (use docker-compose env instead)
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# Git
+.git
+.gitignore
+.gitattributes
+.github
+
+# IDE and Editor
+.vscode
+.idea
+*.swp
+*.swo
+*.swn
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+*.md
+docs
+
+# Container files (don't need these inside the image)
+Dockerfile
+Dockerfile.*
+Containerfile
+Containerfile.*
+docker-compose*.yml
+compose*.yaml
+compose*.yml
+.dockerignore
+.containerignore
+podman/
+!podman/nginx.conf
+
+# CI/CD
+.travis.yml
+.gitlab-ci.yml
+.circleci
+azure-pipelines.yml
+Jenkinsfile
+
+# Misc
+.cache
+tmp
+temp
+*.log
+.eslintcache

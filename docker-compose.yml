@@ -12,6 +12,7 @@ services:
       dockerfile: Dockerfile
       target: development
     container_name: smms-web-dev
+    restart: unless-stopped
     ports:
       # Bind to localhost only for security (127.0.0.1:3000:3000)
       - "127.0.0.1:3000:3000"

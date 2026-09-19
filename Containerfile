@@ -1,6 +1,9 @@
 # =============================================================================
-# Multi-stage Dockerfile for React TypeScript Application
+# Multi-stage Containerfile for React TypeScript Application (Podman)
 # Optimized for minimal size (<150MB), security, and production deployment
+# Build with: podman build -f Containerfile -t smms-web:prod --target production .
+# Reuses the same pinned, multi-stage recipe as Dockerfile; Podman/Buildah
+# accept the same syntax. OCI image, runs as non-root nginx user.
 # =============================================================================
 
 # -----------------------------------------------------------------------------
@@ -79,16 +82,20 @@ ENV REACT_APP_FIREBASE_APP_ID=${REACT_APP_FIREBASE_APP_ID}
 ENV REACT_APP_FIREBASE_MEASUREMENT_ID=${REACT_APP_FIREBASE_MEASUREMENT_ID}
 ENV REACT_APP_VAPID_KEY=${REACT_APP_VAPID_KEY}
 
-# Copy package files first for better layer caching
-COPY package*.json ./
+# Copy package files first for better layer caching.
+# Podman fix: install with yarn --frozen-lockfile using the committed
+# yarn.lock. `npm install --legacy-peer-deps` produced a broken tree here
+# (ajv-keywords@5 hoisted against ajv@6 -> `Cannot find module
+# 'ajv/dist/compile/codegen'`) and NODE_ENV=production silently skipped the
+# devDependency `typescript` that react-scripts needs.
+COPY package.json yarn.lock ./
 
-# Install ALL dependencies (including dev deps needed for build)
-RUN npm config set registry https://registry.npmjs.org/ && \
-    npm config set fetch-timeout 300000 && \
-    npm config set fetch-retries 10 && \
-    npm config set fetch-retry-mintimeout 20000 && \
-    npm config set fetch-retry-maxtimeout 120000 && \
-    for i in 1 2 3 4 5; do echo "npm install attempt $i"; npm install --legacy-peer-deps && break || sleep 20; done
+# Install ALL dependencies deterministically (including dev deps for build).
+# Fails fast if yarn.lock is out of sync with package.json.
+RUN corepack enable && \
+    yarn config set registry https://registry.npmjs.org/ && \
+    for i in 1 2 3; do echo "yarn install attempt $i"; yarn install --frozen-lockfile --production=false --network-timeout 300000 && break || { echo "attempt $i failed"; sleep 20; }; done && \
+    test -d node_modules/react-scripts && test -d node_modules/typescript && test -d node_modules/ajv
 
 # Copy application source
 COPY . .
@@ -106,8 +113,8 @@ FROM nginx:alpine AS production
 # Install curl for healthcheck
 RUN apk add --no-cache curl
 
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copy Podman nginx configuration (listen 8080, unprivileged for non-root user)
+COPY podman/nginx.conf /etc/nginx/nginx.conf
 
 # Copy built application from builder stage
 COPY --from=builder /app/build /usr/share/nginx/html
@@ -129,12 +136,12 @@ RUN touch /var/run/nginx.pid && \
 # Switch to non-root user
 USER nginx
 
-# Expose port 80 (will be mapped to 3000 on host via docker-compose)
-EXPOSE 80
+# Expose port 8080 (mapped to 3000 on host via compose.yaml)
+EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:80/ || exit 1
+  CMD curl -f http://localhost:8080/ || exit 1
 
 # Start nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]
