@@ -24,6 +24,10 @@ const INITIATE_STATE = {
     staffViewStatus: STATUS.DEFAULT,
     staffViewResult: null,
     staffViewErrorMessage: '',
+
+    childSpendStatus: STATUS.DEFAULT,
+    childSpendResult: null,
+    childSpendErrorMessage: '',
 }
 
 /* eslint-disable */
@@ -38,6 +42,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.COUNTS_SUCCESS:
             return {
+                ...state,
                 countsStatus: STATUS.SUCCESS,
                 countsResult: payload,
                 countsErrorMessage: ''
@@ -45,6 +50,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.COUNTS_FAILURE:
             return {
+                ...state,
                 countsStatus: STATUS.ERROR,
                 countsResult: null,
                 countsErrorMessage: payload
@@ -52,6 +58,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.COUNTS_RESET:
             return {
+                ...state,
                 countsStatus: STATUS.DEFAULT,
                 countsResult: null,
                 countsErrorMessage: ''
@@ -66,6 +73,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.SALES_SUMMARY_SUCCESS:
             return {
+                ...state,
                 salesSummaryStatus: STATUS.SUCCESS,
                 salesSummaryResult: payload,
                 salesSummaryErrorMessage: ''
@@ -73,6 +81,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.SALES_SUMMARY_FAILURE:
             return {
+                ...state,
                 salesSummaryStatus: STATUS.ERROR,
                 salesSummaryResult: null,
                 salesSummaryErrorMessage: payload
@@ -80,6 +89,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.SALES_SUMMARY_RESET:
             return {
+                ...state,
                 salesSummaryStatus: STATUS.DEFAULT,
                 salesSummaryResult: null,
                 salesSummaryErrorMessage: ''
@@ -94,6 +104,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.SALES_TREND_SUCCESS:
             return {
+                ...state,
                 salesTrendStatus: STATUS.SUCCESS,
                 salesTrendResult: payload,
                 salesTrendErrorMessage: ''
@@ -101,6 +112,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.SALES_TREND_FAILURE:
             return {
+                ...state,
                 salesTrendStatus: STATUS.ERROR,
                 salesTrendResult: null,
                 salesTrendErrorMessage: payload
@@ -108,6 +120,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.SALES_TREND_RESET:
             return {
+                ...state,
                 salesTrendStatus: STATUS.DEFAULT,
                 salesTrendResult: null,
                 salesTrendErrorMessage: ''
@@ -123,6 +136,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.LAST_SESSION_SUCCESS:
             return {
+                ...state,
                 lastSessionStatus: STATUS.SUCCESS,
                 lastSessionResult: payload,
                 lastSessionErrorMessage: ''
@@ -130,6 +144,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.LAST_SESSION_FAILURE:
             return {
+                ...state,
                 lastSessionStatus: STATUS.ERROR,
                 lastSessionResult: null,
                 lastSessionErrorMessage: payload
@@ -137,6 +152,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.LAST_SESSION_RESET:
             return {
+                ...state,
                 lastSessionStatus: STATUS.DEFAULT,
                 lastSessionResult: null,
                 lastSessionErrorMessage: ''
@@ -152,6 +168,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.PARENT_STUDENTS_SUCCESS:
             return {
+                ...state,
                 parentStudentsStatus: STATUS.SUCCESS,
                 parentStudentsResult: payload,
                 parentStudentsErrorMessage: ''
@@ -159,6 +176,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.PARENT_STUDENTS_FAILURE:
             return {
+                ...state,
                 parentStudentsStatus: STATUS.ERROR,
                 parentStudentsResult: null,
                 parentStudentsErrorMessage: payload
@@ -166,13 +184,14 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.PARENT_STUDENTS_RESET:
             return {
+                ...state,
                 parentStudentsStatus: STATUS.DEFAULT,
                 parentStudentsResult: null,
                 parentStudentsErrorMessage: ''
             }
 
 
-        // PARENT'S STUDENTS
+        // STAFF VIEW
         case STATE.STAFF_VIEW_LOADING:
             return {
                 ...state,
@@ -181,6 +200,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.STAFF_VIEW_SUCCESS:
             return {
+                ...state,
                 staffViewStatus: STATUS.SUCCESS,
                 staffViewResult: payload,
                 staffViewErrorMessage: ''
@@ -188,6 +208,7 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.STAFF_VIEW_FAILURE:
             return {
+                ...state,
                 staffViewStatus: STATUS.ERROR,
                 staffViewResult: null,
                 staffViewErrorMessage: payload
@@ -195,9 +216,41 @@ export default (state = INITIATE_STATE, { type, payload }) => {
 
         case STATE.STAFF_VIEW_RESET:
             return {
+                ...state,
                 staffViewStatus: STATUS.DEFAULT,
                 staffViewResult: null,
                 staffViewErrorMessage: ''
+            }
+
+        // CHILD SPEND
+        case STATE.CHILD_SPEND_LOADING:
+            return {
+                ...state,
+                childSpendStatus: STATUS.LOADING
+            }
+
+        case STATE.CHILD_SPEND_SUCCESS:
+            return {
+                ...state,
+                childSpendStatus: STATUS.SUCCESS,
+                childSpendResult: payload,
+                childSpendErrorMessage: ''
+            }
+
+        case STATE.CHILD_SPEND_FAILURE:
+            return {
+                ...state,
+                childSpendStatus: STATUS.ERROR,
+                childSpendResult: null,
+                childSpendErrorMessage: payload
+            }
+
+        case STATE.CHILD_SPEND_RESET:
+            return {
+                ...state,
+                childSpendStatus: STATUS.DEFAULT,
+                childSpendResult: null,
+                childSpendErrorMessage: ''
             }
 
         default:

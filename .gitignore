@@ -11,6 +11,12 @@
 # production
 /build
 
+# generated at build/start time by scripts/generate-public-assets.js
+# (firebase-messaging-sw.js: Firebase credentials must never be committed;
+#  manifest.json: name/short_name/theme_color come from branding env vars)
+/public/firebase-messaging-sw.js
+/public/manifest.json
+
 # misc
 .DS_Store
 .env

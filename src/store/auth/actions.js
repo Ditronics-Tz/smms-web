@@ -129,4 +129,38 @@ export function changePasswordReset(){
         type: STATE.CHANGE_PASSWORD_RESET
     }
 }
+
+// Import students preview action
+export function importPreviewRequest(token, data) {
+    return {
+        type: STATE.IMPORT_PREVIEW_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function importPreviewReset() {
+    return {
+        type: STATE.IMPORT_PREVIEW_RESET
+    }
+}
+
+// Import students commit action
+export function importCommitRequest(token, data) {
+    return {
+        type: STATE.IMPORT_COMMIT_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function importCommitReset() {
+    return {
+        type: STATE.IMPORT_COMMIT_RESET
+    }
+}
 // End of src/store/auth/actions.js

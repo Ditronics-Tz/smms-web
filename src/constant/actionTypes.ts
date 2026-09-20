@@ -16,7 +16,7 @@ function createRequestTypes(prefix = '', bases, suffixes = suffixTypes) {
     return req;
 }
 
-//sava application expected api states
+// application expected api states
 export const STATE = createRequestTypes('STATE',
     [
         // authentication
@@ -31,6 +31,10 @@ export const STATE = createRequestTypes('STATE',
         'FORGOT_PASSWORD',
         'CHANGE_PASSWORD',
 
+        // bulk import
+        'IMPORT_PREVIEW',
+        'IMPORT_COMMIT',
+
         // dashboard
         'COUNTS',
         'SALES_SUMMARY',
@@ -38,6 +42,7 @@ export const STATE = createRequestTypes('STATE',
         'LAST_SESSION',
         'PARENT_STUDENTS',
         'STAFF_VIEW',
+        'CHILD_SPEND',
 
         // resources
         'CREATE_SCHOOL',
@@ -70,6 +75,9 @@ export const STATE = createRequestTypes('STATE',
         'SESSION_LIST',
         'SCAN_CARD',
         'TRANSACTIONS',
+        'REVERSE_TRANSACTION',
+        'DEPOSIT_REQUEST',
+        'DEPOSIT_LIST',
 
         // notifications
         'NOTIFICATIONS',

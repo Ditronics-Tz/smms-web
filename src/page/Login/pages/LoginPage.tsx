@@ -273,10 +273,10 @@ const styles = {
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundImage:
-            `url(${image.Images.backgroung})`,
+            `url(${image.Images.background})`,
         [theme.getColorSchemeSelector('dark')]: {
             backgroundImage:
-                `url(${image.Images.backgroung2})`,
+                `url(${image.Images.background2})`,
         },
     }),
     subcontainer: {

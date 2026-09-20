@@ -135,11 +135,58 @@ smms-web/
 Copy `.env.example` to `.env` and configure:
 
 ```env
+# OPTIONAL: set these Firebase values only if you want web push notifications.
+# Leave them blank and the app runs fine with push silently disabled.
 REACT_APP_FIREBASE_API_KEY=your_api_key
 REACT_APP_FIREBASE_AUTH_DOMAIN=your_domain
 REACT_APP_FIREBASE_PROJECT_ID=your_project_id
-# ... other Firebase config
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
+REACT_APP_VAPID_KEY=your_vapid_key
+# ... other optional Firebase config (see .env.example)
+REACT_APP_API_BASE_URL=https://api.your-backend.example
 ```
+
+## 🎨 Re-skinning / Branding
+
+The whole visual identity is driven by a single config module
+(`src/config/branding.ts`, fed by the `REACT_APP_*` vars above). You can
+re-skin the app two ways — no code changes in either case:
+
+**Option A — Replace the bundled default assets** (fastest). Keep the file
+names and overwrite them, then rebuild/restart:
+
+| File (`src/assets/image/`)                    | Used for                                                        |
+| --------------------------------------------- | --------------------------------------------------------------- |
+| `logo.jpeg`                                   | Header logo, login/loading screens, sidebar, 404 page           |
+| `userIcon.png`                                | User avatar icon (unused by default UI)                         |
+| `background.png` / `background2.png`          | Login, forgot-password, 404 and app-init backgrounds (light/dark) |
+| `tanzania.png` / `uk.png`                     | Default language flags for Swahili / English                    |
+
+**Option B — Use branding env vars** (white-label per deployment). Set any of
+`REACT_APP_APP_NAME`, `REACT_APP_APP_SHORT_NAME`, `REACT_APP_LOGO_PATH`,
+`REACT_APP_FAVICON_PATH`, `REACT_APP_PRIMARY_COLOR`, `REACT_APP_CURRENCY_SYMBOL`,
+`REACT_APP_CURRENCY_CODE`, `REACT_APP_DEFAULT_LOCALE`, `REACT_APP_SUPPORT_EMAIL`,
+`REACT_APP_SUPPORT_PHONE` (see `.env.example`) and rebuild. The logo comes from
+`REACT_APP_LOGO_PATH` when set (path must be a file inside `public/`); otherwise
+the bundled `logo.jpeg` is used.
+
+Static branding is generated at build/start time by
+`scripts/generate-public-assets.js` (run via `prestart`/`prebuild`):
+`public/index.html` (browser `<title>`, meta description, theme-color, favicon
+links), `public/manifest.json` (name/short_name/theme_color) and
+`public/firebase-messaging-sw.js`. These files are gitignored — never edit them
+directly. Values left unset keep the committed defaults.
+
+Manual override is still required for: the `<html lang="...">` attribute and the
+PWA icon PNG files (`public/apple-touch-icon.png`,
+`public/android-chrome-*.png`), which are static files.
+
+**Languages.** The locale list is data-driven in `src/constant/image.ts`
+(`LOCALES`) — flags use neutral keys (`flagPrimary`/`flagSecondary`), not
+country names. To add a language: add a locale JSON under
+`src/i18n/locales/`, register it in `src/i18n/i18n.js`, add a flag image, and
+append one entry to `LOCALES`.
 
 ## 📚 Learn More
 

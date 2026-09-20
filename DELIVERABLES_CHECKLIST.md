@@ -31,7 +31,7 @@ This document serves as a complete checklist of all deliverables for the Docker 
 - [x] **React TS Project**: Detected CRA with TypeScript
 - [x] **Multi-stage**: 3 stages (dev, builder, production)
 - [x] **Slim optimization**: Target <150MB production image
-- [x] **Port binding**: 127.0.0.1:3000 (localhost-only)
+- [x] **Port binding**: localhost:3000 (localhost-only)
 - [x] **Dev environment**: Hot-reload with volume mounting
 - [x] **Prod environment**: nginx serving static files
 - [x] **Security**: Non-root, headers, localhost binding
@@ -63,7 +63,7 @@ This document serves as a complete checklist of all deliverables for the Docker 
 - Development service configuration
 - Volume mounting (src/, public/, node_modules)
 - Hot-reload environment variables
-- Localhost-only binding (127.0.0.1:3000)
+- Localhost-only binding (localhost:3000)
 - Health checks
 - Network configuration
 
@@ -281,7 +281,7 @@ This document serves as a complete checklist of all deliverables for the Docker 
 | Migration commands | ✅ | In DOCKER.md |
 | 3-5 pages rendered | ✅ | DOCKER.md is comprehensive |
 | Slim optimization | ✅ | <150MB target |
-| Port 3000 localhost | ✅ | 127.0.0.1:3000 binding |
+| Port 3000 localhost | ✅ | localhost:3000 binding |
 | Hot-reload dev | ✅ | Volume mounting |
 | nginx prod | ✅ | nginx:alpine serving |
 | Security best practices | ✅ | Multiple layers |
@@ -295,7 +295,7 @@ This document serves as a complete checklist of all deliverables for the Docker 
 
 ## 🔐 Security Checklist
 
-- [x] Localhost-only binding (127.0.0.1)
+- [x] Localhost-only binding (localhost)
 - [x] Non-root user execution
 - [x] Security headers (CSP, XSS, Frame Options, HSTS)
 - [x] No secrets in Docker image

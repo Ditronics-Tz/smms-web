@@ -7,3 +7,6 @@ export * from "./Transactions";
 export * from './Resources'
 export * from "./Users";
 export * from './Sessions';
+export * from './StudentsImport';
+export * from './Spending';
+export * from './TopUp';

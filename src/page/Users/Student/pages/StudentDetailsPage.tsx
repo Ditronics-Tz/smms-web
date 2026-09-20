@@ -13,8 +13,9 @@ import {
     studentDetailsRequest,
     studentDetailsReset,
 } from '../../../../store/actions'
-import { EditOutlined, RemoveRedEyeOutlined } from "@mui/icons-material";
+import { EditOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
+import branding from "../../../../config/branding";
 import { formatDate, thousandSeparator } from "../../../../utils";
 import axios from "axios";
 import { NAVIGATE_TO_PARENTDETAILSPAGE, NAVIGATE_TO_TRANSACTIONPAGE } from "../../../../route/types";
@@ -69,7 +70,7 @@ const MobileViewTable = ({ data, props }) => {
                             alignItems: 'flex-end',
                             rowGap: 1
                         }}>
-                            <Typography fontWeight={600} level="title-md" gutterBottom>Tsh. {thousandSeparator(listItem.amount)}</Typography>
+                            <Typography fontWeight={600} level="title-md" gutterBottom>{branding.CURRENCY_SYMBOL} {thousandSeparator(listItem.amount)}</Typography>
                             <Chip
                                 variant="solid"
                                 size="sm"
@@ -116,7 +117,7 @@ const DesktopViewTable = ({ data, props }) => {
                 <thead>
                     <tr style={{ textAlign: 'center' }}>
                         <th style={{ width: 70, padding: '10px 6px' }}>{t("transaction.item_name")}</th>
-                        <th style={{ width: 60, padding: '10px 6px', }}>{t("transaction.amount")} (Tsh)</th>
+                        <th style={{ width: 60, padding: '10px 6px', }}>{t("transaction.amount")} ({branding.CURRENCY_SYMBOL})</th>
                         <th style={{ width: 50, padding: '10px 6px', }}>{t("transaction.status")}</th>
                         <th style={{ width: 100, padding: '10px 6px', }}>{t("transaction.date")}</th>
                     </tr>
@@ -457,7 +458,7 @@ const StudentDetailsPage = ({
                                 <ListDivider sx={{ mb: 1 }} />
 
                                 <Typography level="title-sm" textAlign={"center"}>{t("student.balance")}</Typography>
-                                <Typography level="h3" textAlign={"center"}>Tsh. {thousandSeparator(studentData.rfid_card.balance)}</Typography>
+                                <Typography level="h3" textAlign={"center"}>{branding.CURRENCY_SYMBOL} {thousandSeparator(studentData.rfid_card.balance)}</Typography>
                                 <Chip
                                     variant="solid"
                                     size="sm"
@@ -636,7 +637,7 @@ const mapStateToProps = ({ user, auth, resources }) => {
 
         editUserStatus: editStatus,
         editUserResult: editResult,
-        editUserErrorMEessage: editErrorMessage,
+        editUserErrorMessage: editErrorMessage,
     } = auth
 
     const {

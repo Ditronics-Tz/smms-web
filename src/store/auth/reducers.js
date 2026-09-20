@@ -29,7 +29,15 @@ const INITIAL_STATE = {
 
     changePasswordStatus: STATUS.DEFAULT,
     changePasswordResult: null,
-    changePasswordErrorMessage: ""
+    changePasswordErrorMessage: "",
+
+    importPreviewStatus: STATUS.DEFAULT,
+    importPreviewResult: null,
+    importPreviewErrorMessage: "",
+
+    importCommitStatus: STATUS.DEFAULT,
+    importCommitResult: null,
+    importCommitErrorMessage: ""
 }
 
 /* eslint-disable */
@@ -234,6 +242,62 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 changePasswordStatus: STATUS.DEFAULT,
                 changePasswordResult: null,
                 changePasswordErrorMessage: ""
+            }
+
+        // IMPORT PREVIEW
+        case STATE.IMPORT_PREVIEW_LOADING:
+            return {
+                ...state,
+                importPreviewStatus: STATUS.LOADING
+            }
+        case STATE.IMPORT_PREVIEW_SUCCESS:
+            return {
+                ...state,
+                importPreviewStatus: STATUS.SUCCESS,
+                importPreviewResult: payload,
+                importPreviewErrorMessage: ""
+            }
+        case STATE.IMPORT_PREVIEW_FAILURE:
+            return {
+                ...state,
+                importPreviewStatus: STATUS.ERROR,
+                importPreviewResult: null,
+                importPreviewErrorMessage: payload,
+            }
+        case STATE.IMPORT_PREVIEW_RESET:
+            return {
+                ...state,
+                importPreviewStatus: STATUS.DEFAULT,
+                importPreviewResult: null,
+                importPreviewErrorMessage: ""
+            }
+
+        // IMPORT COMMIT
+        case STATE.IMPORT_COMMIT_LOADING:
+            return {
+                ...state,
+                importCommitStatus: STATUS.LOADING
+            }
+        case STATE.IMPORT_COMMIT_SUCCESS:
+            return {
+                ...state,
+                importCommitStatus: STATUS.SUCCESS,
+                importCommitResult: payload,
+                importCommitErrorMessage: ""
+            }
+        case STATE.IMPORT_COMMIT_FAILURE:
+            return {
+                ...state,
+                importCommitStatus: STATUS.ERROR,
+                importCommitResult: null,
+                importCommitErrorMessage: payload,
+            }
+        case STATE.IMPORT_COMMIT_RESET:
+            return {
+                ...state,
+                importCommitStatus: STATUS.DEFAULT,
+                importCommitResult: null,
+                importCommitErrorMessage: ""
             }
 
         default:

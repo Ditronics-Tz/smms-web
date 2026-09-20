@@ -13,12 +13,17 @@ services:
       target: development
     container_name: smms-web-dev
     ports:
-      # Bind to localhost only for security (127.0.0.1:3000:3000)
-      - "127.0.0.1:3000:3000"
+      # Expose on all interfaces so the dev server is reachable from the network
+      - "3000:3000"
     environment:
       - NODE_ENV=development
+      # Listen on all interfaces inside the container (required for port exposure)
+      - HOST=0.0.0.0
+      # Allow access via LAN IP (bypass validatesHostRules check)
+      - DANGEROUSLY_DISABLE_HOST_CHECK=true
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
+      - REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
       - REACT_APP_FIREBASE_API_KEY=${REACT_APP_FIREBASE_API_KEY}
       - REACT_APP_FIREBASE_AUTH_DOMAIN=${REACT_APP_FIREBASE_AUTH_DOMAIN}
       - REACT_APP_FIREBASE_PROJECT_ID=${REACT_APP_FIREBASE_PROJECT_ID}

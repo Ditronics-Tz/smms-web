@@ -45,9 +45,9 @@ export default function Error404Page() {
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
-          backgroundImage: `url(${image.Images.backgroung})`,
+          backgroundImage: `url(${image.Images.background})`,
           [theme.getColorSchemeSelector("dark")]: {
-            backgroundImage: `url(${image.Images.backgroung2})`,
+            backgroundImage: `url(${image.Images.background2})`,
           },
         })}>
         <Box
