@@ -10,6 +10,7 @@ import { Avatar } from '@mui/joy';
 import theme from '../../utils/theme';
 import LoadingView from '../molecules/LoadingView';
 import image from '../../constant/image';
+import branding from '../../config/branding';
 
 export default function AppInit () {
 
@@ -43,10 +44,10 @@ export default function AppInit () {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     backgroundImage:
-                        `url(${image.Images.backgroung})`,
+                        `url(${image.Images.background})`,
                     [theme.getColorSchemeSelector('dark')]: {
                         backgroundImage:
-                            `url(${image.Images.backgroung2})`,
+                            `url(${image.Images.background2})`,
                     },
                 })}
             >
@@ -80,11 +81,11 @@ export default function AppInit () {
                                 maxWidth: 80, maxHeight: 80, backgroundColor: 'primary.500', padding: '5px',
                             }}
                         />
-                        <Typography level='title-lg'>SAVA</Typography>
+                        <Typography level='title-lg'>{branding.APP_SHORT_NAME}</Typography>
                     </Box>
                     <Box component="footer" sx={{ py: 3 }}>
                         <Typography level="body-xs" textAlign="center" sx={{ color: 'whitesmoke' }}>
-                            © Sava Tanzania {new Date().getFullYear()}
+                            © {branding.APP_NAME} {new Date().getFullYear()}
                         </Typography>
                     </Box>
                 </Box>

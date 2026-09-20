@@ -5,6 +5,7 @@ import { NAVIGATE_TO_STUDENTPAGE, NAVIGATE_TO_PARENTPAGE, NAVIGATE_TO_TRANSACTIO
 import { connect, useDispatch } from "react-redux"
 import { STATUS } from "../../../constant"
 import { useTranslation } from "react-i18next"
+import branding from "../../../config/branding";
 
 import {
     countsRequest,
@@ -45,7 +46,7 @@ const CountsCards = ({ props, data }) => {
         {
             title: t("home.available"),
             color: '#C4D9FF',
-            number: "Tsh. " + thousandSeparator(data.total_balance),
+            number: branding.CURRENCY_SYMBOL + " " + thousandSeparator(data.total_balance),
             action: '#'
         }
     ]
@@ -335,9 +336,9 @@ const AdminDashboard = ({
                                 p: 1
                             }}>
                             <Typography level="title-md">{t("home.total") + " " + t("home.amount")}</Typography>
-                            <Typography level="h4" fontSize={23}>Tsh. {thousandSeparator(salesSummary.success_amount)}</Typography>
+                            <Typography level="h4" fontSize={23}>{branding.CURRENCY_SYMBOL} {thousandSeparator(salesSummary.success_amount)}</Typography>
                             <Typography level="title-sm" color="danger" mt={1}>{t("home.total") + " " + t("home.penalt") + " " + t("home.amount")}</Typography>
-                            <Typography fontSize={14} color="danger">Tsh. {thousandSeparator(salesSummary.penalts_amount)}</Typography>
+                            <Typography fontSize={14} color="danger">{branding.CURRENCY_SYMBOL} {thousandSeparator(salesSummary.penalts_amount)}</Typography>
                         </Sheet>
 
                     </CardContent>

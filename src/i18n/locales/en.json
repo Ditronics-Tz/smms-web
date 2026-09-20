@@ -5,7 +5,7 @@
         "desc": "The system that solve the problem of student meal and parent payment. This system lead benefit to both parents and students",
         "loginButton": "LOGIN",
         "registerButton": "REGISTER",
-        "owner": "Ditronics"
+        "owner": "Provider"
     },
     "init": {
         "placeholder": "Enter ",
@@ -54,6 +54,7 @@
         "unsuccess": "Unsuccessful",
         "review": "Review",
         "pending": "Pending",
+        "processed": "Processed",
         "overdue": "Overdue",
         "forgiven": "Forgiven",
         "approval": "Approval",
@@ -68,7 +69,8 @@
         "notUsed": "Not Used",
         "blocked": "Blocked",
         "complete": "Completed",
-        "canceled": "Cancelled"
+        "canceled": "Cancelled",
+        "reversed": "Reversed"
     },
     "login": {
         "title": "Login",
@@ -116,6 +118,7 @@
         "dashboard": "Dashboard",
         "manageUser": "Manage User",
         "manageStudents": "Manage Students",
+        "importStudents": "Import Students",
         "manageParents": "Manage Parents",
         "manageStaffs": "Manage Staffs",
         "manageAdmins": "Manage Admins",
@@ -123,6 +126,8 @@
         "transaction": "Transaction",
         "session": "Session",
         "bankDeposit": "Bank Deposit",
+        "spending": "Spending",
+        "topUp": "Top Up",
         "notifications": "Notifications",
         "manageResources": "Manage Resources",
         "manageCards": "Manage Cards",
@@ -169,6 +174,8 @@
         "meal_history": "Meal histories",
         "meal_history_desc": "Your children's meal histories summary.",
         "view_more": "View More",
+        "view_spend": "View spend",
+        "top_up": "Top Up",
         "my_details": "My Details"
     },
     "school": {
@@ -185,6 +192,7 @@
         "title": "Manage Student",
         "details": "Student Details",
         "add": "Add Student",
+        "import": "Import Students",
         "edit": "Edit Student",
         "delete": "Delete Student",
         "activate": "Activate",
@@ -211,6 +219,54 @@
         "issue": "Issued Date",
         "joined": "Registered at",
         "changeProfile": "Change profile"
+    },
+    "studentsImport": {
+        "upload": "Upload",
+        "preview": "Preview",
+        "confirmStep": "Confirm",
+        "title": "Import Students",
+        "instructions": "Select the target school, download the template to follow, then upload a CSV or Excel file with the students to import.",
+        "selectSchool": "School",
+        "downloadTemplate": "Download template",
+        "chooseFile": "Choose file",
+        "preview": "Preview",
+        "total": "Total",
+        "valid": "Valid",
+        "invalid": "Invalid",
+        "statusLabel": "Status",
+        "reasons": "Reasons",
+        "revalidate": "Re-validate",
+        "continue": "Continue with",
+        "back": "Back",
+        "editHint": "Fix invalid rows below, then press Re-validate. Valid rows are never lost.",
+        "successTitle": "Students imported successfully",
+        "created": "Created",
+        "skipped": "Skipped duplicates",
+        "failures": "Skipped",
+        "rowLabel": "Row",
+        "done": "Done",
+        "columns": {
+            "first_name": "First Name",
+            "middle_name": "Middle Name",
+            "last_name": "Last Name",
+            "gender": "Gender",
+            "date_of_birth": "Date of Birth",
+            "class_room": "Class",
+            "admission_no": "Admission No"
+        }
+    },
+    "spend": {
+        "title": "Child spending",
+        "desc": "See how your child is spending this week or month.",
+        "selectChild": "Child",
+        "week": "Week",
+        "month": "Month",
+        "periodTotal": "Total spent",
+        "transactionCount": "Transactions",
+        "chartTitle": "Daily spending",
+        "emptyTitle": "No spending",
+        "emptyDesc": "No spending was recorded for this child in the selected period.",
+        "errorTitle": "Could not load spend data. Please try again."
     },
     "parent": {
         "title":"Manage Parent",
@@ -447,11 +503,31 @@
     },
     "support": {
         "title": "Help & Support",
-        "FAQ": "FAQ",
+        "desc": "We are here to help you with any questions about the system, your cards, payments or sessions.",
+        "contactTitle": "Contact Us",
+        "phone": "Call customer support",
+        "email": "Email customer support",
+        "FAQ": "Frequently Asked Questions",
         "payment": "Payment Methods",
-        "chat": "Chat",
+        "chat": "Chat With Support",
+        "chatDesc": "Reach out to our support team for live assistance.",
+        "faq1Title": "How do I top up my card?",
+        "faq1Desc": "You can top up your card at the canteen counter or through an approved operator during a session.",
+        "faq2Title": "What should I do if my card is lost or damaged?",
+        "faq2Desc": "Report your lost or damaged card to the school administration so it can be blocked and replaced.",
+        "faq3Title": "How do I check my transactions?",
+        "faq3Desc": "Transactions can be viewed from the Transactions section of your dashboard at any time.",
         "notFound": "Fail to fetch data from server",
         "notFoundDesc": "Please refresh or check your network connection."
+    },
+    "info": {
+        "title": "System Information",
+        "desc": "This page provides general information about the School Management System.",
+        "about": "About the System",
+        "aboutDesc": "The School Management System (SMMS) helps schools manage student cards, canteen services, sessions and transactions securely and efficiently.",
+        "version": "Application Version",
+        "versionValue": "1.0.0",
+        "support": "Need help? Visit the Support page for assistance."
     },
     "profile": {
         "title": "Personal Info",
@@ -479,7 +555,15 @@
         "student_name": "Name",
         "card_number":"Card Number",
         "item_name": "Item Name",
-        "status": "Status"
+        "status": "Status",
+        "reverse": "Reverse",
+        "reason": "Reason",
+        "reasonPlaceholder": "Explain why this scan is being reversed (at least 10 characters)",
+        "reasonError": "Please provide a reason of at least 10 characters.",
+        "reverseWarning": "The scanned amount will be refunded and the card balance will be restored. A reversal record will appear in the transaction history. This action cannot be undone.",
+        "linkedOriginal": "Original: #{{id}}",
+        "reverseSuccess": "Transaction reversed successfully.",
+        "cancel": "Cancel"
     },
     "notification": {
         "title": "Notifications",
@@ -530,5 +614,21 @@
         "125": "Email does not exist",
         "126": "Please insert old password and new password",
         "127": "Old password is incorrect"
+    },
+    "topUp": {
+        "title": "Top Up",
+        "desc": "Recharge your child's card balance.",
+        "selectChild": "Select child",
+        "currentBalance": "Current Balance",
+        "amount": "Amount",
+        "amountPlaceholder": "Enter amount to top up",
+        "submit": "Top Up",
+        "success": "Top up request has been sent successfully",
+        "history": "Top up history",
+        "historyError": "An error occurred while loading top up history",
+        "student": "Student",
+        "status": "Status",
+        "date": "Date",
+        "unknownStudent": "Unknown Student"
     }
 }

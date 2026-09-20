@@ -127,7 +127,7 @@ make --version            # Should be GNU Make 4+
 │  React Dev Server (0.0.0.0:3000)                          │
 │         │                                                   │
 │         ▼                                                   │
-│  Host: 127.0.0.1:3000 ────► Browser                       │
+│  Host: localhost:3000 ────► Browser                       │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 
@@ -166,15 +166,15 @@ make --version            # Should be GNU Make 4+
 │         nginx:80 (internal)                                │
 │                 │                                           │
 │                 ▼                                           │
-│    Host: 127.0.0.1:3000 ────► Browser                     │
+│    Host: localhost:3000 ────► Browser                     │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ### Port Binding
 
-- **Development**: Container port 3000 → Host 127.0.0.1:3000
-- **Production**: Container port 80 → Host 127.0.0.1:3000
+- **Development**: Container port 3000 → Host localhost:3000
+- **Production**: Container port 80 → Host localhost:3000
 - **Security**: Bound to localhost only (not accessible from external IPs)
 
 ---
@@ -248,7 +248,7 @@ services:
     build:
       target: development
     ports:
-      - "127.0.0.1:3000:3000"
+      - "localhost:3000:3000"
     volumes:
       - ./src:/app/src          # Hot-reload source
       - ./public:/app/public    # Hot-reload public
@@ -273,7 +273,7 @@ services:
       args:
         - REACT_APP_*=${REACT_APP_*}  # Build-time vars
     ports:
-      - "127.0.0.1:3000:80"
+      - "localhost:3000:80"
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -520,7 +520,7 @@ RUN npm install  # Cache invalidated on any file change
 
 ```yaml
 ports:
-  - "127.0.0.1:3000:3000"  # Only accessible from localhost
+  - "localhost:3000:3000"  # Only accessible from localhost
   # NOT "3000:3000" which binds to 0.0.0.0 (all interfaces)
 ```
 
@@ -841,7 +841,7 @@ server {
     server_name example.com;
     
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://localhost:3000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
@@ -858,7 +858,7 @@ server {
     ssl_certificate_key /path/to/key.pem;
     
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://localhost:3000;
         # ... proxy headers
     }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect, useDispatch } from "react-redux";
 import {
-    loginRequest, loginReset, forgotPasswordRequest, forgotPasswordReset
+    forgotPasswordRequest, forgotPasswordReset
 } from "../../../store/actions"
 
 import { CssVarsProvider } from '@mui/joy/styles';
@@ -15,13 +15,13 @@ import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import Stack from '@mui/joy/Stack';
 import theme from '../../../utils/theme';
-import { Avatar, Card, CircularProgress, DialogContent, DialogTitle, Divider, Modal, ModalClose, ModalDialog } from '@mui/joy';
+import { Avatar, Card, Divider } from '@mui/joy';
 
 import { useNavigate } from 'react-router-dom';
 
 
 import image from '../../../constant/image';
-import { NAVIGATE_TO_DASHBOARD, NAVIGATE_TO_LOGINPAGE } from '../../../route/types';
+import { NAVIGATE_TO_LOGINPAGE } from '../../../route/types';
 import { toast } from 'react-toastify';
 import { STATUS } from '../../../constant';
 import { LoadingView } from '../../../components';
@@ -221,10 +221,10 @@ const styles = {
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundImage:
-            `url(${image.Images.backgroung})`,
+            `url(${image.Images.background})`,
         [theme.getColorSchemeSelector('dark')]: {
             backgroundImage:
-                `url(${image.Images.backgroung2})`,
+                `url(${image.Images.background2})`,
         },
     }),
     subcontainer: {

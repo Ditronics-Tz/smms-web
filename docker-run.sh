@@ -70,7 +70,7 @@ case "$RUN_MODE" in
         print_success "Application started successfully!"
         echo ""
         print_info "Access the application at: http://localhost:3000"
-        print_info "Bound to localhost (127.0.0.1) only for security"
+        print_info "Bound to localhost only for security"
         echo ""
         print_info "Useful commands:"
         echo "  - View logs:    docker-compose -f docker-compose.prod.yml logs -f"

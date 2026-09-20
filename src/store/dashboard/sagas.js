@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
 import { errorMessage } from '../../utils';
-import { doCounts, doLastSession, doParentStudents, doSalesSummary, doSalesTrend, doStaffView } from '../../service/dashboard';
+import { doChildSpend, doCounts, doLastSession, doParentStudents, doSalesSummary, doSalesTrend, doStaffView } from '../../service/dashboard';
 
 // Counts
 function* countsTask(action) {
@@ -94,7 +94,7 @@ function* salesTrendTask(action) {
 }
 
 
-// sales trens
+// last session
 function* lastSessionTask(action) {
     try {
         yield put({ type: STATE.LAST_SESSION_LOADING });
@@ -125,7 +125,7 @@ function* lastSessionTask(action) {
 }
 
 
-// sales trens
+// parent's students
 function* parentStudentsTask(action) {
     try {
         yield put({ type: STATE.PARENT_STUDENTS_LOADING });
@@ -156,7 +156,7 @@ function* parentStudentsTask(action) {
 }
 
 
-// sales trens
+// staff view
 function* staffViewTask(action) {
     try {
         yield put({ type: STATE.STAFF_VIEW_LOADING });
@@ -187,6 +187,37 @@ function* staffViewTask(action) {
 }
 
 
+// child spend
+function* childSpendTask(action) {
+    try {
+        yield put({ type: STATE.CHILD_SPEND_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doChildSpend,payload.token, payload.data);
+
+        if (res.status === 200 || res.status === 201) {
+            yield put({
+                type: STATE.CHILD_SPEND_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.CHILD_SPEND_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.CHILD_SPEND_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
+
 function* dashboardSaga() {
     yield takeLatest(STATE.COUNTS_REQUEST, countsTask);
     yield takeLatest(STATE.SALES_SUMMARY_REQUEST, salesSummaryTask);
@@ -194,6 +225,7 @@ function* dashboardSaga() {
     yield takeLatest(STATE.LAST_SESSION_REQUEST, lastSessionTask);
     yield takeLatest(STATE.PARENT_STUDENTS_REQUEST, parentStudentsTask);
     yield takeLatest(STATE.STAFF_VIEW_REQUEST, staffViewTask);
+    yield takeLatest(STATE.CHILD_SPEND_REQUEST, childSpendTask);
 }
 
 export default dashboardSaga

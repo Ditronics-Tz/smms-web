@@ -53,7 +53,7 @@ const ProfilePage = (
                 dispatch(changePasswordReset());
             }
         }
-    }, [loginResult, changePasswordStatus])
+    }, [loginResult, changePasswordStatus, changePasswordErrorMessage, dispatch, t])
 
     // Handle Submit
     const handleChangePassword = (event) => {

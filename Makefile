@@ -97,7 +97,7 @@ logs-prod:
 # Run tests in container
 test:
 	@echo "Running tests in Docker container..."
-	docker-compose run --rm smms-web-dev npm test -- --watchAll=false
+	docker-compose run --rm smms-web-dev bun run test -- --watchAll=false
 
 # Show image sizes
 size:

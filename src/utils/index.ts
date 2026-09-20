@@ -1,6 +1,6 @@
 import thousandSeparator from './thousandSeparator'
 import theme from './theme'
-import formatDate from './formartDate'
+import formatDate from './formatDate'
 import ColorSchemeToggle from './ColorSchemeToggle'
 import errorMessage from './error'
 import fetchPDF from './fetchPDF'

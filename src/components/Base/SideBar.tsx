@@ -24,7 +24,6 @@ import {
   NAVIGATE_TO_ADMINDETAILSPAGE,
   NAVIGATE_TO_ADMINPAGE,
   NAVIGATE_TO_CANTEENITEMPAGE,
-  NAVIGATE_TO_CARDDETAILSPAGE,
   NAVIGATE_TO_CARDPAGE,
   NAVIGATE_TO_DASHBOARD,
   NAVIGATE_TO_NOTIFICATIONPAGE,
@@ -34,15 +33,18 @@ import {
   NAVIGATE_TO_PARENTPAGE,
   NAVIGATE_TO_SCHOOLPAGE,
   NAVIGATE_TO_SESSIONPAGE,
+  NAVIGATE_TO_SPENDPAGE,
+  NAVIGATE_TO_TOPUPPAGE,
   NAVIGATE_TO_STAFFDETAILSPAGE,
   NAVIGATE_TO_STAFFPAGE,
   NAVIGATE_TO_STUDENTDETAILSPAGE,
+  NAVIGATE_TO_STUDENTIMPORTPAGE,
   NAVIGATE_TO_STUDENTPAGE,
   NAVIGATE_TO_TRANSACTIONPAGE,
 } from "../../route/types";
 import { connect, useDispatch } from "react-redux";
 
-import { BadgeOutlined, EditNotificationsOutlined, Face6Outlined, FolderOutlined, GroupsOutlined, ManageAccountsOutlined, MoveToInboxOutlined, Person2Outlined, RestaurantOutlined, ScheduleOutlined, SchoolOutlined, SpeedOutlined, SupervisorAccountOutlined } from "@mui/icons-material";
+import { BadgeOutlined, EditNotificationsOutlined, Face6Outlined, FolderOutlined, GroupsOutlined, ManageAccountsOutlined, Person2Outlined, RestaurantOutlined, ScheduleOutlined, SchoolOutlined, SpeedOutlined, SupervisorAccountOutlined, BarChartOutlined, PaidOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { ListDivider } from "@mui/joy";
 
@@ -251,6 +253,7 @@ const Sidebar = ({
               path={
                 location.pathname === NAVIGATE_TO_STUDENTPAGE ||
                 location.pathname === NAVIGATE_TO_STUDENTDETAILSPAGE ||
+                location.pathname === NAVIGATE_TO_STUDENTIMPORTPAGE ||
                 location.pathname === NAVIGATE_TO_ADMINPAGE ||
                 location.pathname === NAVIGATE_TO_ADMINDETAILSPAGE ||
                 location.pathname === NAVIGATE_TO_OPERATORPAGE ||
@@ -287,6 +290,17 @@ const Sidebar = ({
                   icon: <Face6Outlined />
                 }}
               />
+
+              {/* Import students */}
+              {isAdmin && <ListItemComponent
+                route={NAVIGATE_TO_STUDENTIMPORTPAGE}
+                path={location.pathname === NAVIGATE_TO_STUDENTIMPORTPAGE}
+                action={() => null}
+                props={{
+                  title: t("sidebar.importStudents"),
+                  icon: <FolderOutlined />
+                }}
+              />}
 
               {/* Parents */}
               <ListItemComponent
@@ -329,8 +343,7 @@ const Sidebar = ({
               path={
                 location.pathname === NAVIGATE_TO_SCHOOLPAGE ||
                 location.pathname === NAVIGATE_TO_CANTEENITEMPAGE ||
-                location.pathname === NAVIGATE_TO_CARDPAGE ||
-                location.pathname === NAVIGATE_TO_CARDDETAILSPAGE
+                location.pathname === NAVIGATE_TO_CARDPAGE
               }
               props={{
                 title: t("sidebar.manageResources"),
@@ -352,8 +365,7 @@ const Sidebar = ({
               {/* cards */}
               {isAdmin && <ListItemComponent
                 route={NAVIGATE_TO_CARDPAGE}
-                path={location.pathname === NAVIGATE_TO_CARDPAGE ||
-                  location.pathname === NAVIGATE_TO_CARDDETAILSPAGE}
+                path={location.pathname === NAVIGATE_TO_CARDPAGE}
                 action={() => null}
                 props={{
                   title: t("sidebar.manageCards"),
@@ -385,6 +397,30 @@ const Sidebar = ({
               }}
             />}
 
+          {/* Spending */}
+          {userRole === 'parent' &&
+            <ListItemComponent
+              route={NAVIGATE_TO_SPENDPAGE}
+              path={location.pathname === NAVIGATE_TO_SPENDPAGE}
+              action={() => null}
+              props={{
+                title: t("sidebar.spending"),
+                icon: <BarChartOutlined />
+              }}
+            />}
+
+          {/* Top up */}
+          {userRole === 'parent' &&
+            <ListItemComponent
+              route={NAVIGATE_TO_TOPUPPAGE}
+              path={location.pathname === NAVIGATE_TO_TOPUPPAGE}
+              action={() => null}
+              props={{
+                title: t("sidebar.topUp"),
+                icon: <PaidOutlined />
+              }}
+            />}
+
           {/* Sessions */}
           {userRole === 'operator' &&
             <ListItemComponent
@@ -396,17 +432,6 @@ const Sidebar = ({
                 icon: <ScheduleOutlined />
               }}
             />}
-
-          {/* Bank deposit */}
-          {userRole === 'admin' && <ListItemComponent
-            route={'#'}
-            path={null}
-            action={() => null}
-            props={{
-              title: t("sidebar.bankDeposit"),
-              icon: <MoveToInboxOutlined />
-            }}
-          />}
 
           {/* Notifications */}
           {isAdmin && <ListItemComponent
@@ -426,7 +451,7 @@ const Sidebar = ({
             route="#"
             action={logOut}
             props={{
-              title: 'Log out',
+              title: t("header.logout"),
               icon: <LogoutRoundedIcon />
             }}
           />

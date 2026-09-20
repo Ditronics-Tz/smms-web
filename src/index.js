@@ -8,6 +8,10 @@ import { store, persistor } from "./store";
 import { Provider as StoreProvider } from "react-redux";
 import { PersistGate } from 'redux-persist/integration/react';
 import { AppInit } from "./components";
+import { isFirebaseEnabled } from "./firebase/firebase";
+import { checkEnv } from "./config/branding";
+
+checkEnv();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -22,7 +26,7 @@ root.render(
   </React.StrictMode>
 );
 
-if ("serviceWorker" in navigator) {
+if (isFirebaseEnabled && "serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
       .register("/firebase-messaging-sw.js")

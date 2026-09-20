@@ -1,6 +1,6 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
-import { doScanCard, doSessionList, doStartSession, doEndSession, doScannedList, doTransactions } from '../../service/sessions';
+import { doDepositList, doDepositRequest, doScanCard, doSessionList, doStartSession, doEndSession, doScannedList, doTransactions, doReverseTransaction } from '../../service/sessions';
 import { errorMessage } from '../../utils';
 
 // Scan Card
@@ -188,6 +188,98 @@ function* transactionsTask(action) {
 
 
 
+// Reverse Transaction
+function* reverseTransactionTask(action) {
+    try {
+        yield put({ type: STATE.REVERSE_TRANSACTION_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doReverseTransaction, payload.token, payload.data);
+
+        if (res.status === 200 || res.status === 201) {
+            yield put({
+                type: STATE.REVERSE_TRANSACTION_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.REVERSE_TRANSACTION_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.REVERSE_TRANSACTION_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
+
+// Deposit / Top-up request
+function* depositRequestTask(action) {
+    try {
+        yield put({ type: STATE.DEPOSIT_REQUEST_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doDepositRequest,payload.token, payload.data);
+
+        if (res.status === 200 || res.status === 201) {
+            yield put({
+                type: STATE.DEPOSIT_REQUEST_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.DEPOSIT_REQUEST_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.DEPOSIT_REQUEST_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
+// Deposit / Top-up requests list
+function* depositListTask(action) {
+    try {
+        yield put({ type: STATE.DEPOSIT_LIST_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doDepositList,payload.token, payload.data, payload.page);
+
+        if (res.status === 200) {
+            yield put({
+                type: STATE.DEPOSIT_LIST_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            const errMsg = res.data ? errorMessage(res.data.code) : errorMessage(1000);
+            yield put({
+                type: STATE.DEPOSIT_LIST_FAILURE,
+                payload: errMsg
+            })
+        }
+    } catch (e) {
+        const errMsg = e.data ? errorMessage(e.code) : errorMessage(4000);
+        yield put({
+            type: STATE.DEPOSIT_LIST_FAILURE,
+            payload: errMsg
+        })
+    }
+}
+
+
 function* sessionSaga() {
     yield takeLatest(STATE.SCAN_CARD_REQUEST, scanCardTask);
     yield takeLatest(STATE.START_SESSION_REQUEST, startSessionTask);
@@ -195,6 +287,9 @@ function* sessionSaga() {
     yield takeLatest(STATE.SCANNED_LIST_REQUEST, scannedListTask);
     yield takeLatest(STATE.SESSION_LIST_REQUEST, sessionListTask);
     yield takeLatest(STATE.TRANSACTIONS_REQUEST, transactionsTask)
+    yield takeLatest(STATE.REVERSE_TRANSACTION_REQUEST, reverseTransactionTask)
+    yield takeLatest(STATE.DEPOSIT_REQUEST_REQUEST, depositRequestTask)
+    yield takeLatest(STATE.DEPOSIT_LIST_REQUEST, depositListTask)
 }
 
 export default sessionSaga

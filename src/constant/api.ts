@@ -1,11 +1,38 @@
 // ----- BASE API ------
-export const API_BASE = 'http://127.0.0.1:8000';
-// export const API_BASE = 'http://192.168.103.29:8000';
+// CRA embeds REACT_APP_* values at build time. The API base URL is always
+// driven by the REACT_APP_API_BASE_URL environment variable:
+//   development -> .env.development
+//   production  -> .env.production
+// The localhost value below is a DEV-ONLY fallback and MUST NEVER be reached
+// in a production build. A missing REACT_APP_API_BASE_URL in production logs a
+// loud warning instead of silently talking to the local backend.
+const RAW_API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
+function resolveApiBaseUrl(): string {
+  if (RAW_API_BASE_URL) {
+    return RAW_API_BASE_URL;
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    // DEV-ONLY FALLBACK — never used in production builds.
+    return 'http://127.0.0.1:8000';
+  }
+  // Production has NO baked-in fallback: warn loudly, return empty, and let the
+  // app surface a failure instead of silently pointing at the local backend.
+  // eslint-disable-next-line no-console
+  console.error(
+    '[SMMS] REACT_APP_API_BASE_URL is NOT set. ' +
+      'This production build has no backend API base URL. ' +
+      'Set REACT_APP_API_BASE_URL in your production environment ' +
+      '(e.g. .env.production) before deploying, otherwise the app will not ' +
+      'reach the backend.'
+  );
+  return '';
+}
 
-// FOR PRODUCTION
-// export const API_BASE = 'https://backend1.ditronics.co.tz'
-export const FILE_BASE =  API_BASE;
+export const API_BASE = resolveApiBaseUrl();
+
+// FILE_BASE derives from the SAME environment-driven value (no separate config).
+export const FILE_BASE = API_BASE;
 
 // ---- AUTH URLS ------
 export const LOGIN_URL = "/auth/login";
@@ -24,6 +51,7 @@ export const SALES_TREND_URL = "/dashboard/sales-trend";
 export const LAST_SESSION_URL = "/dashboard/last-session";
 export const PARENT_STUDENTS_URL = "/dashboard/parent-students";
 export const STAFF_VIEW_URL = "/dashboard/staff-view";
+export const CHILD_SPEND_URL = "/dashboard/child-spend";
 
 
 // ---- RESOURCES URLS ----- 
@@ -43,6 +71,10 @@ export const CARD_DETAILS_URL = '/resources/card-details';
 export const ACTIVATE_CARD_URL = '/resources/activate-deactivate-card';
 
 
+// ---- IMPORT URLS ----
+export const IMPORT_PREVIEW_URL = '/students/import-preview';
+export const IMPORT_COMMIT_URL = '/students/import-commit';
+
 // ---- USER URLS ----
 export const USERS_LIST_URL = '/resources/users-list';
 export const INACTIVE_USERS_URL = '/auth/inactive-users-list';
@@ -60,6 +92,9 @@ export const SESSION_LIST_URL = '/sessions/session-list';
 export const SCANNED_LIST_URL = '/sessions/scanned-data';
 export const SCAN_CARD_URL = '/sessions/scan-card';
 export const TRANSACTIONS_URL = '/sessions/transaction-list';
+export const REVERSE_TRANSACTION_URL = '/sessions/reverse-transaction';
+export const DEPOSIT_REQUEST_URL = '/sessions/deposit-request';
+export const DEPOSIT_REQUESTS_URL = '/sessions/deposit-request-list';
 
 // ---- NOTIFICATIONS ----
 export const NOTIFICATIONS_URL = '/resources/notifications/';

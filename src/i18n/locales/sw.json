@@ -5,7 +5,7 @@
         "desc": "Mfumo huu ni wa kusaidia wanafunzi kupata chakula kwa haraka na wakati huku mzazi akifanya malipo kwa wepesi zaidi. Hii ni faida kwa mwenye mgahawa na wateja wake.",
         "loginButton": "INGIA",
         "registerButton": "JISAJILI",
-        "owner": "Ditronics"
+        "owner": "Mtoa Huduma"
     },
     "init": {
         "placeholder": "Ingiza ",
@@ -54,6 +54,7 @@
         "unsuccess": "Haikufanikiwa",
         "review": "Mapitio",
         "pending": "Inasubiri",
+        "processed": "Imeshughulikiwa",
         "overdue": "Imechelewa",
         "forgiven": "Imesamehewa",
         "approval": "Idhini",
@@ -68,7 +69,8 @@
         "notUsed": "Haijatumika",
         "blocked": "Imefungiwa",
         "complete": "Imekamilika",
-        "canceled": "Imesitishwa"
+        "canceled": "Imesitishwa",
+        "reversed": "Imerejeshwa"
     },
     "login": {
         "title": "Ingia",
@@ -116,6 +118,7 @@
         "dashboard": "Dashibodi",
         "manageUser": "Dhibiti Mtumiaji",
         "manageStudents": "Dhibiti Wanafunzi",
+        "importStudents": "Ingiza Wanafunzi",
         "manageParents": "Dhibiti Wazazi",
         "manageStaffs":"Dhibiti Waalimu",
         "manageAdmins": "Dhibiti Wasimamizi",
@@ -123,6 +126,8 @@
         "transaction": "Malipo",
         "session": "Kipindi",
         "bankDeposit": "Amana ya Benki",
+        "spending": "Matumizi",
+        "topUp": "Kujaza Balance",
         "notifications": "Taarifa",
         "manageResources": "Dhibiti Rasilimali",
         "manageCards": "Dhibiti Kadi",
@@ -169,6 +174,8 @@
         "meal_history": "Historia ya Milo",
         "meal_history_desc": "Historia ya milo ya mwanao.",
         "view_more": "Ona zaidi",
+        "view_spend": "Tazama matumizi",
+        "top_up": "Jaza Balance",
         "my_details": "Taarifa zangu"
     },
     "school": {
@@ -185,6 +192,7 @@
         "title": "Dhibiti Mwanafunzi",
         "details": "Maelezo ya Mwanafunzi",
         "add": "Ongeza Mwanafunzi",
+        "import": "Ingiza Wanafunzi",
         "edit": "Hariri Mwanafunzi",
         "delete": "Futa Mwanafunzi",
         "activate": "Fungua",
@@ -211,6 +219,54 @@
         "issue": "Tarehe ya Kutolewa",
         "joined": "Amesajiliwa Tarehe",
         "changeProfile": "Badili picha"
+    },
+    "studentsImport": {
+        "upload": "Pakia",
+        "preview": "Hakiki",
+        "confirmStep": "Thibitisha",
+        "title": "Ingiza Wanafunzi",
+        "instructions": "Chagua shule inayolengwa, pakua template ya kufuata, kisha pakia faili ya CSV au Excel iliyo na wanafunzi wa kuingiza.",
+        "selectSchool": "Shule",
+        "downloadTemplate": "Pakua template",
+        "chooseFile": "Chagua faili",
+        "preview": "Hakiki",
+        "total": "Jumla",
+        "valid": "Halali",
+        "invalid": "Batili",
+        "statusLabel": "Hali",
+        "reasons": "Sababu",
+        "revalidate": "Hakiki upya",
+        "continue": "Endelea na",
+        "back": "Rudi",
+        "editHint": "Sahihisha safu zisizo halali hapa chini, kisha bonyeza Hakiki upya. Safu halali hazipotei kamwe.",
+        "successTitle": "Wanafunzi wameingizwa kwa mafanikio",
+        "created": "Wameingizwa",
+        "skipped": "Waliorudiwa",
+        "failures": "Walisioingizwa",
+        "rowLabel": "Safu",
+        "done": "Maliza",
+        "columns": {
+            "first_name": "Jina la Kwanza",
+            "middle_name": "Jina la Kati",
+            "last_name": "Jina la Mwisho",
+            "gender": "Jinsi",
+            "date_of_birth": "Tarehe ya Kuzaliwa",
+            "class_room": "Darasa",
+            "admission_no": "Nambari ya Udahili"
+        }
+    },
+    "spend": {
+        "title": "Matumizi ya mtoto",
+        "desc": "Angalia jinsi mtoto wako anavyotumia wiki hii au mwezi huu.",
+        "selectChild": "Mtoto",
+        "week": "Wiki",
+        "month": "Mwezi",
+        "periodTotal": "Jumla ya matumizi",
+        "transactionCount": "Miamala",
+        "chartTitle": "Matumizi ya kila siku",
+        "emptyTitle": "Hakuna matumizi",
+        "emptyDesc": "Hakuna matumizi yaliyorekodiwa kwa mtoto huyu katika kipindi kilichochaguliwa.",
+        "errorTitle": "Imeshindikana kupakia data ya matumizi. Tafadhali jaribu tena."
     },
     "parent": {
         "title": "Dhibiti wazazi",
@@ -444,11 +500,31 @@
     },
     "support": {
         "title": "Msaada & Usaidizi",
+        "desc": "Tuko hapa kukusaidia kwa maswali yoyote kuhusu mfumo, kadi zako, malipo au vikao.",
+        "contactTitle": "Wasiliana Nasi",
+        "phone": "Piga simu msaada kwa wateja",
+        "email": "Tuma barua pepe kwa msaada",
         "FAQ": "Maswali Mara kwa Mara",
         "payment": "Njia za Malipo",
-        "chat": "Chat",
+        "chat": "Wasiliana na Msaada",
+        "chatDesc": "Wasiliana na timu yetu ya msaada kwa usaidizi wa moja kwa moja.",
+        "faq1Title": "Je ninawezaje kuongeza kadi yangu?",
+        "faq1Desc": "Unaweza kuongeza kadi yako kwenye kaunta ya kantini au kupitia mwendeshaji aliyeidhinishwa wakati wa kikao.",
+        "faq2Title": "Nifanye nini ikiwa kadi yangu imepotea au imeharibika?",
+        "faq2Desc": "Ripoti kadi yako iliyopotea au iliyoharibika kwa ofisi ya shule ili izuiwe na ibadilishwe.",
+        "faq3Title": "Ninaweza kuangalia miamala yangu vipi?",
+        "faq3Desc": "Miamala inaweza kuangaliwa kutoka sehemu ya Miamala kwenye dashibodi yako wakati wowote.",
         "notFound": "Imeshindwa kupata taarifa kutoka kwenye mfumo",
         "notFoundDesc": "Tafadhari jaribu tena au angalia mtandao wako"
+    },
+    "info": {
+        "title": "Taarifa za Mfumo",
+        "desc": "Ukurasa huu unatoa taarifa za jumla kuhusu Mfumo wa Usimamizi wa Shule.",
+        "about": "Kuhusu Mfumo",
+        "aboutDesc": "Mfumo wa Usimamizi wa Shule (SMMS) husaidia shule kusimamia kadi za wanafunzi, huduma za kantini, vikao na miamala kwa usalama na ufanisi.",
+        "version": "Toleo la Mfumo",
+        "versionValue": "1.0.0",
+        "support": "Unahitaji msaada? Tembelea ukurasa wa Msaada kwa usaidizi."
     },
     "profile": {
         "title": "Taarifa Binafsi",
@@ -475,7 +551,15 @@
         "student_name": "Jina",
         "card_number": "Namba ya Kadi",
         "item_name": "Jina la Bidhaa",
-        "status": "Hali"
+        "status": "Hali",
+        "reverse": "Tengua",
+        "reason": "Sababu",
+        "reasonPlaceholder": "Eleza kwa nini muamala huu unatenguliwa (angalau herufi 10)",
+        "reasonError": "Tafadhali toa sababu ya angalau herufi 10.",
+        "reverseWarning": "Kiasi kilichochanganuliwa kitarudishwa na saldi la kadi litarejeshwa. Rekodi ya urudishaji itaonekana kwenye historia ya miamala. Hatua hii haiwezi kubatilishwa.",
+        "linkedOriginal": "Asili: #{{id}}",
+        "reverseSuccess": "Muamala umetenguliwa kwa mafanikio.",
+        "cancel": "Ghairi"
     },
     "notification": {
         "title": "Taarifa",
@@ -526,5 +610,21 @@
         "125": "Barua pepe (email) haipo",
         "126": "Tafadhari jaza neno la siri la zamani na neno la siri jipya",
         "127": "Neno la siri la zamani si sahihi"
+    },
+    "topUp": {
+        "title": "Kujaza Balance",
+        "desc": "Jaza salio la kadi ya mtoto wako.",
+        "selectChild": "Chagua mtoto",
+        "currentBalance": "Salio la Sasa",
+        "amount": "Kiasi",
+        "amountPlaceholder": "Ingiza kiasi cha kujaza",
+        "submit": "Jaza Balance",
+        "success": "Ombi la kujaza balance limetumwa kwa mafanikio",
+        "history": "Historia ya kujaza balance",
+        "historyError": "Hitilafu ilitokea wakati wa kupakia historia ya kujaza balance",
+        "student": "Mwanafunzi",
+        "status": "Hali",
+        "date": "Tarehe",
+        "unknownStudent": "Mwanafunzi Asiyejulikana"
     }
 }

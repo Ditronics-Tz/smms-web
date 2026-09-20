@@ -21,7 +21,7 @@ import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { toggleSidebar } from "../../utils/sideBarutils";
 import { logoutRequest, notificationsRequest, notificationsReset } from "../../store/actions";
 import { useColorScheme } from "@mui/joy/styles";
-import { NAVIGATE_TO_DASHBOARD, NAVIGATE_TO_PROFILEPAGE } from "../../route/types";
+import { NAVIGATE_TO_DASHBOARD, NAVIGATE_TO_PROFILEPAGE, NAVIGATE_TO_SUPPORTPAGE } from "../../route/types";
 import { DarkMode, LightMode, Notifications, Settings } from "@mui/icons-material";
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import {
@@ -32,7 +32,11 @@ import {
 } from "@mui/joy";
 import { useTranslation } from "react-i18next";
 import LanguageMenu from "../molecules/LanguageMenu";
+import branding from "../../config/branding";
+import image from "../../constant/image";
 import { doLogout } from "../../service/auth";
+import { toast } from "react-toastify";
+import { onMessageListener } from "../../firebase/firebase";
 // import ColorSchemeToggle from '../../utils/ColorSchemeToggle';
 
 function ColorSchemeToggle() {
@@ -105,7 +109,7 @@ const Header = ({
   }, [refresh])
 
   // ---- NOTIFICATIONS -----
-  const [notificationCount, setNotificationCount] = useState(null)
+  const [notificationCount, setNotificationCount] = useState(0)
   const [notList, setNotList] = React.useState([]);
   const [notError, setNotError] = React.useState("");
 
@@ -148,6 +152,38 @@ const Header = ({
     // Cleanup on component unmount
     return () => {
       channel.close();
+    };
+  }, []);
+
+  // get foreground message
+  useEffect(() => {
+    let cancelled = false;
+
+    onMessageListener().then((payload) => {
+      if (cancelled) return;
+      if (!payload || !payload.notification) return;
+      const { notification } = payload;
+      if (notification) {
+        toast.info(notification.body || "New notification", {
+          position: "top-right",
+          autoClose: 4000,
+        });
+        setNotList((prev) => [
+          {
+            title: notification.title,
+            message: notification.body,
+            created_at: new Date().toISOString(),
+          },
+          ...prev,
+        ]);
+        setNotificationCount((prev) => prev + 1);
+      }
+    }).catch((error) => {
+      console.log("Foreground message error: ", error);
+    });
+
+    return () => {
+      cancelled = true;
     };
   }, []);
   /* eslint-enable */
@@ -216,7 +252,15 @@ const Header = ({
           {/* web name */}
           <Link to={NAVIGATE_TO_DASHBOARD} style={{ textDecoration: 'none' }}>
             <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1, alignItems: "center" }}>
-              <Typography level="title-md" sx={{ fontFamily: 'roboto' }}>{t("intro.appName")}</Typography>
+              <Avatar
+                src={image.Images.logo}
+                size="sm"
+                sx={{
+                  maxWidth: 32, maxHeight: 32,
+                  backgroundColor: 'primary.500', padding: '3px',
+                }}
+              />
+              <Typography level="title-md" sx={{ fontFamily: 'roboto' }}>{branding.APP_SHORT_NAME}</Typography>
               {/* <ColorSchemeToggle sx={{ ml: 'auto' }} /> */}
             </Box>
           </Link>
@@ -388,16 +432,18 @@ const Header = ({
 
               {/* profile and settings */}
               <MenuItem
-                component="a"
-                href={'#'}>
+                component={Link}
+                to={NAVIGATE_TO_PROFILEPAGE}
+                style={{ textDecoration: 'none' }}>
                 <Settings />
                 {t("header.setting")}
               </MenuItem>
 
               {/* support */}
               <MenuItem
-                component="a"
-                href={'#'}>
+                component={Link}
+                to={NAVIGATE_TO_SUPPORTPAGE}
+                style={{ textDecoration: 'none' }}>
                 <HelpRoundedIcon />
                 {t("header.support")}
               </MenuItem>

@@ -381,7 +381,7 @@ const mapStateToProps = ({ user, auth, resources }) => {
 
         editUserStatus: editStatus,
         editUserResult: editResult,
-        editUserErrorMEessage: editErrorMessage,
+        editUserErrorMessage: editErrorMessage,
     } = auth
 
     const {

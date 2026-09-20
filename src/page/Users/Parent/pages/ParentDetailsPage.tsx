@@ -417,7 +417,7 @@ const mapStateToProps = ({ user, auth }) => {
 
         editUserStatus: editStatus,
         editUserResult: editResult,
-        editUserErrorMEessage: editErrorMessage,
+        editUserErrorMessage: editErrorMessage,
     } = auth
     const {
         parentDetailsStatus: detailsStatus,

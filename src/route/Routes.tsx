@@ -21,9 +21,12 @@ import {
   NAVIGATE_TO_PROFILEPAGE,
   NAVIGATE_TO_SCHOOLPAGE,
   NAVIGATE_TO_SESSIONPAGE,
+  NAVIGATE_TO_SPENDPAGE,
+  NAVIGATE_TO_TOPUPPAGE,
   NAVIGATE_TO_STAFFDETAILSPAGE,
   NAVIGATE_TO_STAFFPAGE,
   NAVIGATE_TO_STUDENTDETAILSPAGE,
+  NAVIGATE_TO_STUDENTIMPORTPAGE,
   NAVIGATE_TO_STUDENTPAGE,
   NAVIGATE_TO_SUPPORTPAGE,
   NAVIGATE_TO_TRANSACTIONPAGE,
@@ -31,7 +34,7 @@ import {
 import { STATUS } from "../constant";
 import Error404Page from "../page/ErrorsPages/404Error";
 import { Main } from "../components";
-import { AdminDetailsPage, AdminPage, CanteenItemPage, CardPage, Dashboard, InfoPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, StudentDetailsPage, StudentPage, SupportPage, TransactionPage, SessionPage, NotificationPage, StaffDetailsPage, StaffPage } from "../page";
+import { AdminDetailsPage, AdminPage, CanteenItemPage, CardPage, Dashboard, InfoPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, SpendPage, StudentDetailsPage, StudentPage, StudentImportPage, SupportPage, TopUpPage, TransactionPage, SessionPage, NotificationPage, StaffDetailsPage, StaffPage } from "../page";
 
 // FUNCTION TO DIRECT ONLY AUTH USER TO THEIR PAGES
 const ProtectRoute = ({ status }) => {
@@ -77,6 +80,15 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
             element={
               <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
                 <StudentDetailsPage />
+              </RoleProtectedRoute>
+            } />
+
+          {/* student import */}
+          <Route
+            path={NAVIGATE_TO_STUDENTIMPORTPAGE}
+            element={
+              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+                <StudentImportPage />
               </RoleProtectedRoute>
             } />
 
@@ -190,6 +202,20 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
           <Route path={NAVIGATE_TO_TRANSACTIONPAGE} element={
             <RoleProtectedRoute userRole={userRole} allowedRoles={['admin', 'parent', 'staff']}>
               <TransactionPage />
+            </RoleProtectedRoute>
+          } />
+
+          {/* Spend */}
+          <Route path={NAVIGATE_TO_SPENDPAGE} element={
+            <RoleProtectedRoute userRole={userRole} allowedRoles={['parent']}>
+              <SpendPage />
+            </RoleProtectedRoute>
+          } />
+
+          {/* Top up */}
+          <Route path={NAVIGATE_TO_TOPUPPAGE} element={
+            <RoleProtectedRoute userRole={userRole} allowedRoles={['parent']}>
+              <TopUpPage />
             </RoleProtectedRoute>
           } />
 
