@@ -12,6 +12,7 @@ services:
       dockerfile: Dockerfile
       target: development
     container_name: smms-web-dev
+    restart: unless-stopped
     ports:
       # Expose on all interfaces so the dev server is reachable from the network
       - "3000:3000"
