@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Typography, Box, List, ListItem, ListItemContent, Sheet, Table, iconButtonClasses, Button, IconButton, Chip, ColorPaletteProp } from "@mui/joy";
 import { LoadingView, NotFoundMessage, PageTitle, ReverseTransactionModal, TransactionFilterBar } from "../../../components";
 import type { TransactionFiltersValue, TransactionStatus } from "../../../components/molecules/TransactionFilterBar";

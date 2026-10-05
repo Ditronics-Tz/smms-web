@@ -111,7 +111,9 @@ export const StatementPage = ({
     const dispatch = useDispatch();
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const students: ParentStudent[] = studentsResult ?? [];
+    // Held in a memo because `studentsResult ?? []` builds a fresh array on
+    // every render, which would invalidate the lookups below each time.
+    const students: ParentStudent[] = useMemo(() => studentsResult ?? [], [studentsResult]);
     const pagination = statementPagination ?? {};
 
     // Which child is being viewed. Defaults to the first one so the page says
