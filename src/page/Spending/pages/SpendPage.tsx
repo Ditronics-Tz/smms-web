@@ -3,6 +3,7 @@ import {
     Box, Typography, Button, ButtonGroup, Sheet, Select, Option, Chip, Stack, Alert
 } from "@mui/joy";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { useChartTheme } from "../../../utils/chartTheme";
 import CalendarViewWeekRoundedIcon from '@mui/icons-material/CalendarViewWeek';
 import CalendarViewMonthRoundedIcon from '@mui/icons-material/CalendarViewMonth';
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
@@ -11,13 +12,13 @@ import { connect, useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
-import branding from "../../../config/branding";
+
 import { STATUS } from "../../../constant";
 import {
     childSpendRequest, childSpendReset, parentStudentsRequest, parentStudentsReset
 } from "../../../store/actions";
 import { LoadingView, NotFoundMessage } from "../../../components";
-import { thousandSeparator } from "../../../utils";
+import { formatMoney } from "../../../utils";
 
 const getChildId = (item) => item?.id ?? item?.student_id ?? item?.user?.id ?? ""
 
@@ -37,19 +38,21 @@ const normalizeSpend = (res) => {
 }
 
 const SpendChart = ({ data }) => {
+    const { accent, axisProps, gridProps, tooltipProps } = useChartTheme();
+
     return (
         <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data}>
                 <defs>
                     <linearGradient id="spendColor" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#4884d8" stopOpacity={0.9} />
-                        <stop offset="95%" stopColor="#4884d8" stopOpacity={0.4} />
+                        <stop offset="5%" stopColor={accent} stopOpacity={0.9} />
+                        <stop offset="95%" stopColor={accent} stopOpacity={0.35} />
                     </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
+                <CartesianGrid {...gridProps} vertical={false} />
+                <XAxis dataKey="date" {...axisProps} />
+                <YAxis {...axisProps} width={56} />
+                <Tooltip {...tooltipProps} />
                 <Bar dataKey="amount" fill="url(#spendColor)" radius={[4, 4, 0, 0]} />
             </BarChart>
         </ResponsiveContainer>
@@ -107,7 +110,7 @@ export const SpendPage = ({
 
     useEffect(() => {
         if (selectedChild) {
-            dispatch(childSpendRequest(accessToken, { child_id: selectedChild, filter }))
+            dispatch(childSpendRequest(accessToken, { period: filter, child_id: selectedChild }))
         }
     }, [selectedChild, filter])
 
@@ -174,7 +177,7 @@ export const SpendPage = ({
                                 variant="soft"
                                 color="primary"
                                 startDecorator={<TrendingUpRoundedIcon />}>
-                                {t("spend.periodTotal")}: {branding.CURRENCY_SYMBOL} {thousandSeparator(spend.total)}
+                                {t("spend.periodTotal")}: {formatMoney(spend.total)}
                             </Chip>
                             {spend.transactionCount !== null && spend.transactionCount !== undefined && (
                                 <Chip size="lg" variant="soft" color="neutral">

@@ -3,7 +3,7 @@ import { Typography, Box, Divider, Button, Sheet, Modal, ModalDialog, ModalClose
 import { toast } from 'react-toastify';
 import { LoadingView, NotFoundMessage } from "../../../../components";
 import { useLocation } from "react-router-dom";
-import { API_BASE, STATUS } from "../../../../constant";
+import { STATUS } from "../../../../constant";
 import { connect, useDispatch } from "react-redux";
 import {
     editUserRequest,
@@ -12,7 +12,7 @@ import {
 } from '../../../../store/actions'
 import { EditOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
+import { doListSchools } from "../../../../service/lookups";
 
 function CreateItems(
     title: String,
@@ -46,10 +46,11 @@ const AdminDetailsPage = ({
         email: "",
         username: "",
         mobile: "",
-        school: "",
-        school_value: "",
-        // sessions: []
-    }
+           school: "",
+           school_value: "",
+           profile_picture: null,
+           // sessions: []
+       }
 
 
     const [formModal, setFormModal] = useState(false);
@@ -59,15 +60,9 @@ const AdminDetailsPage = ({
 
     useEffect(() => {
         // Fetch School list
-        axios.get(API_BASE + "/list/schools", {
-            timeout: 30000,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + accessToken,
-
-            }
-        }).then((res) => setSchoolList(res.data.results)).catch((e) => console.error(e))
+        doListSchools(accessToken).then((res) => {
+            if (Array.isArray(res?.data?.results)) setSchoolList(res.data.results)
+        })
     }, [accessToken])
 
     /* eslint-disable */
@@ -84,6 +79,7 @@ const AdminDetailsPage = ({
                 mobile: detailsResult.mobile_number,
                 school: detailsResult.school,
                 school_value: detailsResult.school_id,
+                profile_picture: null,
                 // sessions: detailsResult.sessions,
             });
         }
@@ -123,6 +119,15 @@ const AdminDetailsPage = ({
         }));
     };
 
+    // Handle file input change
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setAdminData((prevData) => ({
+            ...prevData,
+            profile_picture: file,
+        }));
+    };
+
     // ---- Submit function
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -139,9 +144,14 @@ const AdminDetailsPage = ({
             formData.append("username", adminData.username);
             formData.append("mobile_number", adminData.mobile);
             formData.append("school", adminData.school_value);
-            formData.append("role", "admin");
+        formData.append("role", "admin");
 
-            dispatch(editUserRequest(accessToken, formData))
+        // Append file only if selected
+        if (adminData.profile_picture) {
+            formData.append("profile_picture", adminData.profile_picture);
+        }
+
+        dispatch(editUserRequest(accessToken, formData))
         } else {
             toast.error(t("init.emptyErr"))
         }
@@ -313,6 +323,14 @@ const AdminDetailsPage = ({
                                         <Option key={index} value={item.id}>{item.name}</Option>
                                     )) : <Option value={null}>{t("school.NoList")}</Option>}
                                 </Select>
+                            </FormControl>
+                        </Stack>
+
+                        {/* picture */}
+                        <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
+                            <FormControl sx={{ flex: 1 }}>
+                                <FormLabel>{t("admin.profile")}</FormLabel>
+                                <Input type="file" name="profile_picture" placeholder={t("init.select") + t("admin.profile")} onChange={handleFileChange} />
                             </FormControl>
                         </Stack>
 

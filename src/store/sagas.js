@@ -5,11 +5,13 @@ import dashboardSaga from "./dashboard/sagas";
 import userSaga from "./user/sagas";
 import resourcesSaga from "./resources/sagas"
 import sessionSaga from "./session/sagas";
+import ledgerSaga from "./ledger/sagas";
 
 export default function* root() {
     yield fork(authSaga);
     yield fork(dashboardSaga);
     yield fork(userSaga);
     yield fork(resourcesSaga);
-    yield fork(sessionSaga)
+    yield fork(sessionSaga);
+    yield fork(ledgerSaga);
 }

@@ -14,7 +14,7 @@ import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { DeleteOutline, PersonAddOutlined, RemoveRedEyeOutlined, FileUploadOutlined } from "@mui/icons-material";
-import { API_BASE, FILE_BASE, STATUS } from "../../../../constant";
+import { FILE_BASE, STATUS } from "../../../../constant";
 import { toast } from "react-toastify";
 
 import {
@@ -25,7 +25,7 @@ import {
 } from "../../../../store/actions"
 import { useTranslation } from "react-i18next";
 import { NAVIGATE_TO_STUDENTDETAILSPAGE, NAVIGATE_TO_STUDENTIMPORTPAGE } from "../../../../route/types";
-import axios from "axios";
+import { doListParents } from "../../../../service/lookups";
 
 const MobileViewTable = ({ data, props }) => {
     const { t } = useTranslation();
@@ -254,15 +254,9 @@ const StudentPage = ({
     // function to fetch parents data to fetch student data
     /* eslint-disable */
     useEffect(() => {
-        axios.get(API_BASE + "/list/parents", {
-            timeout: 30000,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'multipart/form-data',
-                'Authorization': 'Bearer ' + accessToken,
-
-            }
-        }).then((res) => setParentList(res.data.results)).catch((e) => console.error(e))
+        doListParents(accessToken).then((res) => {
+            if (Array.isArray(res?.data?.results)) setParentList(res.data.results)
+        })
     }, [])
 
     // ---- PAGINATION SETTINGS ----- //

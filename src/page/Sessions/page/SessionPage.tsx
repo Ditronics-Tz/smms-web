@@ -1,9 +1,8 @@
-import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import branding from "../../../config/branding";
 import { connect, useDispatch } from "react-redux"
-import { API_BASE, STATUS } from '../../../constant';
+import { STATUS } from '../../../constant';
 import { toast } from 'react-toastify';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -25,7 +24,8 @@ import { Box, Button, Card, CardContent, Divider, FormControl, FormLabel, IconBu
 import { LoadingView, ReverseTransactionModal } from '../../../components';
 import { InfoOutlined, UndoRounded } from '@mui/icons-material';
 import { useMediaQuery } from '@mui/material';
-import { formatDate, thousandSeparator } from '../../../utils';
+import { formatDate, formatMoney } from '../../../utils';
+import { doActiveSession, doListCanteenItems } from '../../../service/lookups';
 
 const getTxnId = (row) => row.id ?? row.transaction_id;
 const isReversalEntry = (row) => row.transaction_type === 'reversal' || row.reversal_of != null || row.original_transaction_id != null;
@@ -57,7 +57,7 @@ const MobileViewTable = ({ data, props }) => {
                                 <Typography fontWeight={600} gutterBottom>{listItem.card_number}</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("session.studentName")}:</b> {listItem.student_name}</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("session.card_number")}:</b> {listItem.card_number}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("session.item")}:</b> {listItem.item_name} - {isReversalEntry(listItem) ? "-" : ""}{branding.CURRENCY_SYMBOL} {thousandSeparator(listItem.item_price || 0.0)}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("session.item")}:</b> {listItem.item_name} - {formatMoney(isReversalEntry(listItem) ? -(listItem.item_price || 0) : (listItem.item_price || 0))}</Typography>
                                 {isReversalEntry(listItem) && getOriginalId(listItem) != null &&
                                     <Typography level="body-xs" color="neutral">{t("transaction.linkedOriginal", { id: getOriginalId(listItem) })}</Typography>}
                                 {isReversed(listItem) && !isReversalEntry(listItem) &&
@@ -134,7 +134,7 @@ const DesktopViewTable = ({ data, props }) => {
                                 </td>
                                 <td>
                                     <Typography level="body-sm" color={isReversalEntry(row) ? "danger" : "neutral"}>
-                                        {isReversalEntry(row) ? "-" : ""}{thousandSeparator(row.item_price || 0.0)}
+                                        {formatMoney(isReversalEntry(row) ? -(row.item_price || 0) : (row.item_price || 0))}
                                     </Typography>
                                     {isReversalEntry(row) && getOriginalId(row) != null &&
                                         <Typography level="body-xs" color="neutral">
@@ -192,6 +192,7 @@ const SessionPage = ({
     const [scannedList, setScannedList] = useState([]);
     const [sessionData, setSessionData] = useState(null);
     const [items, setItems] = useState([]);
+    const [itemsForbidden, setItemsForbidden] = useState(false);
     const [item_id, setItemID] = useState('');
     const [sessionType, setSessionType] = useState('');
 
@@ -220,39 +221,25 @@ const SessionPage = ({
     ]
 
     // ----- Fetch canteen list
+    // FE-08: BE-03 locks /list/canteen-items to admin, so an operator gets a 403
+    // here. That is not worked around - it is reported inline, because an empty
+    // dropdown next to a scan button reads as a broken app. A scoped
+    // canteen-items endpoint for operators is requested from Ahmed.
     async function fetchCanteenList() {
-        await axios.get(API_BASE + "/list/canteen-items", {
-            timeout: 20000,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + accessToken,
-
-            }
-        }).then((res) => setItems(res.data.results))
+        const res = await doListCanteenItems(accessToken);
+        if (res?.status === 200 && Array.isArray(res?.data?.results)) {
+            setItems(res.data.results)
+            setItemsForbidden(false)
+        } else if (res?.status === 403) {
+            setItemsForbidden(true)
+        }
     }
 
     // ---- Fetch Session status
     async function fetchSessionStatus() {
-        await axios.get(API_BASE + "/sessions/active-session", {
-            timeout: 20000,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + accessToken,
-
-            }
+        await doActiveSession(accessToken).then((res) => {
+            if (res?.data?.id) setSessionData(res.data)
         })
-            .then((res) => {
-                setSessionData(res.data)
-            })
-            .catch((e) => {
-                if (e.response) {
-                    console.error(e.response.data.message)
-                } else {
-                    console.log(e.message)
-                }
-            })
     }
 
     // ----- Effect to call fetch
@@ -470,8 +457,13 @@ const SessionPage = ({
                     <FormControl>
                         <FormLabel>{t("session.item")}</FormLabel>
                         <Select placeholder={t("init.select") + t("session.item")} value={item_id} onChange={(e, v) => setItemID(v)}>
-                            {items.length > 0 && items.map((item, index) => (<Option key={index} value={item.id} >{item.name} {branding.CURRENCY_SYMBOL} {thousandSeparator(item.price)}</Option>))}
+                            {items.length > 0 && items.map((item, index) => (<Option key={index} value={item.id} >{item.name} {formatMoney(item.price)}</Option>))}
                         </Select>
+                        {itemsForbidden && (
+                            <Typography level='body-xs' color='danger' sx={{ mt: 0.5 }}>
+                                {t("session.itemsForbidden")}
+                            </Typography>
+                        )}
                     </FormControl>
                     <FormControl required>
                         {/* <FormLabel>{t("init.placeholder") + t("session.")}</FormLabel> */}

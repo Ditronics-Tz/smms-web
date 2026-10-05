@@ -245,9 +245,10 @@ const AdminPage = ({
         gender: "",
         email: "",
         username: "",
-        mobile: "",
-        school: ""
-    }
+       mobile: "",
+       school: "",
+       profile_picture: null
+   }
 
     const [adminData, setAdminData] = useState(initiateAdminData);
 
@@ -335,6 +336,11 @@ const AdminPage = ({
             formData.append("mobile_number", adminData.mobile);
             formData.append("school", adminData.school);
             formData.append("role", "admin");
+
+            // Append file only if selected
+            if (adminData.profile_picture) {
+                formData.append("profile_picture", adminData.profile_picture);
+            }
 
             dispatch(createUserRequest(accessToken, formData))
         } else {
@@ -560,6 +566,14 @@ const AdminPage = ({
                                         <Option key={index} value={item.id}>{item.name}</Option>
                                     )) : <Option value={null}>{t("school.NoList")}</Option>}
                                 </Select>
+                            </FormControl>
+                        </Stack>
+
+                        {/* picture */}
+                        <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
+                            <FormControl sx={{ flex: 1 }}>
+                                <FormLabel>{t("admin.profile")}</FormLabel>
+                                <Input type="file" name="profile_picture" placeholder={t("init.select") + t("admin.profile")} onChange={handleFileChange} />
                             </FormControl>
                         </Stack>
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 
-import { ForgetPasswordPage, LoginPage } from "../page/Login";
+import { ForgetPasswordPage, LoginPage, ResetPasswordPage } from "../page/Login";
 
 import {
   ERROR_404_PAGE,
@@ -10,8 +10,12 @@ import {
   NAVIGATE_TO_CANTEENITEMPAGE,
   NAVIGATE_TO_CARDPAGE,
   NAVIGATE_TO_DASHBOARD,
-  NAVIGATE_TO_FORGOTPASSWORDPAGE,
+    NAVIGATE_TO_FORGOTPASSWORDPAGE,
+    NAVIGATE_TO_RESETPASSWORDPAGE,
+    NAVIGATE_TO_SETTINGSPAGE,
+    NAVIGATE_TO_BANKDEPOSITPAGE,
   NAVIGATE_TO_INFOPAGE,
+  NAVIGATE_TO_LEDGERPAGE,
   NAVIGATE_TO_LOGINPAGE,
   NAVIGATE_TO_NOTIFICATIONPAGE,
   NAVIGATE_TO_OPERATORDETAILSPAGE,
@@ -28,13 +32,14 @@ import {
   NAVIGATE_TO_STUDENTDETAILSPAGE,
   NAVIGATE_TO_STUDENTIMPORTPAGE,
   NAVIGATE_TO_STUDENTPAGE,
+  NAVIGATE_TO_STATEMENTPAGE,
   NAVIGATE_TO_SUPPORTPAGE,
   NAVIGATE_TO_TRANSACTIONPAGE,
 } from "./types";
 import { STATUS } from "../constant";
 import Error404Page from "../page/ErrorsPages/404Error";
 import { Main } from "../components";
-import { AdminDetailsPage, AdminPage, CanteenItemPage, CardPage, Dashboard, InfoPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, SpendPage, StudentDetailsPage, StudentPage, StudentImportPage, SupportPage, TopUpPage, TransactionPage, SessionPage, NotificationPage, StaffDetailsPage, StaffPage } from "../page";
+import { AdminDetailsPage, AdminPage, BankDepositPage, CanteenItemPage, CardPage, Dashboard, InfoPage, JournalPage, OperatorDetailsPage, OperatorPage, ParentDetailsPage, ParentPage, ProfilePage, SchoolPage, SettingsPage, SpendPage, StudentDetailsPage, StudentPage, StudentImportPage, SupportPage, TopUpPage, TransactionPage, SessionPage, NotificationPage, StaffDetailsPage, StaffPage, StatementPage } from "../page";
 
 // FUNCTION TO DIRECT ONLY AUTH USER TO THEIR PAGES
 const ProtectRoute = ({ status }) => {
@@ -50,20 +55,30 @@ const RoleProtectedRoute = ({ userRole, allowedRoles, children }) => {
   return allowedRoles.includes(userRole) ? children : <Navigate to={NAVIGATE_TO_DASHBOARD} />;
 };
 
+// Superuser-only pages. The sidebar already hides these unless the user is a
+// superuser, so the guard has to agree or the page stays reachable by typing the
+// URL. Used for: admin list, student import, schools, cards, all notifications.
+const SuperuserRoute = ({ userRole, isSuperuser, children }) => {
+  return userRole === "admin" && isSuperuser ? children : <Navigate to={NAVIGATE_TO_DASHBOARD} />;
+};
+
 // MAIN FUNC TO RENDER ROUTES AND PAGES
-const RoutesContainer = ({ loginStatus, userRole }) => {
+const RoutesContainer = ({ loginStatus, userRole, isSuperuser }) => {
   const location = useLocation();
 
   return (
     <Routes key={location.pathname} location={location}>
 
       <Route path={NAVIGATE_TO_LOGINPAGE} element={<LoginPage />} />
-      <Route path={NAVIGATE_TO_FORGOTPASSWORDPAGE} element={<ForgetPasswordPage/>} />
+        <Route path={NAVIGATE_TO_FORGOTPASSWORDPAGE} element={<ForgetPasswordPage/>} />
+        <Route path={NAVIGATE_TO_RESETPASSWORDPAGE} element={<ResetPasswordPage />} />
 
       <Route path="/" element={<ProtectRoute status={loginStatus} />}>
         <Route path='/' element={<Main />}>
           <Route index element={<Dashboard />} />
           <Route path={NAVIGATE_TO_PROFILEPAGE} element={<ProfilePage />} />
+          {/* Self-service settings: every role gets password + picture + appearance. */}
+          <Route path={NAVIGATE_TO_SETTINGSPAGE} element={<SettingsPage />} />
 
           {/* student list */}
           <Route
@@ -87,9 +102,9 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
           <Route
             path={NAVIGATE_TO_STUDENTIMPORTPAGE}
             element={
-              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+              <SuperuserRoute userRole={userRole} isSuperuser={isSuperuser}>
                 <StudentImportPage />
-              </RoleProtectedRoute>
+              </SuperuserRoute>
             } />
 
           {/* parent list */}
@@ -150,27 +165,27 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
           <Route
             path={NAVIGATE_TO_ADMINPAGE}
             element={
-              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+              <SuperuserRoute userRole={userRole} isSuperuser={isSuperuser}>
                 <AdminPage />
-              </RoleProtectedRoute>
+              </SuperuserRoute>
             } />
 
           {/* admin details */}
           <Route
             path={NAVIGATE_TO_ADMINDETAILSPAGE}
             element={
-              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+              <SuperuserRoute userRole={userRole} isSuperuser={isSuperuser}>
                 <AdminDetailsPage />
-              </RoleProtectedRoute>
+              </SuperuserRoute>
             } />
 
           {/* school page */}
           <Route
             path={NAVIGATE_TO_SCHOOLPAGE}
             element={
-              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+              <SuperuserRoute userRole={userRole} isSuperuser={isSuperuser}>
                 <SchoolPage />
-              </RoleProtectedRoute>
+              </SuperuserRoute>
             } />
 
           {/* canteen items page */}
@@ -186,9 +201,9 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
           <Route
             path={NAVIGATE_TO_CARDPAGE}
             element={
-              <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+              <SuperuserRoute userRole={userRole} isSuperuser={isSuperuser}>
                 <CardPage />
-              </RoleProtectedRoute>
+              </SuperuserRoute>
             } />
 
           {/* Session */}
@@ -202,6 +217,20 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
           <Route path={NAVIGATE_TO_TRANSACTIONPAGE} element={
             <RoleProtectedRoute userRole={userRole} allowedRoles={['admin', 'parent', 'staff']}>
               <TransactionPage />
+            </RoleProtectedRoute>
+          } />
+
+          {/* Bank Deposit / finance */}
+          <Route path={NAVIGATE_TO_BANKDEPOSITPAGE} element={
+            <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+              <BankDepositPage />
+            </RoleProtectedRoute>
+          } />
+
+          {/* Ledger journal (FE-11) - admin only, matching the BE-29 rule */}
+          <Route path={NAVIGATE_TO_LEDGERPAGE} element={
+            <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+              <JournalPage />
             </RoleProtectedRoute>
           } />
 
@@ -219,11 +248,19 @@ const RoutesContainer = ({ loginStatus, userRole }) => {
             </RoleProtectedRoute>
           } />
 
+          {/* Statement. The sidebar entry already pointed here, so without this
+              route a parent clicking it landed on the 404. */}
+          <Route path={NAVIGATE_TO_STATEMENTPAGE} element={
+            <RoleProtectedRoute userRole={userRole} allowedRoles={['parent']}>
+              <StatementPage />
+            </RoleProtectedRoute>
+          } />
+
           {/* Notifications */}
           <Route path={NAVIGATE_TO_NOTIFICATIONPAGE} element={
-            <RoleProtectedRoute userRole={userRole} allowedRoles={['admin']}>
+            <SuperuserRoute userRole={userRole} isSuperuser={isSuperuser}>
               <NotificationPage />
-            </RoleProtectedRoute>
+            </SuperuserRoute>
           } />
 
           <Route path={NAVIGATE_TO_SUPPORTPAGE} element={<SupportPage />} />

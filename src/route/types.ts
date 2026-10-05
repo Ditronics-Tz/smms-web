@@ -3,6 +3,7 @@
 // Login
 export const NAVIGATE_TO_LOGINPAGE = '/login';
 export const NAVIGATE_TO_FORGOTPASSWORDPAGE = '/forgot-password';
+export const NAVIGATE_TO_RESETPASSWORDPAGE = '/reset-password';
 
 // Dashboard
 export const NAVIGATE_TO_DASHBOARD = '/';
@@ -18,6 +19,18 @@ export const NAVIGATE_TO_CARDPAGE = '/card-page';
 export const NAVIGATE_TO_STUDENTPAGE = '/student-manage';
 export const NAVIGATE_TO_STUDENTDETAILSPAGE = '/student-details'
 export const NAVIGATE_TO_STUDENTIMPORTPAGE = '/students-import';
+
+// Settings (self service, every role)
+export const NAVIGATE_TO_SETTINGSPAGE = '/settings';
+
+// Bank Deposit (finance)
+export const NAVIGATE_TO_BANKDEPOSITPAGE = '/bank-deposit';
+
+// Ledger (FE-11, admin)
+export const NAVIGATE_TO_LEDGERPAGE = '/ledger';
+
+// Statement (FE-14, parent)
+export const NAVIGATE_TO_STATEMENTPAGE = '/statement';
 
 // Parent
 export const NAVIGATE_TO_PARENTPAGE = '/parent-manage';

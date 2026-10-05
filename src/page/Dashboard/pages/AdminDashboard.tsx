@@ -1,11 +1,12 @@
 import { ArrowForward, TrendingUp, MonetizationOnOutlined } from "@mui/icons-material"
 import { Grid, Card, CardContent, Box, Typography, Button, Divider, CardActions, ButtonGroup, Sheet } from "@mui/joy"
+import type { ColorPaletteProp } from "@mui/joy"
 import React, { useEffect, useState } from "react"
-import { NAVIGATE_TO_STUDENTPAGE, NAVIGATE_TO_PARENTPAGE, NAVIGATE_TO_TRANSACTIONPAGE } from "../../../route/types"
+import { Link } from "react-router-dom"
+import { NAVIGATE_TO_STUDENTPAGE, NAVIGATE_TO_PARENTPAGE, NAVIGATE_TO_TRANSACTIONPAGE, NAVIGATE_TO_BANKDEPOSITPAGE } from "../../../route/types"
 import { connect, useDispatch } from "react-redux"
 import { STATUS } from "../../../constant"
 import { useTranslation } from "react-i18next"
-import branding from "../../../config/branding";
 
 import {
     countsRequest,
@@ -16,38 +17,44 @@ import {
     salesTrendReset
 } from "../../../store/actions"
 import { toast } from "react-toastify"
-import { LoadingView } from "../../../components"
-import { thousandSeparator } from "../../../utils"
+import { LoadingView, LedgerHealthCard } from "../../../components"
+import { formatMoney } from "../../../utils"
 import LineGraph from "./LineGraph"
 
 
 const CountsCards = ({ props, data }) => {
     const { t } = useTranslation()
 
+    // These used to be four fixed near-white pastels with literal black text, which
+    // is why the KPI row was blinding in dark mode. Joy's `soft` card variant
+    // tints the surface and picks a matching foreground for the current mode, so
+    // the same four cards stay readable in light and dark without a second palette.
     const cardsItems = [
         {
             title: t("home.total") + " " + t("home.student"),
-            color: '#D1F8EF',
+            color: "primary" as ColorPaletteProp,
             number: data.students,
             action: NAVIGATE_TO_STUDENTPAGE
         },
         {
             title: t("home.total") + " " + t("home.parent"),
-            color: '#B6FFA1',
+            color: "success" as ColorPaletteProp,
             number: data.parents,
             action: NAVIGATE_TO_PARENTPAGE
         },
         {
             title: t("home.total") + " " + t("home.purchase"),
-            color: '#D0DDD0',
+            color: "neutral" as ColorPaletteProp,
             number: data.transactions,
             action: NAVIGATE_TO_TRANSACTIONPAGE
         },
         {
             title: t("home.available"),
-            color: '#C4D9FF',
-            number: branding.CURRENCY_SYMBOL + " " + thousandSeparator(data.total_balance),
-            action: '#'
+            color: "info" as ColorPaletteProp,
+            number: formatMoney(data.total_balance),
+            // Was "#", which made the "View" pill a dead link. The money behind
+            // this figure lives on the finance page, so send it there.
+            action: NAVIGATE_TO_BANKDEPOSITPAGE
         }
     ]
     return (
@@ -62,32 +69,30 @@ const CountsCards = ({ props, data }) => {
                     <Grid xs={2} sm={3} md={3} key={index}>
                         <Card
                             variant="soft"
+                            color={item.color}
                             sx={{
                                 display: 'flex',
                                 flex: 1,
-                                backgroundColor: `${item.color}`,
                                 borderRadius: "lg",
                                 p: 1.5
                             }}>
                             <CardContent>
                                 <Box>
-                                    <Typography
-                                        fontSize={12}
-                                        sx={{ color: 'black' }}>
+                                    <Typography fontSize={12} level="body-sm">
                                         {item.title}
                                     </Typography>
                                     <Typography
                                         fontWeight='600'
                                         fontFamily="roboto"
-                                        sx={{ color: 'black', fontSize: { xs: 20, md: 25 } }}>
+                                        sx={{ fontSize: { xs: 20, md: 25 } }}>
                                         {item.number}
                                     </Typography>
                                 </Box>
                                 <Typography
-                                    component='a'
+                                    component={Link}
                                     // startDecorator={<RemoveRedEyeOutlined color="success" />}
                                     endDecorator={<ArrowForward sx={{ fontSize: 11 }} />}
-                                    href={item.action}
+                                    to={item.action}
                                     sx={{
                                         textDecoration: "none",
                                         fontSize: { xs: 8, md: 10 },
@@ -95,10 +100,8 @@ const CountsCards = ({ props, data }) => {
                                         py: 0.3,
                                         px: 1.3,
                                         borderRadius: 20,
-                                        backgroundColor: 'white',
                                         fontWeight: '500',
                                         fontFamily: 'sans-serif',
-                                        color: 'black',
                                         alignSelf: 'flex-end',
                                         // boxShadow: 'sm'
                                     }}>
@@ -336,14 +339,18 @@ const AdminDashboard = ({
                                 p: 1
                             }}>
                             <Typography level="title-md">{t("home.total") + " " + t("home.amount")}</Typography>
-                            <Typography level="h4" fontSize={23}>{branding.CURRENCY_SYMBOL} {thousandSeparator(salesSummary.success_amount)}</Typography>
+                            <Typography level="h4" fontSize={23}>{formatMoney(salesSummary.success_amount)}</Typography>
                             <Typography level="title-sm" color="danger" mt={1}>{t("home.total") + " " + t("home.penalt") + " " + t("home.amount")}</Typography>
-                            <Typography fontSize={14} color="danger">{branding.CURRENCY_SYMBOL} {thousandSeparator(salesSummary.penalts_amount)}</Typography>
+                            <Typography fontSize={14} color="danger">{formatMoney(salesSummary.penalts_amount)}</Typography>
                         </Sheet>
 
                     </CardContent>
                 </Card>
             </Box>
+
+            {/* FE-12: ledger health. It owns its own loading and error states, so
+                a failing /ledger call cannot take the dashboard down with it. */}
+            <LedgerHealthCard />
         </Box >
     )
 }

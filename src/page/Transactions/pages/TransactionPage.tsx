@@ -1,15 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Typography, Box, List, ListItem, ListItemContent, Sheet, Table, iconButtonClasses, Button, IconButton, Input, Chip, ColorPaletteProp } from "@mui/joy";
-import { LoadingView, NotFoundMessage, PageTitle, ReverseTransactionModal } from "../../../components";
-import { formatDate, thousandSeparator } from "../../../utils";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Typography, Box, List, ListItem, ListItemContent, Sheet, Table, iconButtonClasses, Button, IconButton, Chip, ColorPaletteProp } from "@mui/joy";
+import { LoadingView, NotFoundMessage, PageTitle, ReverseTransactionModal, TransactionFilterBar } from "../../../components";
+import type { TransactionFiltersValue, TransactionStatus } from "../../../components/molecules/TransactionFilterBar";
+import { TRANSACTION_STATUS_COLORS, TRANSACTION_STATUSES, transactionStatusLabel } from "../../../components/molecules/TransactionFilterBar";
+import { formatDate, formatMoney } from "../../../utils";
 
-import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 import { connect, useDispatch } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
-import { CalendarMonthRounded, UndoRounded } from "@mui/icons-material";
+import { UndoRounded } from "@mui/icons-material";
 import { STATUS } from "../../../constant";
 import { toast } from "react-toastify";
 
@@ -27,11 +29,20 @@ const isReversalEntry = (row) => row.transaction_type === 'reversal' || row.reve
 const isReversed = (row) => row.transaction_status === 'reversed' || row.is_reversed === true || row.reversed === true || row.reversal != null;
 const getOriginalId = (row) => row.reversal_of ?? row.original_transaction_id;
 
+// The ledger drawer links here with ?transaction=<id>. That parameter is not a
+// filter the backend understands, so instead of sending it we highlight and
+// scroll to the matching row once the list arrives.
+const HIGHLIGHT_BG = 'var(--joy-palette-primary-softBg)';
+const HIGHLIGHT_OUTLINE = 'var(--joy-palette-primary-solidBg)';
+
 const MobileViewTable = ({ data, props }) => {
     const { t } = useTranslation();
     return (
         <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-            {data.map((listItem, index) => (
+            {data.map((listItem, index) => {
+                const rowId = getTxnId(listItem);
+                const highlighted = props.highlightId != null && String(rowId) === String(props.highlightId);
+                return (
                 <List
                     key={index}
                     size="sm"
@@ -41,21 +52,19 @@ const MobileViewTable = ({ data, props }) => {
                 >
                     <ListItem
                         variant="outlined"
-                        color={
-                            {
-                                "successful": "success",
-                                "failed": "danger",
-                                "penalt": "warning",
-                                "pending": "neutral",
-                                "reversed": "neutral"
-                            }[listItem.transaction_status] as ColorPaletteProp}
+                        color={TRANSACTION_STATUS_COLORS[listItem.transaction_status] as ColorPaletteProp}
+                        data-transaction-row={rowId}
                         sx={{
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'start',
                             p: 1,
                             borderRadius: 4,
-                            boxShadow: 'sm'
+                            boxShadow: 'sm',
+                            ...(highlighted && {
+                                backgroundColor: HIGHLIGHT_BG,
+                                outline: `2px solid ${HIGHLIGHT_OUTLINE}`,
+                            }),
                         }}
                     >
                         <ListItemContent sx={{ display: 'flex', gap: 1, alignItems: 'start' }}>
@@ -79,7 +88,7 @@ const MobileViewTable = ({ data, props }) => {
                                 gutterBottom
                                 color={isReversalEntry(listItem) ? "danger" : "neutral"}
                             >
-                                {branding.CURRENCY_SYMBOL} {isReversalEntry(listItem) ? "-" : ""}{thousandSeparator(listItem.amount)}
+                                {formatMoney(isReversalEntry(listItem) ? -(listItem.amount ?? 0) : listItem.amount)}
                             </Typography>
                             {isReversalEntry(listItem) && getOriginalId(listItem) != null &&
                                 <Typography level="body-xs" color="neutral">
@@ -89,23 +98,9 @@ const MobileViewTable = ({ data, props }) => {
                             <Chip
                                 variant="solid"
                                 size="sm"
-                                color={
-                                    {
-                                        "successful": "success",
-                                        "failed": "danger",
-                                        "penalt": "warning",
-                                        "pending": "neutral",
-                                        "reversed": "neutral"
-                                    }[listItem.transaction_status] as ColorPaletteProp
-                                }
+                                color={TRANSACTION_STATUS_COLORS[listItem.transaction_status] as ColorPaletteProp}
                             >
-                                {{
-                                    "successful": t("status.success"),
-                                    "failed": t("status.failed"),
-                                    "penalt": t("status.penalt"),
-                                    "pending": t("status.pending"),
-                                    "reversed": t("status.reversed")
-                                }[listItem.transaction_status]}
+                                {transactionStatusLabel(t, listItem.transaction_status)}
                             </Chip>
                             {props.canReverse(listItem) &&
                                 <IconButton
@@ -122,7 +117,8 @@ const MobileViewTable = ({ data, props }) => {
 
                     </ListItem>
                 </List>
-            ))}
+                );
+            })}
         </Box>
     )
 }
@@ -172,8 +168,15 @@ const DesktopViewTable = ({ data, props }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((row, index) => (
-                            <tr key={index}>
+                        {data.map((row, index) => {
+                            const rowId = getTxnId(row);
+                            const highlighted = props.highlightId != null && String(rowId) === String(props.highlightId);
+                            return (
+                            <tr
+                                key={index}
+                                data-transaction-row={rowId}
+                                style={highlighted ? { backgroundColor: HIGHLIGHT_BG, outline: `2px solid ${HIGHLIGHT_OUTLINE}` } : undefined}
+                            >
                                 <td>
                                     <Typography level="body-sm">{row.item_name}</Typography>
                                 </td>
@@ -185,7 +188,7 @@ const DesktopViewTable = ({ data, props }) => {
                                 </td>
                                 <td>
                                     <Typography level="body-sm" color={isReversalEntry(row) ? "danger" : "neutral"}>
-                                        {isReversalEntry(row) ? "-" : ""}{thousandSeparator(row.amount)}
+                                        {formatMoney(isReversalEntry(row) ? -(row.amount ?? 0) : row.amount)}
                                     </Typography>
                                     {isReversalEntry(row) && getOriginalId(row) != null &&
                                         <Typography level="body-xs" color="neutral">
@@ -197,23 +200,9 @@ const DesktopViewTable = ({ data, props }) => {
                                     <Chip
                                         variant="solid"
                                         size="sm"
-                                        color={
-                                            {
-                                                "successful": "success",
-                                                "failed": "danger",
-                                                "penalt": "warning",
-                                                "pending": "neutral",
-                                                "reversed": "neutral"
-                                            }[row.transaction_status] as ColorPaletteProp
-                                        }
+                                        color={TRANSACTION_STATUS_COLORS[row.transaction_status] as ColorPaletteProp}
                                     >
-{{
-                                                "successful": t("status.success"),
-                                                "failed": t("status.failed"),
-                                                "penalt": t("status.penalt"),
-                                                "pending": t("status.pending"),
-                                                "reversed": t("status.reversed")
-                                            }[row.transaction_status]}
+                                        {transactionStatusLabel(t, row.transaction_status)}
                                     </Chip>
                                 </td>
                                 <td>
@@ -235,7 +224,8 @@ const DesktopViewTable = ({ data, props }) => {
                                     </td>
                                 }
                             </tr>
-                        ))}
+                            );
+                        })}
                     </tbody>
                 </Table>
             </Sheet>
@@ -259,14 +249,37 @@ const TransactionPage = ({
     const dispatch = useDispatch()
     const { t } = useTranslation()
     const isDesktop = useMediaQuery("(min-width:600px)");
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    // ---- PAGINATION SETTINGS ----- //
+    // ---- FILTERS ----- //
+    // The URL query string is the source of truth, so a filtered view can be
+    // shared, bookmarked and reloaded and comes back exactly as it was. Params
+    // match the ledger convention already used by src/service/ledger.
+    // Params sent to POST /sessions/transaction-list (see the note by buildQuery
+    // below - the backend still has to confirm these names).
+    const filters = useMemo<TransactionFiltersValue>(() => ({
+        search: searchParams.get("search") ?? "",
+        start_date: searchParams.get("from") ?? "",
+        end_date: searchParams.get("to") ?? "",
+        status: (searchParams.get("status") ?? "")
+            .split(",")
+            .filter((s): s is TransactionStatus =>
+                (TRANSACTION_STATUSES as readonly string[]).includes(s)
+            ),
+    }), [searchParams]);
+
+    const page = Math.max(1, Number(searchParams.get("page") ?? 1) || 1);
+
+    // A ledger entry links here as ?transaction=<id>; that is not a backend
+    // filter, so it is used to highlight the row and then cleared from the URL.
+    const highlightId = searchParams.get("transaction");
+
+    // ---- PAGINATION / LIST STATE ----- //
     const [listData, setListData] = useState([]);
-    const [page, setPage] = useState(1);
-    const [search, setSearch] = useState("");
     const [totalTransactions, setTotalTransactions] = useState(0);
     const [nextPage, setNextPage] = useState(null);
     const [previousPage, setPreviousPage] = useState(null);
+    const [listFailed, setListFailed] = useState(false);
 
     // ---- REVERSE SETTINGS ----- //
     const [reverseTarget, setReverseTarget] = useState(null);
@@ -291,6 +304,54 @@ const TransactionPage = ({
     const ITEMS_PER_PAGE = 50
     const pageLength = listData.length > 0 ? Math.ceil(totalTransactions / ITEMS_PER_PAGE) : 1
 
+    // Only keys the user actually filled in are sent. The filters travel in the
+    // POST body (see listRequest in src/service/calls.ts), so an empty string or
+    // an empty array would go out as a real filter value and match nothing -
+    // dropping them keeps an untouched filter bar byte-identical to the request
+    // this page made before filters existed.
+    const buildQuery = useMemo(() => (f: TransactionFiltersValue) => {
+        const query: Record<string, string | string[]> = {};
+        if (f.search) query.search = f.search;
+        if (f.start_date) query.from = f.start_date;
+        if (f.end_date) query.to = f.end_date;
+        if (f.status.length) query.status = f.status;
+        return query;
+    }, []);
+
+    /** Writes the filter bar back to the URL. Any change returns to page 1. */
+    const handleFiltersChange = (next: TransactionFiltersValue) => {
+        const params = new URLSearchParams(searchParams);
+        const setOrDelete = (key: string, value: string) => {
+            if (value) params.set(key, value);
+            else params.delete(key);
+        };
+        setOrDelete("search", next.search);
+        setOrDelete("from", next.start_date);
+        setOrDelete("to", next.end_date);
+        setOrDelete("status", next.status.join(","));
+        params.delete("page");
+        setSearchParams(params);
+    };
+
+    const setPage = (next: number) => {
+        const params = new URLSearchParams(searchParams);
+        if (next <= 1) params.delete("page");
+        else params.set("page", String(next));
+        setSearchParams(params);
+    };
+
+    const query = buildQuery(filters);
+    const queryKey = JSON.stringify(query);
+
+    useEffect(() => {
+        setListFailed(false);
+        dispatch(transactionsRequest(accessToken, query, page));
+        return () => {
+            dispatch(transactionsReset());
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [accessToken, page, queryKey]);
+
     /* eslint-disable */
     useEffect(() => {
         if (listStatus === STATUS.SUCCESS) {
@@ -298,28 +359,35 @@ const TransactionPage = ({
             setNextPage(listResult.next);
             setPreviousPage(listResult.previous);
             setTotalTransactions(listResult.count);
+            setListFailed(false);
         }
         else if (listStatus === STATUS.ERROR) {
             toast.error(listErrorMessage);
-            dispatch(transactionsReset());
+            // Keep the error on screen instead of clearing it straight away, so
+            // the page shows a retry rather than only a toast that has gone.
+            setListFailed(true);
         }
     }, [listStatus])
 
+    // ?transaction=<id> from the ledger drawer: scroll the row into view once it
+    // is rendered, then drop the parameter so a reload does not re-jump.
     useEffect(() => {
-        const data = {
-            'search': search,
+        if (!highlightId || listStatus !== STATUS.SUCCESS) return;
+        const row = document.querySelector(`[data-transaction-row="${CSS.escape(String(highlightId))}"]`);
+        if (row) {
+            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-        dispatch(transactionsRequest(accessToken, data, page))
-    }, [page, search])
-    /* eslint-enable */
+        const params = new URLSearchParams(searchParams);
+        params.delete("transaction");
+        setSearchParams(params, { replace: true });
+    }, [highlightId, listStatus])
 
-    /* eslint-disable */
     useEffect(() => {
         if (reverseStatus === STATUS.SUCCESS) {
             toast.success(t("transaction.reverseSuccess"));
             dispatch(reverseTransactionReset());
             setReverseTarget(null);
-            dispatch(transactionsRequest(accessToken, { 'search': search }, page));
+            dispatch(transactionsRequest(accessToken, query, page));
         }
         else if (reverseStatus === STATUS.ERROR) {
             toast.error(reverseErrorMessage);
@@ -329,17 +397,8 @@ const TransactionPage = ({
     }, [reverseStatus])
     /* eslint-enable */
 
-    // for calender open
-    const dateInputRef = useRef<HTMLInputElement | null>(null);
 
-    const handleLabelClick = () => {
-        if (dateInputRef.current) {
-            dateInputRef.current.showPicker()
-        }
-    };
-
-
-    const checkLoading = () => {
+const checkLoading = () => {
         if (listStatus === STATUS.LOADING) {
             return true
         }
@@ -348,6 +407,10 @@ const TransactionPage = ({
         }
     }
 
+    const retry = () => {
+        setListFailed(false);
+        dispatch(transactionsRequest(accessToken, query, page));
+    }
 
     return (
         <Box>
@@ -355,46 +418,42 @@ const TransactionPage = ({
 
             <LoadingView loading={checkLoading()} />
 
-            {/* search */}
-            <Sheet
-                className="SearchAndFilters"
-                sx={{
-                    display: 'flex',
-                    my: 1,
-                    gap: 1,
-                    // flexDirection: { xs: 'column', sm: 'row' },
-                    alignContent: 'center',
-                    // width: { xs: '100%', md: 'auto' },
-                    justifyContent: 'flex-start',
-                }}
-            >
-                <Input
-                    size="sm"
-                    placeholder={t("init.search") + t("transaction.date") + "/ "+ t("transaction.status")}
-                type='text'
-                defaultValue={search}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                startDecorator={<SearchIcon />}
-                sx={{ width: { xs: '100%', md: '30%' }, textTransform: 'capitalize' }}
-                />
-                <label htmlFor="calendar" style={{ cursor: "pointer" }} onClick={handleLabelClick}>
-                    <CalendarMonthRounded />
-                    <input
-                        ref={dateInputRef}
-                        hidden
-                        style={{ position: "absolute", opacity: 0, pointerEvents: "none" }}
-                        id="calendar"
-                        type="date"
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                </label>
-            </Sheet>
+            {/* filters */}
+            <TransactionFilterBar
+                value={filters}
+                onChange={handleFiltersChange}
+                loading={checkLoading()}
+            />
+
+            {/* A failed read keeps the previous rows visible but says so, so the
+                operator never mistakes stale data for a live list. */}
+            {listFailed && (
+                <Sheet
+                    variant="outlined"
+                    color="danger"
+                    sx={{
+                        p: 1.5,
+                        mb: 1,
+                        borderRadius: 'sm',
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                        gap: 1,
+                    }}
+                >
+                    <Typography level="body-sm" sx={{ flex: '1 1 240px' }}>
+                        {t("transaction.loadError")}
+                    </Typography>
+                    <Button size="sm" variant="outlined" color="danger" onClick={retry}>
+                        {t("transaction.retry")}
+                    </Button>
+                </Sheet>
+            )}
 
             {listData.length > 0 ? <>
                 {/* ------ render different view depend on plafform -------- */}
-                <MobileViewTable data={listData} props={{ edit: null, activate: null, isAdmin, canReverse, onReverse: setReverseTarget }} />
-                <DesktopViewTable data={listData} props={{ edit: null, activate: null, isAdmin, canReverse, onReverse: setReverseTarget }} />
+                <MobileViewTable data={listData} props={{ edit: null, activate: null, isAdmin, canReverse, onReverse: setReverseTarget, highlightId }} />
+                <DesktopViewTable data={listData} props={{ edit: null, activate: null, isAdmin, canReverse, onReverse: setReverseTarget, highlightId }} />
 
                 {/* Pagination */}
                 {totalTransactions > ITEMS_PER_PAGE

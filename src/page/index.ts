@@ -3,6 +3,8 @@ export * from "./Login";
 export * from "./ErrorsPages/404Error";
 export * from "./Support";
 export * from "./Profile";
+export * from "./Settings";
+export * from "./BankDeposit";
 export * from "./Transactions";
 export * from './Resources'
 export * from "./Users";
@@ -10,3 +12,5 @@ export * from './Sessions';
 export * from './StudentsImport';
 export * from './Spending';
 export * from './TopUp';
+export * from './Ledger';
+export * from './Statement';

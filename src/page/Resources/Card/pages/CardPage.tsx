@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, Option, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack, Chip, ColorPaletteProp, Autocomplete, Select } from "@mui/joy";
+import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, Option, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Dropdown, MenuButton, Menu, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack, Chip, ColorPaletteProp, Autocomplete, Select, Checkbox, Alert } from "@mui/joy";
 import { AlertModal, LoadingView, NotFoundMessage, PageTitle } from "../../../../components";
-import { formatDate, thousandSeparator } from "../../../../utils";
+import { formatDate, formatMoney } from "../../../../utils";
 
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -9,8 +9,8 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 
 import { connect, useDispatch } from "react-redux";
 import { useMediaQuery } from "@mui/material";
-import { BlockOutlined, EditOutlined, PersonAddOutlined, TaskAltOutlined } from "@mui/icons-material";
-import { API_BASE, STATUS } from "../../../../constant";
+import { BlockOutlined, EditOutlined, PersonAddOutlined, TaskAltOutlined, AutorenewRounded, DeleteOutlineRounded } from "@mui/icons-material";
+import { STATUS } from "../../../../constant";
 import { toast } from "react-toastify";
 
 import {
@@ -24,10 +24,16 @@ import {
 
     activateCardRequest,
     activateCardReset,
+
+    replaceCardRequest,
+    replaceCardReset,
+
+    deleteCardRequest,
+    deleteCardReset,
 } from "../../../../store/actions"
 import { useTranslation } from "react-i18next";
 import branding from "../../../../config/branding";
-import axios from "axios";
+import { doListStaffs, doListStudents } from "../../../../service/lookups";
 
 const MobileViewTable = ({ data, props }) => {
     const { t } = useTranslation();
@@ -53,7 +59,7 @@ const MobileViewTable = ({ data, props }) => {
                                 <Typography fontWeight={600} gutterBottom>{listItem.card_number}</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("card.student")}:</b> {listItem.student_or_staff.first_name + " " + listItem.student_or_staff.last_name} ({listItem.student_or_staff.role})</Typography>
                                 <Typography level="body-xs" gutterBottom><b>{t("card.control_number")}:</b> {listItem.control_number}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("card.balance")}:</b> {branding.CURRENCY_SYMBOL} {thousandSeparator(listItem.balance)}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("card.balance")}:</b> {formatMoney(listItem.balance)}</Typography>
                                 <Dropdown>
                                     <MenuButton variant="plain" size="sm">More ...</MenuButton>
                                     <Menu placement="bottom-end" sx={{ p: 1 }}>
@@ -88,6 +94,8 @@ const MobileViewTable = ({ data, props }) => {
                             <ButtonGroup variant="outlined" size="sm">
                                 <Button color="neutral" onClick={() => props.edit(listItem)}><EditOutlined /></Button>
                                 <Button color="warning" onClick={() => props.activate(listItem)}>{listItem.is_active ? <BlockOutlined /> : <TaskAltOutlined />}</Button>
+                                {listItem.is_active && <Button color="primary" onClick={() => props.replace(listItem)}><AutorenewRounded /></Button>}
+                                <Button color="danger" onClick={() => props.remove(listItem)}><DeleteOutlineRounded /></Button>
                             </ButtonGroup>
                         </Box>
 
@@ -161,7 +169,7 @@ const DesktopViewTable = ({ data, props }) => {
                                     <Typography level="body-sm">{row.control_number}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-sm">{thousandSeparator(row.balance)}</Typography>
+                                    <Typography level="body-sm">{formatMoney(row.balance)}</Typography>
                                 </td>
                                 <td>
                                     <Typography level="body-sm">{formatDate(row.issued_date)}</Typography>
@@ -190,6 +198,8 @@ const DesktopViewTable = ({ data, props }) => {
                                     <ButtonGroup variant="outlined" size="sm">
                                         <Button color="neutral" onClick={() => props.edit(row)}><EditOutlined /></Button>
                                         <Button color="warning" onClick={() => props.activate(row)}>{row.is_active ? t("card.deactivate") : t("card.activate")}</Button>
+                                        {row.is_active && <Button color="primary" onClick={() => props.replace(row)}>{t("card.replace")}</Button>}
+                                        <Button color="danger" onClick={() => props.remove(row)}>{t("card.delete")}</Button>
                                     </ButtonGroup>
                                 </td>
                             </tr>
@@ -216,6 +226,15 @@ const CardPage = ({
     activateResult,
     activateErrorMessage,
 
+    replaceStatus,
+    replaceResult,
+    replaceErrorMessage,
+
+    deleteStatus,
+    deleteResult,
+    deleteErrorMessage,
+    deleteHasHistory,
+
     listStatus,
     listResult,
     listErrorMessage,
@@ -240,27 +259,15 @@ const CardPage = ({
     // function to fetch student data to fetch student data
     useEffect(() => {
         // Fetch Student List
-        axios.get(API_BASE + "/list/students", {
-            timeout: 30000,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + accessToken,
-
-            }
-        }).then((res) => setStudentList(res.data.results)).catch((e) => console.error(e))
+        doListStudents(accessToken).then((res) => {
+            if (Array.isArray(res?.data?.results)) setStudentList(res.data.results)
+        })
 
 
         // Fetch Staff List
-        axios.get(API_BASE + "/list/staffs", {
-            timeout: 30000,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + accessToken,
-
-            }
-        }).then((res) => setStaffList(res.data.results)).catch((e) => console.error(e))
+        doListStaffs(accessToken).then((res) => {
+            if (Array.isArray(res?.data?.results)) setStaffList(res.data.results)
+        })
     }, [accessToken])
 
     // ---- PAGINATION SETTINGS ----- //
@@ -276,6 +283,25 @@ const CardPage = ({
 
     const [formModal, setFormModal] = useState(false)
     const [activateModal, setActivateModal] = useState(false)
+
+    // ---- replace card (lost / damaged card) ----
+    const [replaceModal, setReplaceModal] = useState(false)
+    const [replaceTarget, setReplaceTarget] = useState({ id: '', card_number: '' })
+    const [replaceData, setReplaceData] = useState({
+        new_card_number: '',
+        reason: '',
+        carry_balance: true,
+    })
+
+    // ---- delete card ----
+    const [deleteModal, setDeleteModal] = useState(false)
+    const [deleteTarget, setDeleteTarget] = useState({ id: '', card_number: '' })
+    // Shown when the backend refuses to delete because the card has history.
+    const [deactivateInsteadModal, setDeactivateInsteadModal] = useState(false)
+
+    const resetReplaceData = () => setReplaceData({ new_card_number: '', reason: '', carry_balance: true })
+    const newNumberValid = replaceData.new_card_number.trim() !== ''
+    const reasonValid = replaceData.reason.trim().length >= 3
 
     /* eslint-disable */
     useEffect(() => {
@@ -325,7 +351,49 @@ const CardPage = ({
             toast.error(activateErrorMessage)
             dispatch(activateCardReset())
         }
-    }, [listStatus, createStatus, activateStatus, editStatus]) // eslint-disable-next-line
+
+        if (replaceStatus === STATUS.SUCCESS) {
+            const newNumber = replaceResult?.new_card_number ?? replaceResult?.card?.card_number ?? replaceResult?.card_number
+            setReplaceModal(false)
+            toast.success(
+                newNumber
+                    ? t("card.replaceSuccess", { number: newNumber })
+                    : t("status.success")
+            )
+            resetReplaceData()
+            dispatch(cardListRequest(accessToken, { "search": search }, page))
+            dispatch(replaceCardReset())
+        }
+        else if (replaceStatus === STATUS.ERROR) {
+            // Duplicate card number, old card already inactive, missing fields:
+            // keep the modal open with what was typed and explain what failed.
+            toast.error(replaceErrorMessage)
+            dispatch(replaceCardReset())
+        }
+    }, [listStatus, createStatus, activateStatus, editStatus, replaceStatus]) // eslint-disable-next-line
+
+    useEffect(() => {
+        if (deleteStatus === STATUS.SUCCESS) {
+            setDeleteModal(false)
+            setDeactivateInsteadModal(false)
+            toast.success(t("card.deleteSuccess"))
+            dispatch(cardListRequest(accessToken, { "search": search }, page))
+            dispatch(deleteCardReset())
+        }
+        else if (deleteStatus === STATUS.ERROR) {
+            if (deleteHasHistory) {
+                // The card carries history, so the backend refuses a hard delete.
+                // Close the plain confirmation and offer the deactivation instead.
+                setDeleteModal(false)
+                setDeactivateInsteadModal(true)
+            } else {
+                setDeleteModal(false)
+                setDeactivateInsteadModal(false)
+                toast.error(deleteErrorMessage)
+            }
+            dispatch(deleteCardReset())
+        }
+    }, [deleteStatus]) // eslint-disable-next-line
 
     useEffect(() => {
         const data = {
@@ -393,11 +461,41 @@ const CardPage = ({
         setFormModal(true)
     }
 
+    // Only an active card can be replaced - the backend deactivates the old card.
+    const replaceCard = (item) => {
+        if (!item.is_active) {
+            toast.error(t("card.replaceOnlyActive"))
+            return
+        }
+        setReplaceTarget({ id: item.id, card_number: item.card_number })
+        resetReplaceData()
+        setReplaceModal(true)
+    }
+
+    const submitReplaceCard = (event) => {
+        event.preventDefault()
+        if (!newNumberValid || !reasonValid) return
+        dispatch(replaceCardRequest(accessToken, {
+            "old_card_id": replaceTarget.id,
+            "new_card_number": replaceData.new_card_number.trim(),
+            "reason": replaceData.reason.trim(),
+            "carry_balance": replaceData.carry_balance,
+        }))
+    }
+
+    const deleteCard = (item) => {
+        setDeleteTarget({ id: item.id, card_number: item.card_number })
+        setDeactivateInsteadModal(false)
+        setDeleteModal(true)
+    }
+
     const checkLoading = () => {
         if (listStatus === STATUS.LOADING ||
             createStatus === STATUS.SUCCESS ||
             activateStatus === STATUS.LOADING ||
-            editStatus === STATUS.LOADING) {
+            editStatus === STATUS.LOADING ||
+            replaceStatus === STATUS.LOADING ||
+            deleteStatus === STATUS.LOADING) {
             return true
         }
         else {
@@ -446,8 +544,8 @@ const CardPage = ({
 
             {listData.length > 0 ? <>
                 {/* ------ render different view depend on plafform -------- */}
-                <MobileViewTable data={listData} props={{ edit: editCard, activate: activateCard }} />
-                <DesktopViewTable data={listData} props={{ edit: editCard, activate: activateCard }} />
+                <MobileViewTable data={listData} props={{ edit: editCard, activate: activateCard, replace: replaceCard, remove: deleteCard }} />
+                <DesktopViewTable data={listData} props={{ edit: editCard, activate: activateCard, replace: replaceCard, remove: deleteCard }} />
 
                 {/* Pagination */}
                 {totalCard > ITEMS_PER_PAGE
@@ -525,6 +623,109 @@ const CardPage = ({
                     dispatch(activateCardRequest(accessToken, data))
                 }}
             />
+
+            {/* ----- Delete card confirmation ---- */}
+            <AlertModal
+                visibility={deleteModal}
+                message={t("card.deleteConfirm", { number: deleteTarget.card_number })}
+                onClose={() => setDeleteModal(false)}
+                onConfirm={() => dispatch(deleteCardRequest(accessToken, { "card_id": deleteTarget.id }))}
+            />
+
+            {/* ----- The card has history: deactivate instead of deleting ---- */}
+            <AlertModal
+                visibility={deactivateInsteadModal}
+                message={t("card.deleteHasHistory")}
+                onClose={() => setDeactivateInsteadModal(false)}
+                onConfirm={() => dispatch(deleteCardRequest(accessToken, { "card_id": deleteTarget.id }, true))}
+            />
+
+            {/* ------ Modal for replace card ------ */}
+            <Modal open={replaceModal} onClose={() => setReplaceModal(false)}>
+                <ModalDialog
+                    aria-labelledby="replace-card-title"
+                    size="lg"
+                >
+                    <ModalClose variant="outlined" onClick={() => setReplaceModal(false)} />
+                    <DialogTitle>{t("card.replaceTitle")}</DialogTitle>
+                    <DialogContent>
+                        {t("card.card_number")}: <b>{replaceTarget.card_number}</b>
+                    </DialogContent>
+
+                    <Alert color="danger" variant="soft" sx={{ mt: 2 }}>
+                        {t("card.replaceWarning")}
+                    </Alert>
+
+                    <Stack component='form' onSubmit={submitReplaceCard} gap={2} sx={{ mt: 2 }}>
+                        <FormControl required error={replaceData.new_card_number !== '' && !newNumberValid}>
+                            <FormLabel>{t("card.newCardNumber")}</FormLabel>
+                            {/* Autofocused so an RFID reader can type straight into it. */}
+                            <Input
+                                autoFocus
+                                name="new_card_number"
+                                value={replaceData.new_card_number}
+                                onChange={(e) => setReplaceData({ ...replaceData, new_card_number: e.target.value })}
+                                placeholder={t("card.newCardNumber")}
+                                disabled={replaceStatus === STATUS.LOADING}
+                            />
+                            {replaceData.new_card_number === '' && (
+                                <Typography level="body-xs" sx={{ color: 'text.tertiary' }}>
+                                    {t("card.newNumberRequired")}
+                                </Typography>
+                            )}
+                        </FormControl>
+
+                        <FormControl required error={replaceData.reason !== '' && !reasonValid}>
+                            <FormLabel>{t("card.reason")}</FormLabel>
+                            <Input
+                                name="reason"
+                                value={replaceData.reason}
+                                onChange={(e) => setReplaceData({ ...replaceData, reason: e.target.value })}
+                                placeholder={t("card.reasonPlaceholder")}
+                                disabled={replaceStatus === STATUS.LOADING}
+                            />
+                            {replaceData.reason !== '' && !reasonValid && (
+                                <Typography level="body-xs" sx={{ color: 'danger.solidColor' }}>
+                                    {t("card.reasonError")}
+                                </Typography>
+                            )}
+                        </FormControl>
+
+                        <FormControl orientation="horizontal">
+                            <Checkbox
+                                checked={replaceData.carry_balance}
+                                onChange={(e) => setReplaceData({ ...replaceData, carry_balance: e.target.checked })}
+                                color="primary"
+                                disabled={replaceStatus === STATUS.LOADING}
+                            />
+                            <FormLabel sx={{ alignSelf: 'center' }}>
+                                {t("card.carryBalance")}
+                            </FormLabel>
+                        </FormControl>
+
+                        <Stack direction={{ xs: 'column', sm: 'row' }} gap={2} sx={{ mt: 2 }}>
+                            <Button
+                                type="submit"
+                                color="primary"
+                                fullWidth
+                                loading={replaceStatus === STATUS.LOADING}
+                                disabled={!newNumberValid || !reasonValid || replaceStatus === STATUS.LOADING}
+                            >
+                                {t("card.replace")}
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outlined"
+                                color="neutral"
+                                fullWidth
+                                onClick={() => setReplaceModal(false)}
+                            >
+                                {t("alert.cancel")}
+                            </Button>
+                        </Stack>
+                    </Stack>
+                </ModalDialog>
+            </Modal>
 
             {/* ------ Modal form for add card details ------ */}
             <Modal open={formModal} >
@@ -626,6 +827,15 @@ const mapStateToProps = ({ auth, resources }) => {
         activateCardResult: activateResult,
         activateCardErrorMessage: activateErrorMessage,
 
+        replaceCardStatus: replaceStatus,
+        replaceCardResult: replaceResult,
+        replaceCardErrorMessage: replaceErrorMessage,
+
+        deleteCardStatus: deleteStatus,
+        deleteCardResult: deleteResult,
+        deleteCardErrorMessage: deleteErrorMessage,
+        deleteCardHasHistory: deleteHasHistory,
+
         cardListStatus: listStatus,
         cardListResult: listResult,
         cardListErrorMessage: listErrorMessage,
@@ -649,6 +859,15 @@ const mapStateToProps = ({ auth, resources }) => {
         activateStatus,
         activateResult,
         activateErrorMessage,
+
+        replaceStatus,
+        replaceResult,
+        replaceErrorMessage,
+
+        deleteStatus,
+        deleteResult,
+        deleteErrorMessage,
+        deleteHasHistory,
 
         listStatus,
         listResult,

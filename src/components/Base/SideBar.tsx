@@ -23,17 +23,21 @@ import { logoutRequest } from "../../store/actions";
 import {
   NAVIGATE_TO_ADMINDETAILSPAGE,
   NAVIGATE_TO_ADMINPAGE,
+  NAVIGATE_TO_BANKDEPOSITPAGE,
   NAVIGATE_TO_CANTEENITEMPAGE,
   NAVIGATE_TO_CARDPAGE,
   NAVIGATE_TO_DASHBOARD,
+  NAVIGATE_TO_LEDGERPAGE,
   NAVIGATE_TO_NOTIFICATIONPAGE,
   NAVIGATE_TO_OPERATORDETAILSPAGE,
   NAVIGATE_TO_OPERATORPAGE,
   NAVIGATE_TO_PARENTDETAILSPAGE,
   NAVIGATE_TO_PARENTPAGE,
   NAVIGATE_TO_SCHOOLPAGE,
+  NAVIGATE_TO_SETTINGSPAGE,
   NAVIGATE_TO_SESSIONPAGE,
   NAVIGATE_TO_SPENDPAGE,
+  NAVIGATE_TO_STATEMENTPAGE,
   NAVIGATE_TO_TOPUPPAGE,
   NAVIGATE_TO_STAFFDETAILSPAGE,
   NAVIGATE_TO_STAFFPAGE,
@@ -44,7 +48,7 @@ import {
 } from "../../route/types";
 import { connect, useDispatch } from "react-redux";
 
-import { BadgeOutlined, EditNotificationsOutlined, Face6Outlined, FolderOutlined, GroupsOutlined, ManageAccountsOutlined, Person2Outlined, RestaurantOutlined, ScheduleOutlined, SchoolOutlined, SpeedOutlined, SupervisorAccountOutlined, BarChartOutlined, PaidOutlined } from "@mui/icons-material";
+import { BadgeOutlined, AccountBalanceOutlined, EditNotificationsOutlined, Face6Outlined, FolderOutlined, GroupsOutlined, ManageAccountsOutlined, Person2Outlined, RestaurantOutlined, ScheduleOutlined, SchoolOutlined, SettingsOutlined, SpeedOutlined, SupervisorAccountOutlined, BarChartOutlined, PaidOutlined, ReceiptLongOutlined, MenuBookOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { ListDivider } from "@mui/joy";
 
@@ -92,7 +96,12 @@ const ListItemComponent = ({ route, action, props, path }) => {
   const navigate = useNavigate()
 
   const navTo = () => {
-    navigate(route)
+    // Items that only run an action (logout) pass route="#" or null; navigating
+    // to those pushed a bogus "#" into the URL and made the row look like a
+    // link, so only real routes are pushed.
+    if (route && route !== '#') {
+      navigate(route)
+    }
     action()
   }
   return (
@@ -116,7 +125,10 @@ const ListItemComponent = ({ route, action, props, path }) => {
         <Typography
           level="title-sm"
           sx={{
-            color: path ? "black" : '#FFFFFF99',
+            // Was `path ? "black" : '#FFFFFF99'` - invisible in dark mode when
+            // active (black on a dark surface) and near-invisible in light mode
+            // when inactive (translucent white on a white sheet).
+            color: path ? 'var(--joy-palette-primary-plainColor)' : 'var(--joy-palette-text-secondary)',
             '--List-gap': '0px'
           }}>
           {props.title}
@@ -130,7 +142,7 @@ const DropdowmList = ({ children, props, path }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <ListItem nested sx={{ backgroundColor: isOpen && '#FFFFFF10' }}>
+    <ListItem nested sx={{ backgroundColor: isOpen ? 'var(--joy-palette-neutral-plainHoverBg)' : 'transparent' }}>
       <Toggler
         route={path}
         renderToggle={({ open, setOpen }) => (
@@ -138,7 +150,7 @@ const DropdowmList = ({ children, props, path }) => {
             onClick={() => (setOpen(!open), setIsOpen(!open))} 
             sx={{
               height: 30,
-              backgroundColor: path ? "#FFFFFF30" : "transparent",
+              backgroundColor: path ? 'var(--joy-palette-neutral-plainActiveBg)' : "transparent",
             }}>
             <Box
               width={20}
@@ -147,7 +159,7 @@ const DropdowmList = ({ children, props, path }) => {
               {props.icon}
             </Box>
             <ListItemContent>
-              <Typography level="title-sm" sx={{ color: path ? 'white' : '#FFFFFF95' }}>{props.title}</Typography>
+              <Typography level="title-sm" sx={{ color: path ? 'var(--joy-palette-primary-plainColor)' : 'var(--joy-palette-text-secondary)' }}>{props.title}</Typography>
             </ListItemContent>
             <KeyboardArrowDownIcon
               sx={{ transform: open ? "rotate(180deg)" : "none" }}
@@ -397,6 +409,18 @@ const Sidebar = ({
               }}
             />}
 
+          {/* Bank Deposit / finance */}
+          {userRole === 'admin' &&
+            <ListItemComponent
+              route={NAVIGATE_TO_BANKDEPOSITPAGE}
+              path={location.pathname === NAVIGATE_TO_BANKDEPOSITPAGE}
+              action={() => null}
+              props={{
+                title: t("bankDeposit.navTitle"),
+                icon: <AccountBalanceOutlined />
+              }}
+            />}
+
           {/* Spending */}
           {userRole === 'parent' &&
             <ListItemComponent
@@ -418,6 +442,30 @@ const Sidebar = ({
               props={{
                 title: t("sidebar.topUp"),
                 icon: <PaidOutlined />
+              }}
+            />}
+
+          {/* Ledger journal (admin, read-only) */}
+          {userRole === 'admin' &&
+            <ListItemComponent
+              route={NAVIGATE_TO_LEDGERPAGE}
+              path={location.pathname === NAVIGATE_TO_LEDGERPAGE}
+              action={() => null}
+              props={{
+                title: t("sidebar.ledger"),
+                icon: <MenuBookOutlined />
+              }}
+            />}
+
+          {/* Statement (FE-14, parent) */}
+          {userRole === 'parent' &&
+            <ListItemComponent
+              route={NAVIGATE_TO_STATEMENTPAGE}
+              path={location.pathname === NAVIGATE_TO_STATEMENTPAGE}
+              action={() => null}
+              props={{
+                title: t("sidebar.statement"),
+                icon: <ReceiptLongOutlined />
               }}
             />}
 
@@ -443,6 +491,17 @@ const Sidebar = ({
               icon: <EditNotificationsOutlined />
             }}
           />}
+
+          {/* Settings - self service, every role */}
+          <ListItemComponent
+            route={NAVIGATE_TO_SETTINGSPAGE}
+            path={location.pathname === NAVIGATE_TO_SETTINGSPAGE}
+            action={() => null}
+            props={{
+              title: t("settings.title"),
+              icon: <SettingsOutlined />
+            }}
+          />
 
           <Divider sx={{ my: "10px" }} />
 
@@ -505,19 +564,14 @@ const styles = {
     gap: 1,
     "--List-nestedInsetStart": "30px",
     "--ListItem-radius": (theme) => theme.vars.radius.sm,
-    // Gatsby colors
-    '--joy-palette-primary-plainColor': '#8a4baf',
-    '--joy-palette-neutral-plainHoverBg': "#FFFFFF10",
-    '--joy-palette-neutral-plainActiveBg': 'transparent',
-    '--joy-palette-primary-plainHoverBg': 'gray',
-    '--joy-palette-primary-plainActiveBg': 'transparent',
-    [theme.getColorSchemeSelector('dark')]: {
-      '--joy-palette-text-secondary': '#635e69',
-      '--joy-palette-primary-plainColor': '#d48cff',
-    },
+    // This block used to carry colours copied from the Joy "Gatsby" template:
+    // a purple primary.plainColor (#8a4baf in light, #d48cff in dark) and a
+    // dark grey text.secondary in dark mode. Both overrode the app theme - the
+    // active nav row rendered purple instead of the brand orange, and the
+    // secondary text sat at about 2.8:1 on the dark surface. Removed so the
+    // sidebar uses theme.vars like the rest of the app.
   }),
   appname: {
-    color: 'white',
     fontFamily: 'roboto'
   },
   logo: {
@@ -531,7 +585,9 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 2,
-    color: 'black',
+    // Was a literal black, which made every nav icon invisible on the dark
+    // surface. text.secondary follows the theme in both modes.
+    color: 'var(--joy-palette-text-secondary)',
     fontWeight: 'bold'
   }
 }

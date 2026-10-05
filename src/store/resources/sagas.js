@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
-import { doCreateSchool, doSchoolList, doCreateCard, doCardList, doCreateItem, doItemList, doCardDetails, doDeleteItem, doDeleteSchool, doEditCard, doEditItem, doActivateCard, doNotification, doAllNotifications } from '../../service/resources';
-import { errorMessage } from '../../utils';
+import { doCreateSchool, doSchoolList, doCreateCard, doCardList, doCreateItem, doItemList, doCardDetails, doDeleteItem, doDeleteSchool, doEditCard, doEditItem, doActivateCard, doDeleteCard, doNotification, doAllNotifications, doReplaceCard } from '../../service/resources';
+import { apiErrorMessage, errorMessage } from '../../utils';
 
 // Create school
 function* createSchoolTask(action) {
@@ -426,6 +426,65 @@ function* allNotificationsTask(action) {
 }
 
 
+// Replace card
+function* replaceCardTask(action) {
+    try {
+        yield put({ type: STATE.REPLACE_CARD_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doReplaceCard, payload.token, payload.data);
+
+        if (res.status === 200 || res.status === 201) {
+            yield put({
+                type: STATE.REPLACE_CARD_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            yield put({
+                type: STATE.REPLACE_CARD_FAILURE,
+                payload: apiErrorMessage(res.data)
+            })
+        }
+    } catch (e) {
+        yield put({
+            type: STATE.REPLACE_CARD_FAILURE,
+            payload: apiErrorMessage(e?.data ?? e)
+        })
+    }
+}
+
+// Delete card
+function* deleteCardTask(action) {
+    try {
+        yield put({ type: STATE.DELETE_CARD_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doDeleteCard, payload.token, payload.data, payload.force);
+
+        if (res.status === 200 || res.status === 201) {
+            yield put({
+                type: STATE.DELETE_CARD_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            yield put({
+                type: STATE.DELETE_CARD_FAILURE,
+                payload: apiErrorMessage(res.data),
+                meta: res
+            })
+        }
+    } catch (e) {
+        yield put({
+            type: STATE.DELETE_CARD_FAILURE,
+            payload: apiErrorMessage(e?.data ?? e),
+            meta: e
+        })
+    }
+}
+
+
 function* resourcesSaga() {
     yield takeLatest(STATE.CREATE_SCHOOL_REQUEST, createSchoolTask)
     yield takeLatest(STATE.DELETE_SCHOOL_REQUEST, deleteSchoolTask)
@@ -441,6 +500,8 @@ function* resourcesSaga() {
     yield takeLatest(STATE.NOTIFICATIONS_REQUEST, notificationsTask);
     yield takeLatest(STATE.ALL_NOTIFICATIONS_REQUEST, allNotificationsTask);
     yield takeLatest(STATE.CARD_DETAILS_REQUEST, cardDetailsTask);
+    yield takeLatest(STATE.REPLACE_CARD_REQUEST, replaceCardTask)
+    yield takeLatest(STATE.DELETE_CARD_REQUEST, deleteCardTask)
 }
 
 export default resourcesSaga

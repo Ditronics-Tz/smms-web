@@ -13,7 +13,7 @@ import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { DeleteOutline, PersonAddOutlined, RemoveRedEyeOutlined } from "@mui/icons-material";
-import { API_BASE, STATUS } from "../../../../constant";
+import { STATUS } from "../../../../constant";
 import { toast } from "react-toastify";
 
 import {
@@ -24,7 +24,7 @@ import {
 } from "../../../../store/actions"
 import { useTranslation } from "react-i18next";
 import { NAVIGATE_TO_PARENTDETAILSPAGE } from "../../../../route/types";
-import axios from "axios";
+import { doListStudents } from "../../../../service/lookups";
 
 const MobileViewTable = ({ data, props }) => {
     const { t } = useTranslation();
@@ -267,15 +267,9 @@ const ParentPage = ({
     // function to fetch student data to fetch student data
     /* eslint-disable */
     useEffect(() => {
-        axios.get(API_BASE + "/list/students", {
-            timeout: 30000,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'multipart/form-data',
-                'Authorization': 'Bearer ' + accessToken,
-
-            }
-        }).then((res) => setStudentList(res.data.results)).catch((e) => console.error(e))
+        doListStudents(accessToken).then((res) => {
+            if (Array.isArray(res?.data?.results)) setStudentList(res.data.results)
+        })
     }, [])
 
     // ---- PAGINATION SETTINGS ----- //

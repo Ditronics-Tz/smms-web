@@ -19,9 +19,10 @@ import {
     depositListRequest, depositListReset,
 } from "../../../store/actions";
 import { LoadingView, NotFoundMessage } from "../../../components";
-import { formatDate, thousandSeparator } from "../../../utils";
+import { formatDate, formatMoney } from "../../../utils";
 
 const getCardId = (item) => String(item?.rfid_card?.id ?? item?.rfid_card?.card_id ?? "")
+const getCardNumber = (item) => String(item?.rfid_card?.card_number ?? "")
 const getStatusColor = (status) => (
     { "pending": "neutral", "processed": "success", "successful": "success", "failed": "danger", "processing": "warning" }[status] ?? "neutral"
 ) as ColorPaletteProp
@@ -127,7 +128,7 @@ export const TopUpPage = ({
     const handleSubmit = (e) => {
         e.preventDefault()
         if (!selectedCard || !amountValid) return
-        dispatch(depositRequest(accessToken, { card_id: selectedCard, amount: amountValue }))
+        dispatch(depositRequest(accessToken, { card_number: getCardNumber(selectedChild), amount: amountValue }))
     }
 
     return (
@@ -164,7 +165,7 @@ export const TopUpPage = ({
                                 variant="soft"
                                 color="primary"
                                 startDecorator={<AccountBalanceWalletOutlinedIcon />}>
-                                {t("topUp.currentBalance")}: {branding.CURRENCY_SYMBOL} {thousandSeparator(selectedChild?.rfid_card?.balance ?? 0)}
+                                {t("topUp.currentBalance")}: {formatMoney(selectedChild?.rfid_card?.balance ?? 0)}
                             </Chip>
                         </Stack>
 
@@ -211,7 +212,7 @@ export const TopUpPage = ({
                                             <Typography level="body-xs">{formatDate(row.created_at ?? row.request_date ?? row.date)}</Typography>
                                         </ListItemContent>
                                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', rowGap: 0.5 }}>
-                                            <Typography fontWeight={600}>{branding.CURRENCY_SYMBOL} {thousandSeparator(row.amount)}</Typography>
+                                            <Typography fontWeight={600}>{formatMoney(row.amount)}</Typography>
                                             <Chip size="sm" variant="solid" color={getStatusColor(row.status ?? row.deposit_status)}>
                                                 {getStatusText(t, row.status ?? row.deposit_status)}
                                             </Chip>
@@ -236,7 +237,7 @@ export const TopUpPage = ({
                                         <tr key={index}>
                                             <td>{row.student_name ?? "-"}</td>
                                             <td>{row.card_number ?? "-"}</td>
-                                            <td>{thousandSeparator(row.amount)}</td>
+                                            <td>{formatMoney(row.amount)}</td>
                                             <td>
                                                 <Chip size="sm" variant="solid" color={getStatusColor(row.status ?? row.deposit_status)}>
                                                     {getStatusText(t, row.status ?? row.deposit_status)}

@@ -3,7 +3,8 @@ import { Typography, Box, Card, Avatar, Stack, FormControl, FormLabel, Input, Bu
 import { LoadingView, PageTitle } from "../../../components";
 import { connect, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { FILE_BASE, STATUS } from "../../../constant";
+import { STATUS } from "../../../constant";
+import { profilePictureSrc } from "../../../utils";
 import { toast } from "react-toastify";
 import {
     changePasswordRequest, changePasswordReset
@@ -15,7 +16,8 @@ const ProfilePage = (
         loginResult,
         changePasswordStatus,
         changePasswordResult,
-        changePasswordErrorMessage
+        changePasswordErrorMessage,
+        profilePictureVersion
     }
 ) => {
     const { t } = useTranslation();
@@ -105,7 +107,7 @@ const ProfilePage = (
                     </Stack>
                     <Avatar
                         variant="outlined"
-                        src={FILE_BASE + user.profile_picture}
+                        src={profilePictureSrc(user.profile_picture, profilePictureVersion)}
                         size="lg"
                         sx={{ width: 130, height: 130, borderWidth: 3, mb: 2 }}
                     />
@@ -206,16 +208,18 @@ const MapStateToProps = ({ auth }) => {
         accessToken,
         loginResult,
         changePasswordStatus,
-        changePasswordResult,
-        changePasswordErrorMessage
+changePasswordResult,
+    changePasswordErrorMessage,
+    profilePictureVersion
     } = auth
 
     return {
-        accessToken,
-        loginResult,
-        changePasswordStatus,
-        changePasswordResult,
-        changePasswordErrorMessage
+    accessToken,
+    loginResult,
+    changePasswordStatus,
+    changePasswordResult,
+    changePasswordErrorMessage,
+    profilePictureVersion
     }
 }
 

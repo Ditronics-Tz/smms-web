@@ -1,21 +1,31 @@
 import React from 'react';
-import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { useChartTheme } from '../../../utils/chartTheme';
 
-function LineChart({data}) {
+function LineChart({ data }) {
+  const { accent, axisProps, gridProps, tooltipProps } = useChartTheme();
+
   return (
     <ResponsiveContainer width="100%" height={300}>
       <AreaChart data={data}>
         <defs>
           <linearGradient id="colorY" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="#ffda46" stopOpacity={0} />
+            <stop offset="5%" stopColor={accent} stopOpacity={0.55} />
+            <stop offset="95%" stopColor={accent} stopOpacity={0} />
           </linearGradient>
         </defs>
-        <XAxis dataKey="date" />
-        {/* <YAxis /> */}
-        <CartesianGrid strokeDasharray="3 3" />
-        <Tooltip />
-        <Area type="monotone" dataKey="amount" stroke="#8884d8" fillOpacity={1} fill="url(#colorY)" />
+        <CartesianGrid {...gridProps} vertical={false} />
+        <XAxis dataKey="date" {...axisProps} />
+        <YAxis {...axisProps} width={56} />
+        <Tooltip {...tooltipProps} />
+        <Area
+          type="monotone"
+          dataKey="amount"
+          stroke={accent}
+          strokeWidth={2}
+          fillOpacity={1}
+          fill="url(#colorY)"
+        />
       </AreaChart>
     </ResponsiveContainer>
   );

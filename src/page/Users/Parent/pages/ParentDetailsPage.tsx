@@ -3,7 +3,7 @@ import { Typography, Box, Divider, Button, Sheet, Modal, ModalDialog, ModalClose
 import { toast } from 'react-toastify';
 import { LoadingView, NotFoundMessage } from "../../../../components";
 import { useLocation, useNavigate } from "react-router-dom";
-import { API_BASE, FILE_BASE, STATUS } from "../../../../constant";
+import { FILE_BASE, STATUS } from "../../../../constant";
 import { connect, useDispatch } from "react-redux";
 import {
     editUserRequest,
@@ -12,8 +12,8 @@ import {
 } from '../../../../store/actions'
 import { EditOutlined, RemoveRedEyeOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
 import { NAVIGATE_TO_STUDENTDETAILSPAGE } from "../../../../route/types";
+import { doListStudents } from "../../../../service/lookups";
 
 function CreateItems(
     title: String,
@@ -62,15 +62,9 @@ const ParentDetailsPage = ({
     // function to fetch student data to fetch student data
     /* eslint-disable */
     useEffect(() => {
-        axios.get(API_BASE + "/list/students", {
-            timeout: 30000,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'multipart/form-data',
-                'Authorization': 'Bearer ' + accessToken,
-
-            }
-        }).then((res) => setStudentList(res.data.results)).catch((e) => console.error(e))
+        doListStudents(accessToken).then((res) => {
+            if (Array.isArray(res?.data?.results)) setStudentList(res.data.results)
+        })
     }, [accessToken])
 
     useEffect(() => {

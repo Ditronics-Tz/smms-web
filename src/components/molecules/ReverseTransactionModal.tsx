@@ -13,8 +13,7 @@ import FormLabel from '@mui/joy/FormLabel';
 import Typography from '@mui/joy/Typography';
 import { WarningRounded } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import branding from '../../config/branding';
-import { thousandSeparator } from '../../utils';
+import { formatMoney } from '../../utils';
 
 export default function ReverseTransactionModal({ open, target, loading, onClose, onConfirm }) {
     const { t } = useTranslation();
@@ -42,7 +41,7 @@ export default function ReverseTransactionModal({ open, target, loading, onClose
                         <Box sx={{ mb: 1.5, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                             <Typography level="body-sm"><b>{t("transaction.item_name")}:</b> {target.item_name}</Typography>
                             <Typography level="body-sm"><b>{t("transaction.student_name")}:</b> {target.student_name}</Typography>
-                            <Typography level="body-sm"><b>{t("transaction.amount")}:</b> {branding.CURRENCY_SYMBOL} {thousandSeparator(target.amount ?? target.item_price)}</Typography>
+                            <Typography level="body-sm"><b>{t("transaction.amount")}:</b> {formatMoney(target.amount ?? target.item_price)}</Typography>
                         </Box>
                     )}
                     <Typography

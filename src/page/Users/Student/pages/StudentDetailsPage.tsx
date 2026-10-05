@@ -3,7 +3,7 @@ import { Typography, Box, Divider, Button, Sheet, Modal, ModalDialog, ModalClose
 import { toast } from 'react-toastify';
 import { LoadingView, NotFoundMessage } from "../../../../components";
 import { useLocation, useNavigate } from "react-router-dom";
-import { API_BASE, FILE_BASE, STATUS } from "../../../../constant";
+import { FILE_BASE, STATUS } from "../../../../constant";
 import { connect, useDispatch } from "react-redux";
 import classList from '../../../../assets/data/classess.json'
 
@@ -16,9 +16,9 @@ import {
 import { EditOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import branding from "../../../../config/branding";
-import { formatDate, thousandSeparator } from "../../../../utils";
-import axios from "axios";
+import { formatDate, formatMoney } from "../../../../utils";
 import { NAVIGATE_TO_PARENTDETAILSPAGE, NAVIGATE_TO_TRANSACTIONPAGE } from "../../../../route/types";
+import { doListParents } from "../../../../service/lookups";
 
 function CreateItems(
     title: String,
@@ -70,7 +70,7 @@ const MobileViewTable = ({ data, props }) => {
                             alignItems: 'flex-end',
                             rowGap: 1
                         }}>
-                            <Typography fontWeight={600} level="title-md" gutterBottom>{branding.CURRENCY_SYMBOL} {thousandSeparator(listItem.amount)}</Typography>
+                            <Typography fontWeight={600} level="title-md" gutterBottom>{formatMoney(listItem.amount)}</Typography>
                             <Chip
                                 variant="solid"
                                 size="sm"
@@ -129,7 +129,7 @@ const DesktopViewTable = ({ data, props }) => {
                                 <Typography level="body-sm">{row.item_name}</Typography>
                             </td>
                             <td>
-                                <Typography level="body-sm">{thousandSeparator(row.amount)}</Typography>
+                                <Typography level="body-sm">{formatMoney(row.amount)}</Typography>
                             </td>
                             <td>
                                 <Typography
@@ -208,15 +208,9 @@ const StudentDetailsPage = ({
     // function to fetch parents data to fetch student data
     /* eslint-disable */
     useEffect(() => {
-        axios.get(API_BASE + "/list/parents", {
-            timeout: 30000,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'multipart/form-data',
-                'Authorization': 'Bearer ' + accessToken,
-
-            }
-        }).then((res) => setParentList(res.data.results)).catch((e) => console.error(e))
+        doListParents(accessToken).then((res) => {
+            if (Array.isArray(res?.data?.results)) setParentList(res.data.results)
+        })
     }, [])
 
     useEffect(() => {
@@ -458,7 +452,7 @@ const StudentDetailsPage = ({
                                 <ListDivider sx={{ mb: 1 }} />
 
                                 <Typography level="title-sm" textAlign={"center"}>{t("student.balance")}</Typography>
-                                <Typography level="h3" textAlign={"center"}>{branding.CURRENCY_SYMBOL} {thousandSeparator(studentData.rfid_card.balance)}</Typography>
+                                <Typography level="h3" textAlign={"center"}>{formatMoney(studentData.rfid_card.balance)}</Typography>
                                 <Chip
                                     variant="solid"
                                     size="sm"

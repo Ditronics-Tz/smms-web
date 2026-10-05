@@ -14,7 +14,7 @@ import {
 } from '../../../store/actions'
 import { toast } from 'react-toastify';
 import { LoadingView } from '../../../components';
-import { formatDate, thousandSeparator } from '../../../utils';
+import { formatDate, formatMoney } from '../../../utils';
 import { NAVIGATE_TO_TRANSACTIONPAGE } from '../../../route/types';
 
 const RenderStaffDetails = ({ item }) => {
@@ -86,7 +86,7 @@ const RenderStaffDetails = ({ item }) => {
                     {/* <Divider /> */}
                     <Box>
                         <Typography textAlign={'center'} level="title-sm" >{t("home.available_balance")}</Typography>
-                        <Typography my={1.5} fontFamily={"Roboto"} textAlign={'center'} level="h2">{branding.CURRENCY_SYMBOL} {thousandSeparator(item.rfid_card.balance)}</Typography>
+                        <Typography my={1.5} fontFamily={"Roboto"} textAlign={'center'} level="h2">{formatMoney(item.rfid_card.balance)}</Typography>
                     </Box>
                     <Divider />
                     <Box sx={{
@@ -147,7 +147,7 @@ const MobileViewTable = ({ data, props }) => {
                             alignItems: 'flex-end',
                             rowGap: 1
                         }}>
-                            <Typography fontWeight={600} level="title-md" gutterBottom>{branding.CURRENCY_SYMBOL} {thousandSeparator(listItem.amount)}</Typography>
+                            <Typography fontWeight={600} level="title-md" gutterBottom>{formatMoney(listItem.amount)}</Typography>
                             <Chip
                                 variant="solid"
                                 size="sm"
@@ -206,7 +206,7 @@ const DesktopViewTable = ({ data, props }) => {
                                 <Typography level="body-sm">{row.item_name}</Typography>
                             </td>
                             <td>
-                                <Typography level="body-sm">{thousandSeparator(row.amount)}</Typography>
+                                <Typography level="body-sm">{formatMoney(row.amount)}</Typography>
                             </td>
                             <td>
                                 <Typography

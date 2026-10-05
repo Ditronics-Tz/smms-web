@@ -30,6 +30,7 @@ export const STATE = createRequestTypes('STATE',
         'ACTIVATE_USER',
         'FORGOT_PASSWORD',
         'CHANGE_PASSWORD',
+        'RESET_PASSWORD_CONFIRM',
 
         // bulk import
         'IMPORT_PREVIEW',
@@ -43,6 +44,8 @@ export const STATE = createRequestTypes('STATE',
         'PARENT_STUDENTS',
         'STAFF_VIEW',
         'CHILD_SPEND',
+        'BALANCE_THRESHOLD',
+        'SET_BALANCE_THRESHOLD',
 
         // resources
         'CREATE_SCHOOL',
@@ -59,6 +62,8 @@ export const STATE = createRequestTypes('STATE',
         'EDIT_CARD',
         'ACTIVATE_CARD',
         'CARD_DETAILS',
+        'REPLACE_CARD',
+        'DELETE_CARD',
 
 
         // users
@@ -82,6 +87,14 @@ export const STATE = createRequestTypes('STATE',
         // notifications
         'NOTIFICATIONS',
         'ALL_NOTIFICATIONS',
+
+        // ledger (read-only)
+        'LEDGER_JOURNAL',
+        'LEDGER_JOURNAL_ENTRY',
+        'LEDGER_CARD_STATEMENT',
+        'LEDGER_ACCOUNT_STATEMENT',
+        'LEDGER_TRIAL_BALANCE',
+        'LEDGER_INTEGRITY',
 
 
     ], suffixTypes);
