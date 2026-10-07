@@ -221,6 +221,43 @@ export function activateCardReset() {
 }
 
 
+// Replace card action
+export function replaceCardRequest(token, data) {
+    return {
+        type: STATE.REPLACE_CARD_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function replaceCardReset() {
+    return {
+        type: STATE.REPLACE_CARD_RESET
+    }
+}
+
+
+// Delete card action
+export function deleteCardRequest(token, data, force = false) {
+    return {
+        type: STATE.DELETE_CARD_REQUEST,
+        payload: {
+            token,
+            data,
+            force
+        }
+    }
+}
+
+export function deleteCardReset() {
+    return {
+        type: STATE.DELETE_CARD_RESET
+    }
+}
+
+
 // notification list action
 export function notificationsRequest(token, data, page) {
     return {

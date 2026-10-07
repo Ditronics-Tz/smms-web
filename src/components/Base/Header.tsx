@@ -132,15 +132,26 @@ const Header = ({
 
   // get background message
   useEffect(() => {
-    // Listen for background messages through the BroadcastChannel
+    // Listen for background messages through the BroadcastChannel.
+    // Guarded because BroadcastChannel is missing in older Safari and in any
+    // browser with the API disabled - constructing it unguarded threw a
+    // ReferenceError and took the whole header (and its notifications) down.
+    if (typeof BroadcastChannel === "undefined") return;
+
     const channel = new BroadcastChannel("notification-channel");
 
     channel.addEventListener("message", (event) => {
       console.log("Background message received: ", event.data);
 
+      // A data-only push has no `notification` key; reading title/body off it
+      // unguarded threw inside the handler and was one of the ways the worker
+      // script failed to evaluate.
+      const notification = event?.data?.notification;
+      if (!notification) return;
+
       const newNotification = {
-        title: event.data.notification.title,
-        message: event.data.notification.body,
+        title: notification.title,
+        message: notification.body,
         created_at: new Date().toISOString(),
       };
 
@@ -449,7 +460,10 @@ const Header = ({
               </MenuItem>
 
               {/* ------------- logout button ----------------- */}
-              <MenuItem component="a" href="#" onClick={logOut}>
+              {/* Plain button, not an anchor: `href="#"` made a hash link that
+                  jumped the page to the top and implied navigation, while this
+                  only dispatches a logout. */}
+              <MenuItem onClick={logOut}>
                 <LogoutRoundedIcon />
                 {t("header.logout")}
               </MenuItem>

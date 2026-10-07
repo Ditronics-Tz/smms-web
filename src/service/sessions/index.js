@@ -1,5 +1,5 @@
 import { DEPOSIT_REQUESTS_URL, DEPOSIT_REQUEST_URL, END_SESSION_URL, REVERSE_TRANSACTION_URL, SCAN_CARD_URL, SCANNED_LIST_URL, SESSION_LIST_URL, START_SESSION_URL, TRANSACTIONS_URL } from "../../constant";
-import { listRequest, resourceRequest } from "../calls";
+import { getListRequest, listRequest, resourceRequest } from "../calls";
 
 // scan card
 export function doScanCard(token, data){
@@ -40,7 +40,7 @@ export function doDepositRequest(token, data){
     return resourceRequest(token, DEPOSIT_REQUEST_URL, data)
 }
 
-// Deposit / top-up requests list
+// Deposit / top-up requests list (GET, paginated)
 export function doDepositList(token, data, page){
-    return listRequest(token, DEPOSIT_REQUESTS_URL, data, page)
+    return getListRequest(token, DEPOSIT_REQUESTS_URL, data, page)
 }

@@ -1,5 +1,5 @@
-import { ACTIVATE_CARD_URL, ALL_NOTIFICATIONS_URL, CARD_DETAILS_URL, CARD_LIST_URL, CREATE_CARD_URL, CREATE_ITEM_URL, CREATE_SCHOOL_URL, DELETE_ITEM_URL, DELETE_SCHOOL_URL, EDIT_CARD_URL, EDIT_ITEM_URL, ITEM_LIST_URL, NOTIFICATIONS_URL, SCHOOL_LIST_URL } from "../../constant";
-import { listRequest, resourceRequest } from "../calls";
+import { ACTIVATE_CARD_URL, ALL_NOTIFICATIONS_URL, CARD_DETAILS_URL, CARD_LIST_URL, CREATE_CARD_URL, CREATE_ITEM_URL, CREATE_SCHOOL_URL, DELETE_CARD_URL, DELETE_ITEM_URL, DELETE_SCHOOL_URL, EDIT_CARD_URL, EDIT_ITEM_URL, ITEM_LIST_URL, NOTIFICATIONS_URL, REPLACE_CARD_URL, SCHOOL_LIST_URL } from "../../constant";
+import { listRequest, resourceRequest, withQuery } from "../calls";
 
 // ---- SCHOOL ----
 export function doCreateSchool(token, data){
@@ -50,6 +50,18 @@ export function doCardDetails(token, data){
 
 export function doActivateCard(token, data){
     return resourceRequest(token, ACTIVATE_CARD_URL, data)
+}
+
+// { old_card_id, new_card_number, reason, carry_balance }
+export function doReplaceCard(token, data){
+    return resourceRequest(token, REPLACE_CARD_URL, data)
+}
+
+// { card_id }. `force` is the documented second call for a card the backend
+// refuses to delete because it has history: with force=true the card is
+// deactivated instead. The exact param name is confirmed with Ahmed (FE-06).
+export function doDeleteCard(token, data, force = false){
+    return resourceRequest(token, withQuery(DELETE_CARD_URL, { force: force ? 'true' : undefined }), data)
 }
 
 export function doNotification(token, data){

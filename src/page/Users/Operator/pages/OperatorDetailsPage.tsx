@@ -51,6 +51,7 @@ const OperatorDetailsPage = ({
         mobile: "",
         school: "",
         school_value: "",
+        profile_picture: null,
         sessions: []
     }
 
@@ -73,6 +74,7 @@ const OperatorDetailsPage = ({
                 mobile: detailsResult.mobile_number,
                 school: detailsResult.school,
                 school_value: detailsResult.school_id,
+                profile_picture: null,
                 sessions: detailsResult.sessions,
             });
         }
@@ -112,6 +114,15 @@ const OperatorDetailsPage = ({
         }));
     };
 
+    // Handle file input change
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setOperatorData((prevData) => ({
+            ...prevData,
+            profile_picture: file,
+        }));
+    };
+
     // ---- Submit function
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -128,9 +139,14 @@ const OperatorDetailsPage = ({
             formData.append("username", operatorData.username);
             formData.append("mobile_number", operatorData.mobile);
             formData.append("school", operatorData.school_value);
-            formData.append("role", "operator");
+        formData.append("role", "operator");
 
-            dispatch(editUserRequest(accessToken, formData))
+        // Append file only if selected
+        if (operatorData.profile_picture) {
+            formData.append("profile_picture", operatorData.profile_picture);
+        }
+
+        dispatch(editUserRequest(accessToken, formData))
         } else {
             toast.error(t("init.emptyErr"))
         }
@@ -360,6 +376,14 @@ const OperatorDetailsPage = ({
                                         <Option key={index} value={item.id}>{item.name}</Option>
                                     )) : <Option value={null}>{t("school.NoList")}</Option>}
                                 </Select>
+                            </FormControl>
+                        </Stack>
+
+                        {/* picture */}
+                        <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
+                            <FormControl sx={{ flex: 1 }}>
+                                <FormLabel>{t("operator.profile")}</FormLabel>
+                                <Input type="file" name="profile_picture" placeholder={t("init.select") + t("operator.profile")} onChange={handleFileChange} />
                             </FormControl>
                         </Stack>
 

@@ -1,5 +1,5 @@
-import { Avatar, Box, Button, Card, Chip, ColorPaletteProp, Divider, List, ListItem, ListItemContent, Sheet, Table, Typography } from '@mui/joy';
-import React, { useEffect, useState } from 'react';
+import { Avatar, Box, Button, Card, Chip, ColorPaletteProp, Divider, FormControl, FormHelperText, FormLabel, Input, List, ListItem, ListItemContent, Sheet, Table, Typography } from '@mui/joy';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import branding from "../../../config/branding";
 import { connect, useDispatch } from 'react-redux';
@@ -12,15 +12,174 @@ import {
     parentStudentsReset,
     transactionsRequest,
     transactionsReset,
+    balanceThresholdRequest,
+    balanceThresholdReset,
+    setBalanceThresholdRequest,
+    setBalanceThresholdReset,
 } from '../../../store/actions'
 import { toast } from 'react-toastify';
 import { LoadingView } from '../../../components';
-import { formatDate, thousandSeparator } from '../../../utils';
+import { formatDate, formatMoney } from '../../../utils';
 import { NAVIGATE_TO_TOPUPPAGE, NAVIGATE_TO_SPENDPAGE, NAVIGATE_TO_TRANSACTIONPAGE } from '../../../route/types';
-import { BarChartOutlined, AccountBalanceWalletOutlined } from '@mui/icons-material';
+import { BarChartOutlined, AccountBalanceWalletOutlined, NotificationsActiveOutlined } from '@mui/icons-material';
 
 const getChildId = (item) => item?.id ?? item?.student_id ?? item?.user?.id ?? ""
 const getCardId = (item) => item?.rfid_card?.id ?? item?.rfid_card?.card_id ?? ""
+
+const toNumberOrNull = (value) => {
+    if (value === null || value === undefined || value === '') return null
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? parsed : null
+}
+
+/**
+ * The threshold read shape is confirmed against /api/docs before the reducer is
+ * written (see FE-05), so this accepts the names the endpoint may use and reports
+ * which reading is in play. A missing custom value means the system default is
+ * what actually applies, which is what the card labels as "Default".
+ */
+export const readBalanceThreshold = (data) => {
+    if (!data) return null
+
+    const value = toNumberOrNull(data.balance_threshold ?? data.threshold ?? data.value)
+    const defaultValue = toNumberOrNull(
+        data.default_threshold ?? data.default ?? data.system_default ?? data.default_value
+    )
+
+    return {
+        value,
+        defaultValue,
+        isDefault: value === null,
+        // What the parent should see right now: their own level, else the default.
+        effective: value === null ? defaultValue : value,
+    }
+}
+
+const BalanceThresholdCard = ({
+    thresholdStatus,
+    thresholdResult,
+    saveStatus,
+    onRetry,
+    onSave,
+    onUseDefault,
+}) => {
+    const { t } = useTranslation()
+
+    const loading = thresholdStatus === STATUS.LOADING
+    const saving = saveStatus === STATUS.LOADING
+    const failed = thresholdStatus === STATUS.ERROR
+    const threshold = useMemo(() => readBalanceThreshold(thresholdResult), [thresholdResult])
+
+    const [value, setValue] = useState('')
+    const [touched, setTouched] = useState(false)
+
+    // Show what the server currently holds, unless the parent is mid-edit.
+    useEffect(() => {
+        if (threshold && !touched) setValue(threshold.value === null ? '' : String(threshold.value))
+    }, [threshold, touched])
+
+    const parsed = value.trim() === '' ? null : Number(value)
+    const invalid = value.trim() !== '' && (!Number.isInteger(parsed) || parsed < 0)
+    const unchanged = threshold !== null && (parsed ?? null) === threshold.value
+
+    const handleSave = (e) => {
+        e.preventDefault()
+        if (invalid || value.trim() === '') return
+        onSave(parsed)
+        setTouched(false)
+    }
+
+    if (failed) {
+        return (
+            <Card variant="outlined" sx={{ p: { xs: 2, sm: 3 }, borderRadius: 'md' }}>
+                <Typography level="title-md" gutterBottom>{t("balanceThreshold.title")}</Typography>
+                <Typography level="body-sm" color="danger" sx={{ mb: 1 }}>
+                    {t("balanceThreshold.loadError")}
+                </Typography>
+                <Button size="sm" variant="outlined" color="neutral" onClick={onRetry} loading={loading}>
+                    {t("balanceThreshold.retry")}
+                </Button>
+            </Card>
+        )
+    }
+
+    return (
+        <Card variant="outlined" sx={{ p: { xs: 2, sm: 3 }, borderRadius: 'md' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+                <Box sx={{
+                    width: 40, height: 40, borderRadius: '50%', backgroundColor: 'primary.softBg',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                }}>
+                    <NotificationsActiveOutlined />
+                </Box>
+                <Box sx={{ minWidth: 0 }}>
+                    <Typography level="title-md">{t("balanceThreshold.title")}</Typography>
+                    <Typography level="body-xs" sx={{ color: 'text.secondary' }}>
+                        {t("balanceThreshold.desc")}
+                    </Typography>
+                </Box>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <Typography level="body-sm">{t("balanceThreshold.currentLevel")}:</Typography>
+                {loading && threshold === null
+                    ? <Typography level="body-sm" sx={{ color: 'text.tertiary' }}>{t("init.loading")}</Typography>
+                    : <>
+                        <Typography level="title-sm">
+                            {threshold?.effective === null || threshold?.effective === undefined
+                                ? t("balanceThreshold.defaultValue")
+                                : formatMoney(threshold.effective)}
+                        </Typography>
+                        {threshold?.isDefault && (
+                            <Chip size="sm" variant="soft" color="neutral">
+                                {t("balanceThreshold.defaultBadge")}
+                            </Chip>
+                        )}
+                    </>}
+            </Box>
+
+            <Box component='form' onSubmit={handleSave} noValidate
+                sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, alignItems: 'flex-start' }}>
+                <FormControl required error={invalid} sx={{ flex: 1, minWidth: 0 }}>
+                    <FormLabel>{t("balanceThreshold.amount")} ({branding.CURRENCY_SYMBOL})</FormLabel>
+                    <Input
+                        type='number'
+                        slotProps={{ input: { min: 0, step: 1 } }}
+                        value={value}
+                        onChange={(e) => { setTouched(true); setValue(e.target.value) }}
+                        placeholder={t("balanceThreshold.amountHint")}
+                        disabled={saving}
+                    />
+                    {invalid
+                        ? <FormHelperText>{t("balanceThreshold.invalid")}</FormHelperText>
+                        : !invalid && value.trim() !== '' && (
+                            <FormHelperText>
+                                {t("balanceThreshold.amountPreview", { amount: formatMoney(parsed) })}
+                            </FormHelperText>
+                        )}
+                </FormControl>
+
+                <Button
+                    type='submit'
+                    loading={saving}
+                    disabled={saving || invalid || value.trim() === '' || unchanged}
+                    sx={{ height: 40, alignSelf: { xs: 'stretch', sm: 'auto' } }}>
+                    {t("balanceThreshold.save")}
+                </Button>
+
+                <Button
+                    type='button'
+                    variant='outlined'
+                    color='neutral'
+                    onClick={() => { onUseDefault(); setTouched(false) }}
+                    disabled={saving || loading || threshold === null || threshold.isDefault}
+                    sx={{ height: 40, alignSelf: { xs: 'stretch', sm: 'auto' } }}>
+                    {t("balanceThreshold.useDefault")}
+                </Button>
+            </Box>
+        </Card>
+    )
+}
 
 const RenderStudentSlides = ({ data, props }) => {
     const { t } = useTranslation()
@@ -114,7 +273,7 @@ const RenderStudentSlides = ({ data, props }) => {
                             {/* <Divider /> */}
                             <Box>
                                 <Typography textAlign={'center'} level="title-sm" >{t("home.available_balance")}</Typography>
-                                <Typography my={1.5} fontFamily={"Roboto"} textAlign={'center'} level="h2">{branding.CURRENCY_SYMBOL} {thousandSeparator(item.rfid_card.balance)}</Typography>
+                                <Typography my={1.5} fontFamily={"Roboto"} textAlign={'center'} level="h2">{formatMoney(item.rfid_card.balance)}</Typography>
                             </Box>
                             <Divider />
                             <Box sx={{
@@ -195,7 +354,7 @@ const MobileViewTable = ({ data, props }) => {
                             alignItems: 'flex-end',
                             rowGap: 1
                         }}>
-                            <Typography fontWeight={600} level="title-md" gutterBottom>{branding.CURRENCY_SYMBOL} {thousandSeparator(listItem.amount)}</Typography>
+                            <Typography fontWeight={600} level="title-md" gutterBottom>{formatMoney(listItem.amount)}</Typography>
                             <Chip
                                 variant="solid"
                                 size="sm"
@@ -258,7 +417,7 @@ const DesktopViewTable = ({ data, props }) => {
                                 <Typography level="body-sm">{row.student_name}</Typography>
                             </td>
                             <td>
-                                <Typography level="body-sm">{thousandSeparator(row.amount)}</Typography>
+                                <Typography level="body-sm">{formatMoney(row.amount)}</Typography>
                             </td>
                             <td>
                                 <Typography
@@ -302,7 +461,13 @@ const ParentDashboard = ({
 
     transactionsStatus,
     transactionsResult,
-    transactionsErrorMessage
+    transactionsErrorMessage,
+
+    thresholdStatus,
+    thresholdResult,
+
+    setThresholdStatus,
+    setThresholdErrorMessage
 }) => {
     const { t } = useTranslation()
     const navigate = useNavigate()
@@ -315,6 +480,10 @@ const ParentDashboard = ({
         email: '',
         mobile: "",
     })
+
+    // Distinguishes the two writes that share one status, so the success toast
+    // says which one the server actually confirmed.
+    const saveIntent = React.useRef<'save' | 'default'>('save')
 
     useEffect(() => {
         if (loginResult) {
@@ -346,9 +515,32 @@ const ParentDashboard = ({
         }
     }, [studentsStatus, transactionsStatus])
 
+    // The card owns its own error state so a failed read shows a retry next to
+    // the card instead of a toast that disappears.
+    useEffect(() => {
+        if (thresholdStatus === STATUS.ERROR) {
+            dispatch(balanceThresholdReset())
+        }
+    }, [thresholdStatus])
+
+    useEffect(() => {
+        if (setThresholdStatus === STATUS.SUCCESS) {
+            toast.success(saveIntent.current === 'default'
+                ? t("balanceThreshold.resetDone")
+                : t("balanceThreshold.saved"))
+            dispatch(setBalanceThresholdReset())
+            dispatch(balanceThresholdRequest(accessToken))
+        }
+        else if (setThresholdStatus === STATUS.ERROR) {
+            toast.error(setThresholdErrorMessage || t("balanceThreshold.saveError"))
+            dispatch(setBalanceThresholdReset())
+        }
+    }, [setThresholdStatus])
+
     useEffect(() => {
         dispatch(transactionsRequest(accessToken, { search: "" }, 1))
         dispatch(parentStudentsRequest(accessToken, {}))
+        dispatch(balanceThresholdRequest(accessToken))
     }, [accessToken])
     /* eslint-enable */
 
@@ -387,6 +579,22 @@ const ParentDashboard = ({
                         navigateToSpend: (childId) => navigate(NAVIGATE_TO_SPENDPAGE + '?child=' + childId),
                         navigateToTopUp: (cardId) => navigate(NAVIGATE_TO_TOPUPPAGE + '?card=' + cardId)
                     }} />}
+
+                    {/* Low-balance alert level */}
+                    <BalanceThresholdCard
+                        thresholdStatus={thresholdStatus}
+                        thresholdResult={thresholdResult}
+                        saveStatus={setThresholdStatus}
+                        onRetry={() => dispatch(balanceThresholdRequest(accessToken))}
+                        onSave={(value) => {
+                            saveIntent.current = 'save'
+                            dispatch(setBalanceThresholdRequest(accessToken, { balance_threshold: value }))
+                        }}
+                        onUseDefault={() => {
+                            saveIntent.current = 'default'
+                            dispatch(setBalanceThresholdRequest(accessToken, { balance_threshold: null }))
+                        }}
+                    />
 
                     {/* Transactions */}
                     {transactionList.length > 0 &&
@@ -456,7 +664,14 @@ const mapStateToProps = ({ auth, dashboard, session }) => {
     const {
         parentStudentsStatus: studentsStatus,
         parentStudentsResult: studentsResult,
-        parentStudentsErrorMessage: studentsErrorMessage
+        parentStudentsErrorMessage: studentsErrorMessage,
+
+        balanceThresholdStatus: thresholdStatus,
+        balanceThresholdResult: thresholdResult,
+        balanceThresholdErrorMessage: thresholdErrorMessage,
+
+        setBalanceThresholdStatus: setThresholdStatus,
+        setBalanceThresholdErrorMessage: setThresholdErrorMessage
     } = dashboard
 
     const {
@@ -472,6 +687,13 @@ const mapStateToProps = ({ auth, dashboard, session }) => {
         studentsStatus,
         studentsResult,
         studentsErrorMessage,
+
+        thresholdStatus,
+        thresholdResult,
+        thresholdErrorMessage,
+
+        setThresholdStatus,
+        setThresholdErrorMessage,
 
         transactionsStatus,
         transactionsResult,

@@ -25,6 +25,37 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
   <title>Meal Management System</title>
+
+  <!--
+      Applies the stored colour scheme before the first paint.
+
+      Without this the browser renders the page in light mode and only switches
+      once React mounts, so a dark-mode user gets a bright white flash on every
+      reload. The keys and the attribute match MUI Joy's own
+      InitColorSchemeScript defaults (localStorage "joy-mode", attribute
+      "data-joy-color-scheme") so the provider in src/index.js picks up exactly
+      what this set instead of overwriting it.
+
+      Mirrors @mui/joy/InitColorSchemeScript, which has to be inline in the HTML
+      rather than rendered by React because it must run before paint.
+    -->
+  <script>
+    (function () {
+      try {
+        var mode = localStorage.getItem('joy-mode') || 'light';
+        var colorScheme = '';
+        if (mode === 'system') {
+          var mql = window.matchMedia('(prefers-color-scheme: dark)');
+          colorScheme = mql.matches ? 'dark' : 'light';
+        }
+        if (mode === 'light') colorScheme = 'light';
+        if (mode === 'dark') colorScheme = 'dark';
+        if (colorScheme) {
+          document.documentElement.setAttribute('data-joy-color-scheme', colorScheme);
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 
 <body>

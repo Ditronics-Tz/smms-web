@@ -37,9 +37,14 @@ const INITIAL_STATE = {
     editCardResult: null,
     editCardErrorMessage: "",
 
+    replaceCardStatus: STATUS.DEFAULT,
+    replaceCardResult: null,
+    replaceCardErrorMessage: "",
+
     deleteCardStatus: STATUS.DEFAULT,
     deleteCardResult: null,
     deleteCardErrorMessage: "",
+    deleteCardHasHistory: false,
 
     activateCardStatus: STATUS.DEFAULT,
     activateCardResult: null,
@@ -63,7 +68,7 @@ const INITIAL_STATE = {
 }
 
 /* eslint-disable */
-export default (state = INITIAL_STATE, { type, payload }) => {
+export default (state = INITIAL_STATE, { type, payload, meta }) => {
     switch (type) {
         // CREATE SCHOOL
         case STATE.CREATE_SCHOOL_LOADING:
@@ -347,7 +352,67 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 activateCardResult: null,
                 activateCardErrorMessage: ""
             }
-            
+
+        // REPLACE CARD
+        case STATE.REPLACE_CARD_LOADING:
+            return {
+                ...state,
+                replaceCardStatus: STATUS.LOADING
+            }
+        case STATE.REPLACE_CARD_SUCCESS:
+            return {
+                ...state,
+                replaceCardStatus: STATUS.SUCCESS,
+                replaceCardResult: payload,
+                replaceCardErrorMessage: ""
+            }
+        case STATE.REPLACE_CARD_FAILURE:
+            return {
+                ...state,
+                replaceCardStatus: STATUS.ERROR,
+                replaceCardResult: null,
+                replaceCardErrorMessage: payload,
+            }
+        case STATE.REPLACE_CARD_RESET:
+            return {
+                ...state,
+                replaceCardStatus: STATUS.DEFAULT,
+                replaceCardResult: null,
+                replaceCardErrorMessage: ""
+            }
+
+        // DELETE CARD
+        case STATE.DELETE_CARD_LOADING:
+            return {
+                ...state,
+                deleteCardStatus: STATUS.LOADING
+            }
+        case STATE.DELETE_CARD_SUCCESS:
+            return {
+                ...state,
+                deleteCardStatus: STATUS.SUCCESS,
+                deleteCardResult: payload,
+                deleteCardErrorMessage: ""
+            }
+        case STATE.DELETE_CARD_FAILURE:
+            return {
+                ...state,
+                deleteCardStatus: STATUS.ERROR,
+                deleteCardResult: null,
+                deleteCardErrorMessage: payload,
+                // 400 here means the card carries history and cannot be removed
+                // outright; the page offers the forced deactivate instead.
+                deleteCardHasHistory: meta?.status === 400,
+            }
+        case STATE.DELETE_CARD_RESET:
+            return {
+                ...state,
+                deleteCardStatus: STATUS.DEFAULT,
+                deleteCardResult: null,
+                deleteCardErrorMessage: "",
+                deleteCardHasHistory: false
+            }
+
             
         // CARD LIST
         case STATE.CARD_LIST_LOADING:

@@ -15,7 +15,7 @@ import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import Stack from '@mui/joy/Stack';
 import theme from '../../../utils/theme';
-import { Avatar, Card, Divider } from '@mui/joy';
+import { Alert, Avatar, Card, Divider } from '@mui/joy';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -31,7 +31,6 @@ import { useTranslation } from 'react-i18next';
 
 const ForgotPasswordPage = ({
     forgotPasswordStatus,
-    forgotPasswordErrorMessage,
     forgotPasswordResult,
 }) => {
 
@@ -44,14 +43,19 @@ const ForgotPasswordPage = ({
     /* eslint-disable */
     const [email, setEmail] = useState('')
 
+    // Deliberately one message for every outcome. Telling the user that an
+    // address is unknown would let anyone confirm which accounts exist, so the
+    // response is never branched on - the request simply shows this text and
+    // stops, whether the backend accepted the address or not.
+    const [submitted, setSubmitted] = useState(false)
+
     useEffect(() => {
         if (forgotPasswordStatus === STATUS.SUCCESS) {
-            toast.success(t("forget.success"))
+            setSubmitted(true)
             dispatch(forgotPasswordReset());
-            navigate(NAVIGATE_TO_LOGINPAGE, { replace: true });
         }
         else if (forgotPasswordStatus === STATUS.ERROR) {
-            toast.error(forgotPasswordErrorMessage)
+            setSubmitted(true)
             dispatch(forgotPasswordReset());
         }
     }, [forgotPasswordStatus])
@@ -70,6 +74,7 @@ const ForgotPasswordPage = ({
         };
         console.log(data)
         if (data.email) {
+            setSubmitted(false);
             dispatch(forgotPasswordRequest({"email" : data.email}));
 
         } else {
@@ -179,13 +184,18 @@ const ForgotPasswordPage = ({
                                     <FormLabel>{t("forget.email")}</FormLabel>
                                     <Input type="text" name="email" placeholder={t("forget.emailPlaceholder")} sx={styles.input} />
                                 </FormControl>
+                                {submitted ? (
+                                    <Alert color="success" variant="soft" sx={{ borderRadius: 'sm' }}>
+                                        {t("forget.neutral")}
+                                    </Alert>
+                                ) : null}
                                 <Stack gap={4} sx={{ mt: 2 }}>
-                                    <Button type="submit" fullWidth sx={styles.button}>
+                                    <Button type="submit" fullWidth sx={styles.button} loading={checkLoading()}>
                                         {t("forget.button")}
                                     </Button>
                                 </Stack>
                             </Stack>
-                            <Divider>Or</Divider>
+                            <Divider>{t("forget.or")}</Divider>
                             <Stack gap={4} sx={{ mt: 2 }}>
                                 <Button variant='soft' color='neutral' sx={{borderColor: "blue"}}  fullWidth onClick={() => navigate(NAVIGATE_TO_LOGINPAGE, { replace: true })}>
                                     {t("forget.back")}
@@ -294,7 +304,6 @@ const mapStateToProps = ({ auth }) => {
     const {
         forgotPasswordStatus,
         forgotPasswordResult,
-        forgotPasswordErrorMessage,
         accessToken,
     } = auth
 
@@ -302,7 +311,6 @@ const mapStateToProps = ({ auth }) => {
     return {
         forgotPasswordStatus,
         forgotPasswordResult,
-        forgotPasswordErrorMessage,
         accessToken,
     }
 }

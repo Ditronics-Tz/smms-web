@@ -42,6 +42,7 @@ export const CREATE_USER_URL = '/auth/create-user';
 export const EDIT_USER_URL = '/auth/edit-user';
 export const ACTIVATE_USER_URL = '/auth/activate-deactivate-user';
 export const FORGOT_PASSWORD_URL = '/auth/forgot-password';
+export const RESET_PASSWORD_CONFIRM_URL = '/auth/reset-password/confirm';
 export const CHANGE_PASSWORD_URL = '/auth/change-password';
 
 // ---- DASHBOARD URLS -----
@@ -51,7 +52,8 @@ export const SALES_TREND_URL = "/dashboard/sales-trend";
 export const LAST_SESSION_URL = "/dashboard/last-session";
 export const PARENT_STUDENTS_URL = "/dashboard/parent-students";
 export const STAFF_VIEW_URL = "/dashboard/staff-view";
-export const CHILD_SPEND_URL = "/dashboard/child-spend";
+export const CHILD_SPEND_URL = "/dashboard/children-spend";
+export const BALANCE_THRESHOLD_URL = "/dashboard/balance-threshold";
 
 
 // ---- RESOURCES URLS ----- 
@@ -72,12 +74,12 @@ export const ACTIVATE_CARD_URL = '/resources/activate-deactivate-card';
 
 
 // ---- IMPORT URLS ----
-export const IMPORT_PREVIEW_URL = '/students/import-preview';
-export const IMPORT_COMMIT_URL = '/students/import-commit';
+export const IMPORT_UPLOAD_URL = '/imports/upload';
+export const IMPORT_COMMIT_URL = '/imports/commit';
 
 // ---- USER URLS ----
 export const USERS_LIST_URL = '/resources/users-list';
-export const INACTIVE_USERS_URL = '/auth/inactive-users-list';
+export const INACTIVE_USERS_URL = '/resources/inactive-users-list/';
 export const STUDENT_DETAILS_URL = '/resources/student-details';
 export const ADMIN_DETAILS_URL = '/resources/admin-details';
 export const PARENT_DETAILS_URL = '/resources/parent-details';
@@ -85,16 +87,49 @@ export const OPERATOR_DETAILS_URL = '/resources/operator-details';
 export const STAFF_DETAILS_URL = '/resources/staff-details';
 
 
-// ---- SESSION URLS -----
+// ---- SESSION / WALLET URLS -----
 export const START_SESSION_URL = '/sessions/start-session';
 export const END_SESSION_URL = '/sessions/end-session';
 export const SESSION_LIST_URL = '/sessions/session-list';
+export const ACTIVE_SESSION_URL = '/sessions/active-session';
 export const SCANNED_LIST_URL = '/sessions/scanned-data';
 export const SCAN_CARD_URL = '/sessions/scan-card';
 export const TRANSACTIONS_URL = '/sessions/transaction-list';
-export const REVERSE_TRANSACTION_URL = '/sessions/reverse-transaction';
-export const DEPOSIT_REQUEST_URL = '/sessions/deposit-request';
-export const DEPOSIT_REQUESTS_URL = '/sessions/deposit-request-list';
+
+export const REVERSE_TRANSACTION_URL = '/wallet/transaction/reverse';
+export const DEPOSIT_REQUEST_URL = '/wallet/deposit/create';
+export const DEPOSIT_REQUESTS_URL = '/wallet/deposit/list';
+
+// ---- CARD MANAGEMENT (admin) ----
+export const REPLACE_CARD_URL = '/resources/replace-card';
+export const DELETE_CARD_URL = '/resources/delete-card';
+export const RESET_STRIKES_URL = '/resources/reset-strikes';
+
+// ---- MOBILE MONEY TOP-UP ----
+export const TOPUP_INITIATE_URL = '/payments/topup/initiate';
+export const TOPUP_STATUS_URL = '/payments/topup';
+
+// ---- LOOKUP / REFERENCE LISTS ----
+// NOTE (FE-08): BE-03 locks these to admin. Callers on non-admin pages will get
+// 403 until Ahmed provides scoped equivalents. Kept in one place so swapping the
+// URL is a one-line change.
+export const LIST_STUDENTS_URL = '/list/students';
+export const LIST_STAFFS_URL = '/list/staffs';
+export const LIST_SCHOOLS_URL = '/list/schools';
+export const LIST_PARENTS_URL = '/list/parents';
+export const LIST_CANTEEN_ITEMS_URL = '/list/canteen-items';
+
+// ---- LEDGER URLS (BE-28 trial balance / integrity, BE-29 journal + statements) ----
+// The ledger is read-only in the UI: there is deliberately no create/update/delete
+// URL here. Every endpoint is a GET. Cards and accounts are addressed with a path
+// segment, so the three helpers below build those URLs in one place.
+export const LEDGER_JOURNAL_URL = '/ledger/journal';
+export const LEDGER_TRIAL_BALANCE_URL = '/ledger/trial-balance';
+export const LEDGER_INTEGRITY_URL = '/ledger/integrity';
+
+export const ledgerJournalEntryUrl = (entryId: string) => `/ledger/journal/${entryId}`;
+export const ledgerCardStatementUrl = (cardId: string) => `/ledger/cards/${cardId}/statement`;
+export const ledgerAccountStatementUrl = (code: string) => `/ledger/accounts/${code}/statement`;
 
 // ---- NOTIFICATIONS ----
 export const NOTIFICATIONS_URL = '/resources/notifications/';

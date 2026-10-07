@@ -52,7 +52,7 @@ const WizardStep = ({ activeStep, onChange }) => {
     );
 };
 
-const UploadStep = ({ t, schoolStatus, schoolList, selectedSchool, setSelectedSchool, file, fileName, setFile, setFileName, previewing, handlePreview }) => {
+const UploadStep = ({ t, schoolStatus, schoolList, selectedSchool, setSelectedSchool, file, fileName, setFile, setFileName, importMode, setImportMode, previewing, handlePreview }) => {
     return (
         <Sheet variant="outlined" sx={{ p: 3, borderRadius: 'lg', maxWidth: 560, mx: 'auto' }}>
             <Stack spacing={2}>
@@ -75,6 +75,18 @@ const UploadStep = ({ t, schoolStatus, schoolList, selectedSchool, setSelectedSc
                         {schoolStatus === STATUS.SUCCESS ? schoolList.results.map((item) => (
                             <Option key={item.id} value={item.id}>{item.name}</Option>
                         )) : <Option value={null}>{t("school.NoList")}</Option>}
+                    </Select>
+                </Box>
+
+                {/* import mode */}
+                <Box>
+                    <Typography level="body-sm" sx={{ mb: 0.5 }}>{t("studentsImport.mode")}</Typography>
+                    <Select
+                        size="sm"
+                        value={importMode}
+                        onChange={(e, value) => setImportMode(value)}>
+                        <Option value="best_effort">{t("studentsImport.modeBestEffort")}</Option>
+                        <Option value="all_or_nothing">{t("studentsImport.modeAllOrNothing")}</Option>
                     </Select>
                 </Box>
 
@@ -138,6 +150,7 @@ export const StudentsImportPage = ({ accessToken, schoolStatus, schoolList, impo
     const [selectedSchool, setSelectedSchool] = useState(null);
     const [fileName, setFileName] = useState("");
     const [file, setFile] = useState(null);
+    const [importMode, setImportMode] = useState('best_effort');
 
     // normalized preview report
     const [rows, setRows] = useState([]);
@@ -219,7 +232,9 @@ export const StudentsImportPage = ({ accessToken, schoolStatus, schoolList, impo
     const handlePreview = () => {
         const formData = new FormData();
         formData.append('school_id', selectedSchool);
-        formData.append('file', file);
+        formData.append('mode', importMode);
+        formData.append('dry_run', 'true');
+        if (file) formData.append('file', file);
         dispatch(importPreviewRequest(accessToken, formData));
     }
 
@@ -227,6 +242,9 @@ export const StudentsImportPage = ({ accessToken, schoolStatus, schoolList, impo
         const payload = invalidRows.map((r) => ({ row_number: r.row_number, data: r.data }));
         const formData = new FormData();
         formData.append('school_id', selectedSchool);
+        formData.append('mode', importMode);
+        formData.append('dry_run', 'true');
+        if (file) formData.append('file', file);
         formData.append('rows', JSON.stringify(payload));
         setRevalidating(true);
         dispatch(importPreviewRequest(accessToken, formData));
@@ -234,7 +252,12 @@ export const StudentsImportPage = ({ accessToken, schoolStatus, schoolList, impo
 
     const handleCommit = () => {
         const payload = validRows.map((r) => ({ row_number: r.row_number, data: r.data }));
-        dispatch(importCommitRequest(accessToken, { school_id: selectedSchool, rows: payload }));
+        const formData = new FormData();
+        formData.append('school_id', selectedSchool);
+        formData.append('mode', importMode);
+        if (file) formData.append('file', file);
+        formData.append('rows', JSON.stringify(payload));
+        dispatch(importCommitRequest(accessToken, formData));
     }
 
     const resetImport = () => {
@@ -311,6 +334,8 @@ export const StudentsImportPage = ({ accessToken, schoolStatus, schoolList, impo
                     fileName={fileName}
                     setFile={setFile}
                     setFileName={setFileName}
+                    importMode={importMode}
+                    setImportMode={setImportMode}
                     previewing={importPreviewStatus === STATUS.LOADING}
                     handlePreview={handlePreview}
                 />

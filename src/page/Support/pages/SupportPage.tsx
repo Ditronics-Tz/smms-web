@@ -43,6 +43,62 @@ const FAQItem = ({ title, desc, t }) => {
     );
 };
 
+const telHref = (phone) => String(phone).replace(/[^\d+]/g, "");
+
+// Renders a real, clickable link when the value is configured, and an explicit
+// "not configured" note when it is not. Showing a bare "#" or an empty string
+// was what made this section look unfinished; a config gap now reads as a
+// config gap instead.
+const ContactCard = ({ icon, title, value, href, isUrl = false }) => {
+    const { t } = useTranslation();
+    const configured = Boolean(value);
+
+    const body = (
+        <>
+            <Box sx={{
+                width: 42, height: 42, borderRadius: '50%', backgroundColor: 'primary.softBg',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+            }}>
+                {icon}
+            </Box>
+            <Box sx={{ minWidth: 0 }}>
+                <Typography level="title-md">{title}</Typography>
+                {configured ? (
+                    <Typography
+                        level="body-sm"
+                        color="primary"
+                        sx={{ wordBreak: "break-word", fontWeight: 600 }}
+                    >
+                        {isUrl ? t("support.openChat") : value}
+                    </Typography>
+                ) : (
+                    <Typography level="body-sm" sx={{ color: 'text.tertiary' }}>
+                        {t("support.notConfigured")}
+                    </Typography>
+                )}
+            </Box>
+        </>
+    );
+
+    return (
+        <Sheet
+            variant="outlined"
+            component={configured ? "a" : "div"}
+            {...(configured ? { href, target: isUrl ? "_blank" : undefined, rel: isUrl ? "noopener noreferrer" : undefined } : {})}
+            sx={{
+                p: 2, borderRadius: 'md', display: 'flex', gap: 1.5, alignItems: 'center',
+                textDecoration: 'none',
+                color: 'inherit',
+                ...(configured
+                    ? { cursor: 'pointer', transition: '0.2s ease', '&:hover': { boxShadow: 'sm', borderColor: 'primary.300' } }
+                    : {})
+            }}
+        >
+            {body}
+        </Sheet>
+    );
+};
+
 const SupportPage = () => {
     const { t } = useTranslation();
     return (
@@ -64,47 +120,25 @@ const SupportPage = () => {
                     my: 3
                 }}
             >
-                {/* Phone */}
-                <Sheet variant="outlined" sx={{ p: 2, borderRadius: 'md', display: 'flex', gap: 1.5, alignItems: 'center' }}>
-                    <Box sx={{
-                        width: 42, height: 42, borderRadius: '50%', backgroundColor: 'primary.softBg',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                        <CallOutlined />
-                    </Box>
-                    <Box>
-                        <Typography level="title-md">{t("support.phone")}</Typography>
-                        <Typography level="body-sm" color="primary">{branding.SUPPORT_PHONE}</Typography>
-                    </Box>
-                </Sheet>
-
-                {/* Email */}
-                <Sheet variant="outlined" sx={{ p: 2, borderRadius: 'md', display: 'flex', gap: 1.5, alignItems: 'center' }}>
-                    <Box sx={{
-                        width: 42, height: 42, borderRadius: '50%', backgroundColor: 'primary.softBg',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                        <EmailOutlined />
-                    </Box>
-                    <Box>
-                        <Typography level="title-md">{t("support.email")}</Typography>
-                        <Typography level="body-sm" color="primary">{branding.SUPPORT_EMAIL}</Typography>
-                    </Box>
-                </Sheet>
-
-                {/* Chat */}
-                <Sheet variant="outlined" sx={{ p: 2, borderRadius: 'md', display: 'flex', gap: 1.5, alignItems: 'center' }}>
-                    <Box sx={{
-                        width: 42, height: 42, borderRadius: '50%', backgroundColor: 'primary.softBg',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                        <HelpOutlineOutlined />
-                    </Box>
-                    <Box>
-                        <Typography level="title-md">{t("support.chat")}</Typography>
-                        <Typography level="body-sm" sx={{ color: 'text.secondary' }}>{t("support.chatDesc")}</Typography>
-                    </Box>
-                </Sheet>
+                <ContactCard
+                    icon={<CallOutlined />}
+                    title={t("support.phone")}
+                    value={branding.SUPPORT_PHONE}
+                    href={branding.SUPPORT_PHONE ? `tel:${telHref(branding.SUPPORT_PHONE)}` : null}
+                />
+                <ContactCard
+                    icon={<EmailOutlined />}
+                    title={t("support.email")}
+                    value={branding.SUPPORT_EMAIL}
+                    href={branding.SUPPORT_EMAIL ? `mailto:${branding.SUPPORT_EMAIL}` : null}
+                />
+                <ContactCard
+                    icon={<HelpOutlineOutlined />}
+                    title={t("support.chat")}
+                    value={branding.SUPPORT_CHAT_URL}
+                    href={branding.SUPPORT_CHAT_URL || null}
+                    isUrl
+                />
             </Box>
 
             {/* FAQ */}

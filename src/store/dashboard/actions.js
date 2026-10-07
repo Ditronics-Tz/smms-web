@@ -119,3 +119,36 @@ export function childSpendReset() {
         type: STATE.CHILD_SPEND_RESET
     }
 }
+
+
+// ------- low-balance alert level actions ----
+export function balanceThresholdRequest(token) {
+    return {
+        type: STATE.BALANCE_THRESHOLD_REQUEST,
+        payload: {
+            token
+        }
+    }
+}
+
+export function balanceThresholdReset() {
+    return {
+        type: STATE.BALANCE_THRESHOLD_RESET
+    }
+}
+
+export function setBalanceThresholdRequest(token, data) {
+    return {
+        type: STATE.SET_BALANCE_THRESHOLD_REQUEST,
+        payload: {
+            token,
+            data
+        }
+    }
+}
+
+export function setBalanceThresholdReset() {
+    return {
+        type: STATE.SET_BALANCE_THRESHOLD_RESET
+    }
+}

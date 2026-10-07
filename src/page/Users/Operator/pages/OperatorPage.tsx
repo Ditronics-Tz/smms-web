@@ -223,9 +223,10 @@ const OperatorPage = ({
         gender: "",
         email: "",
         username: "",
-        mobile: "",
-        school: ""
-    }
+       mobile: "",
+       school: "",
+       profile_picture: null
+   }
 
     const [operatorData, setOperatorData] = useState(initiateOperatorData);
 
@@ -287,6 +288,15 @@ const OperatorPage = ({
         }));
     };
 
+    // Handle file input change
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setOperatorData((prevData) => ({
+            ...prevData,
+            profile_picture: file,
+        }));
+    };
+
     // ---- Submit function
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -304,6 +314,11 @@ const OperatorPage = ({
             formData.append("mobile_number", operatorData.mobile);
             formData.append("school", operatorData.school);
             formData.append("role", "operator");
+
+            // Append file only if selected
+            if (operatorData.profile_picture) {
+                formData.append("profile_picture", operatorData.profile_picture);
+            }
 
             dispatch(createUserRequest(accessToken, formData))
         } else {
@@ -529,6 +544,14 @@ const OperatorPage = ({
                                         <Option key={index} value={item.id}>{item.name}</Option>
                                     )) : <Option value={null}>{t("school.NoList")}</Option>}
                                 </Select>
+                            </FormControl>
+                        </Stack>
+
+                        {/* picture */}
+                        <Stack direction={{ xs: 'column', md: 'row' }} gap={2}>
+                            <FormControl sx={{ flex: 1 }}>
+                                <FormLabel>{t("operator.profile")}</FormLabel>
+                                <Input type="file" name="profile_picture" placeholder={t("init.select") + t("operator.profile")} onChange={handleFileChange} />
                             </FormControl>
                         </Stack>
 

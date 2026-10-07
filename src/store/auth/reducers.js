@@ -19,6 +19,11 @@ const INITIAL_STATE = {
     editUserResult: null,
     editUserErrorMessage: "",
 
+    /* Bumped every time the signed-in user saves a new picture. The backend
+     * serves the photo from a stable path, so without a changing query string
+     * the browser keeps showing the cached copy of the old one. */
+    profilePictureVersion: 0,
+
     activateUserStatus: STATUS.DEFAULT,
     activateUserResult: null,
     activateUserErrorMessage: "",
@@ -30,6 +35,10 @@ const INITIAL_STATE = {
     changePasswordStatus: STATUS.DEFAULT,
     changePasswordResult: null,
     changePasswordErrorMessage: "",
+
+    resetPasswordConfirmStatus: STATUS.DEFAULT,
+    resetPasswordConfirmResult: null,
+    resetPasswordConfirmErrorMessage: "",
 
     importPreviewStatus: STATUS.DEFAULT,
     importPreviewResult: null,
@@ -80,14 +89,26 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 ...state,
                 tokenStatus: STATUS.LOADING
             }
-        case STATE.TOKEN_SUCCESS:
+        case STATE.TOKEN_SUCCESS: {
+            // A refresh response only carries a new access token. On a page
+            // reload there is no loginResult yet, so the session is rebuilt from
+            // the non-sensitive cached user; without it the protected routes
+            // would bounce straight back to /login after every reload.
+            const { restored_user: restoredUser, ...tokenPayload } = payload || {};
+            const restored = state.loginResult == null && restoredUser
+                ? { ...state.loginResult, user: restoredUser, refresh: undefined }
+                : state.loginResult;
+
             return {
                 ...state,
                 tokenStatus: STATUS.SUCCESS,
-                tokenResult: payload,
-                accessToken: payload.access,
-                tokenErrorMessage: ""
+                tokenResult: tokenPayload,
+                accessToken: tokenPayload.access,
+                tokenErrorMessage: "",
+                loginResult: restored,
+                loginStatus: restored ? STATUS.SUCCESS : state.loginStatus
             }
+        }
         case STATE.TOKEN_FAILURE:
             return {
                 ...state,
@@ -142,7 +163,8 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 ...state,
                 editUserStatus: STATUS.SUCCESS,
                 editUserResult: payload,
-                editUserErrorMessage: ""
+                editUserErrorMessage: "",
+                profilePictureVersion: state.profilePictureVersion + 1
             }
         case STATE.EDIT_USER_FAILURE:
             return {
@@ -214,6 +236,34 @@ export default (state = INITIAL_STATE, { type, payload }) => {
                 forgotPasswordStatus: STATUS.DEFAULT,
                 forgotPasswordResult: null,
                 forgotPasswordErrorMessage: ""
+            }
+
+        // RESET PASSWORD CONFIRM
+        case STATE.RESET_PASSWORD_CONFIRM_LOADING:
+            return {
+                ...state,
+                resetPasswordConfirmStatus: STATUS.LOADING
+            }
+        case STATE.RESET_PASSWORD_CONFIRM_SUCCESS:
+            return {
+                ...state,
+                resetPasswordConfirmStatus: STATUS.SUCCESS,
+                resetPasswordConfirmResult: payload,
+                resetPasswordConfirmErrorMessage: ""
+            }
+        case STATE.RESET_PASSWORD_CONFIRM_FAILURE:
+            return {
+                ...state,
+                resetPasswordConfirmStatus: STATUS.ERROR,
+                resetPasswordConfirmResult: null,
+                resetPasswordConfirmErrorMessage: payload
+            }
+        case STATE.RESET_PASSWORD_CONFIRM_RESET:
+            return {
+                ...state,
+                resetPasswordConfirmStatus: STATUS.DEFAULT,
+                resetPasswordConfirmResult: null,
+                resetPasswordConfirmErrorMessage: ""
             }
 
         // CHANGE PASSWORD

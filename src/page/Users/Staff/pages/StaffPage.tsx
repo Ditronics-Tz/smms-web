@@ -13,7 +13,7 @@ import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import { DeleteOutline, PersonAddOutlined, RemoveRedEyeOutlined } from "@mui/icons-material";
-import { API_BASE, FILE_BASE, STATUS } from "../../../../constant";
+import { FILE_BASE, STATUS } from "../../../../constant";
 import { toast } from "react-toastify";
 
 import {
@@ -24,7 +24,7 @@ import {
 } from "../../../../store/actions"
 import { useTranslation } from "react-i18next";
 import { NAVIGATE_TO_STAFFDETAILSPAGE } from "../../../../route/types";
-import axios from "axios";
+import { doListSchools } from "../../../../service/lookups";
 
 const MobileViewTable = ({ data, props }) => {
     const { t } = useTranslation();
@@ -218,15 +218,9 @@ const StaffPage = ({
     // function to fetch parents data to fetch staff data
     /* eslint-disable */
     useEffect(() => {
-        axios.get(API_BASE + "/list/schools", {
-            timeout: 30000,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + accessToken,
-
-            }
-        }).then((res) => setSchoolList(res.data.results)).catch((e) => console.error(e))
+        doListSchools(accessToken).then((res) => {
+            if (Array.isArray(res?.data?.results)) setSchoolList(res.data.results)
+        })
     }, [accessToken])
 
     // ---- PAGINATION SETTINGS ----- //

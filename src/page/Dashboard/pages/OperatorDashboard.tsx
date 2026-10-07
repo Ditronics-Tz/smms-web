@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react"
 import { connect, useDispatch } from "react-redux"
 import { STATUS } from "../../../constant"
 import { useTranslation } from "react-i18next"
-import branding from "../../../config/branding";
 
 import {
     countsRequest,
@@ -16,33 +15,31 @@ import {
 } from "../../../store/actions"
 import { toast } from "react-toastify"
 import { LoadingView } from "../../../components"
-import { formatDate, thousandSeparator } from "../../../utils"
+import { formatDate, formatMoney } from "../../../utils"
 
 
 const CountsCards = ({ props, data }) => {
     const { t } = useTranslation()
 
+    // Same fix as the admin dashboard: fixed near-white pastels with literal black
+    // text were unreadable in dark mode, so these use the Joy soft variants that
+    // carry their own foreground colour per mode.
     const cardsItems = [
         {
             title: t("home.session"),
-            color: '#D1F8EF',
+            color: "primary" as ColorPaletteProp,
             number: data.sessions
         },
         {
             title: t("home.this") + " " + t("home.week") + " " + t("home.sales"),
-            color: '#B6FFA1',
-            number: branding.CURRENCY_SYMBOL + ' ' + thousandSeparator(data.price_week || 0)
+            color: "success" as ColorPaletteProp,
+            number: formatMoney(data.price_week || 0)
         },
         {
             title: t("home.today") + " " + t("home.sales"),
-            color: '#D0DDD0',
-            number: branding.CURRENCY_SYMBOL + ' ' + thousandSeparator(data.price_today || 0)
+            color: "neutral" as ColorPaletteProp,
+            number: formatMoney(data.price_today || 0)
         },
-        // {
-        //     title: t("home.available"),
-        //     color: '#C4D9FF',
-        //     number: branding.CURRENCY_SYMBOL + " " + thousandSeparator(data.total_balance)
-        // }
     ]
     return (
         // {/* card counts */ }
@@ -56,48 +53,25 @@ const CountsCards = ({ props, data }) => {
                     <Grid xs={2} sm={3} md={3} key={index}>
                         <Card
                             variant="soft"
+                            color={item.color}
                             sx={{
                                 display: 'flex',
                                 flex: 1,
-                                backgroundColor: `${item.color}`,
                                 borderRadius: "lg",
                                 p: 1.5
                             }}>
                             <CardContent>
                                 <Box>
-                                    <Typography
-                                        fontSize={12}
-                                        sx={{ color: 'black' }}>
+                                    <Typography fontSize={12} level="body-sm">
                                         {item.title}
                                     </Typography>
                                     <Typography
                                         fontWeight='600'
                                         fontFamily="roboto"
-                                        sx={{ color: 'black', fontSize: { xs: 20, md: 25 } }}>
+                                        sx={{ fontSize: { xs: 20, md: 25 } }}>
                                         {item.number}
                                     </Typography>
                                 </Box>
-                                {/* <Typography
-                                    component='a'
-                                    // startDecorator={<RemoveRedEyeOutlined color="success" />}
-                                    endDecorator={<ArrowForward sx={{ fontSize: 11 }} />}
-                                    href={item.action}
-                                    sx={{
-                                        textDecoration: "none",
-                                        fontSize: { xs: 8, md: 10 },
-                                        mt: 2,
-                                        py: 0.3,
-                                        px: 1.3,
-                                        borderRadius: 20,
-                                        backgroundColor: 'white',
-                                        fontWeight: '500',
-                                        fontFamily: 'sans-serif',
-                                        color: 'black',
-                                        alignSelf: 'flex-end',
-                                        // boxShadow: 'sm'
-                                    }}>
-                                    {t("home.view")}
-                                </Typography> */}
                             </CardContent>
                         </Card>
                     </Grid>))
@@ -348,7 +322,7 @@ const OperatorDashboard = ({
                             <Typography level="title-sm" color="success" mt={1}>{t("home.number_of_student")}</Typography>
                             <Typography fontSize={18} color="success">{lastSession.student_count}</Typography>
                             <Typography level="title-md">{t("home.total") + " " + t("home.sales") + " " + t("home.amount")}</Typography>
-                            <Typography level="h4" fontSize={23}>{branding.CURRENCY_SYMBOL} {thousandSeparator(lastSession.total_price)}</Typography>
+                            <Typography level="h4" fontSize={23}>{formatMoney(lastSession.total_price)}</Typography>
                         </Sheet>
 
                     </CardContent>

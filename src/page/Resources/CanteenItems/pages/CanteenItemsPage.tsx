@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Typography, Box, List, ListItem, ListItemContent, ListDivider, Sheet, Table, iconButtonClasses, Button, IconButton, Input, ButtonGroup, Modal, ModalDialog, ModalClose, DialogTitle, DialogContent, FormControl, FormLabel, Stack } from "@mui/joy";
 import { AlertModal, LoadingView, NotFoundMessage, PageTitle } from "../../../../components";
-import { thousandSeparator } from "../../../../utils";
+import { formatMoney } from "../../../../utils";
 
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -51,7 +51,7 @@ const MobileViewTable = ({ data, props }) => {
                         <ListItemContent sx={{ display: 'flex', gap: 2, alignItems: 'start' }}>
                             <div>
                                 <Typography fontWeight={600} gutterBottom>{listItem.name}</Typography>
-                                <Typography level="body-xs" gutterBottom><b>{t("item.price")}:</b> {branding.CURRENCY_SYMBOL} {thousandSeparator(listItem.price)}</Typography>
+                                <Typography level="body-xs" gutterBottom><b>{t("item.price")}:</b> {formatMoney(listItem.price)}</Typography>
                             </div>
                         </ListItemContent>
                         <Box sx={{
@@ -123,7 +123,7 @@ const DesktopViewTable = ({ data, props }) => {
                                     <Typography level="body-sm">{row.name}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-sm">{thousandSeparator(row.price)}</Typography>
+                                    <Typography level="body-sm">{formatMoney(row.price)}</Typography>
                                 </td>
                                 <td>
                                     <ButtonGroup variant="outlined" size="sm">

@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { STATE } from "../../constant";
-import { errorMessage } from '../../utils';
-import { doChildSpend, doCounts, doLastSession, doParentStudents, doSalesSummary, doSalesTrend, doStaffView } from '../../service/dashboard';
+import { apiErrorMessage, errorMessage } from '../../utils';
+import { doBalanceThreshold, doChildSpend, doCounts, doLastSession, doParentStudents, doSalesSummary, doSalesTrend, doSetBalanceThreshold, doStaffView } from '../../service/dashboard';
 
 // Counts
 function* countsTask(action) {
@@ -218,6 +218,64 @@ function* childSpendTask(action) {
 }
 
 
+// low-balance alert level
+function* balanceThresholdTask(action) {
+    try {
+        yield put({ type: STATE.BALANCE_THRESHOLD_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doBalanceThreshold, payload.token);
+
+        if (res.status === 200) {
+            yield put({
+                type: STATE.BALANCE_THRESHOLD_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            yield put({
+                type: STATE.BALANCE_THRESHOLD_FAILURE,
+                payload: apiErrorMessage(res.data)
+            })
+        }
+    } catch (e) {
+        yield put({
+            type: STATE.BALANCE_THRESHOLD_FAILURE,
+            payload: apiErrorMessage(e?.data ?? e)
+        })
+    }
+}
+
+
+// save / reset low-balance alert level
+function* setBalanceThresholdTask(action) {
+    try {
+        yield put({ type: STATE.SET_BALANCE_THRESHOLD_LOADING });
+
+        const { payload } = action;
+
+        const res = yield call(doSetBalanceThreshold, payload.token, payload.data);
+
+        if (res.status === 200 || res.status === 201) {
+            yield put({
+                type: STATE.SET_BALANCE_THRESHOLD_SUCCESS,
+                payload: res.data
+            })
+        } else {
+            yield put({
+                type: STATE.SET_BALANCE_THRESHOLD_FAILURE,
+                payload: apiErrorMessage(res.data)
+            })
+        }
+    } catch (e) {
+        yield put({
+            type: STATE.SET_BALANCE_THRESHOLD_FAILURE,
+            payload: apiErrorMessage(e?.data ?? e)
+        })
+    }
+}
+
+
 function* dashboardSaga() {
     yield takeLatest(STATE.COUNTS_REQUEST, countsTask);
     yield takeLatest(STATE.SALES_SUMMARY_REQUEST, salesSummaryTask);
@@ -226,6 +284,8 @@ function* dashboardSaga() {
     yield takeLatest(STATE.PARENT_STUDENTS_REQUEST, parentStudentsTask);
     yield takeLatest(STATE.STAFF_VIEW_REQUEST, staffViewTask);
     yield takeLatest(STATE.CHILD_SPEND_REQUEST, childSpendTask);
+    yield takeLatest(STATE.BALANCE_THRESHOLD_REQUEST, balanceThresholdTask);
+    yield takeLatest(STATE.SET_BALANCE_THRESHOLD_REQUEST, setBalanceThresholdTask);
 }
 
 export default dashboardSaga

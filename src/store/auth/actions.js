@@ -113,6 +113,22 @@ export function forgotPasswordReset(){
     }
 }
 
+// confirm password reset action (guest call, token comes from the emailed link)
+export function confirmPasswordResetRequest(data){
+    return {
+        type: STATE.RESET_PASSWORD_CONFIRM_REQUEST,
+        payload: {
+            data
+        }
+    }
+}
+
+export function confirmPasswordResetReset(){
+    return {
+        type: STATE.RESET_PASSWORD_CONFIRM_RESET
+    }
+}
+
 // change password action
 export function changePasswordRequest(token, data){
     return {

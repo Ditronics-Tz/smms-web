@@ -36,3 +36,45 @@
     transform: rotate(360deg);
   }
 }
+
+/*
+ * Dark-mode toasts.
+ *
+ * react-toastify ships its own stylesheet (imported in App.tsx) that hardcodes a
+ * white toast with near-black text and has no dark variant, so notifications
+ * stayed bright white on a dark page. Its `theme` prop only reacts to React
+ * state, and App sits outside the Joy CssVarsProvider, so the scheme is keyed
+ * off the `data-joy-color-scheme` attribute the provider puts on <html> instead.
+ * That keeps it in sync with the sidebar and header toggle with no extra state.
+ */
+[data-joy-color-scheme="dark"] .Toastify__toast {
+  background-color: var(--joy-palette-background-level3);
+  color: var(--joy-palette-text-primary);
+}
+
+[data-joy-color-scheme="dark"] .Toastify__toast--success {
+  /* Kept as a tinted surface with coloured text rather than a saturated fill,
+     so a toast is readable without becoming the brightest thing on the page. */
+  background-color: color-mix(in srgb, var(--joy-palette-success-solidBg) 18%, var(--joy-palette-background-level3));
+  color: var(--joy-palette-success-plainColor);
+}
+
+[data-joy-color-scheme="dark"] .Toastify__toast--error {
+  background-color: color-mix(in srgb, var(--joy-palette-danger-solidBg) 18%, var(--joy-palette-background-level3));
+  color: var(--joy-palette-danger-plainColor);
+}
+
+[data-joy-color-scheme="dark"] .Toastify__toast--warning {
+  background-color: color-mix(in srgb, var(--joy-palette-warning-solidBg) 18%, var(--joy-palette-background-level3));
+  color: var(--joy-palette-warning-plainColor);
+}
+
+[data-joy-color-scheme="dark"] .Toastify__toast--info {
+  background-color: color-mix(in srgb, var(--joy-palette-primary-solidBg) 18%, var(--joy-palette-background-level3));
+  color: var(--joy-palette-primary-plainColor);
+}
+
+[data-joy-color-scheme="dark"] .Toastify__close-button {
+  color: var(--joy-palette-text-secondary);
+  background: transparent;
+}

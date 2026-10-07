@@ -28,6 +28,14 @@ const INITIATE_STATE = {
     childSpendStatus: STATUS.DEFAULT,
     childSpendResult: null,
     childSpendErrorMessage: '',
+
+    balanceThresholdStatus: STATUS.DEFAULT,
+    balanceThresholdResult: null,
+    balanceThresholdErrorMessage: '',
+
+    setBalanceThresholdStatus: STATUS.DEFAULT,
+    setBalanceThresholdResult: null,
+    setBalanceThresholdErrorMessage: '',
 }
 
 /* eslint-disable */
@@ -251,6 +259,68 @@ export default (state = INITIATE_STATE, { type, payload }) => {
                 childSpendStatus: STATUS.DEFAULT,
                 childSpendResult: null,
                 childSpendErrorMessage: ''
+            }
+
+        // LOW-BALANCE ALERT LEVEL
+        case STATE.BALANCE_THRESHOLD_LOADING:
+            return {
+                ...state,
+                balanceThresholdStatus: STATUS.LOADING
+            }
+
+        case STATE.BALANCE_THRESHOLD_SUCCESS:
+            return {
+                ...state,
+                balanceThresholdStatus: STATUS.SUCCESS,
+                balanceThresholdResult: payload,
+                balanceThresholdErrorMessage: ''
+            }
+
+        case STATE.BALANCE_THRESHOLD_FAILURE:
+            return {
+                ...state,
+                balanceThresholdStatus: STATUS.ERROR,
+                balanceThresholdResult: null,
+                balanceThresholdErrorMessage: payload
+            }
+
+        case STATE.BALANCE_THRESHOLD_RESET:
+            return {
+                ...state,
+                balanceThresholdStatus: STATUS.DEFAULT,
+                balanceThresholdResult: null,
+                balanceThresholdErrorMessage: ''
+            }
+
+        // SAVE / RESET LOW-BALANCE ALERT LEVEL
+        case STATE.SET_BALANCE_THRESHOLD_LOADING:
+            return {
+                ...state,
+                setBalanceThresholdStatus: STATUS.LOADING
+            }
+
+        case STATE.SET_BALANCE_THRESHOLD_SUCCESS:
+            return {
+                ...state,
+                setBalanceThresholdStatus: STATUS.SUCCESS,
+                setBalanceThresholdResult: payload,
+                setBalanceThresholdErrorMessage: ''
+            }
+
+        case STATE.SET_BALANCE_THRESHOLD_FAILURE:
+            return {
+                ...state,
+                setBalanceThresholdStatus: STATUS.ERROR,
+                setBalanceThresholdResult: null,
+                setBalanceThresholdErrorMessage: payload
+            }
+
+        case STATE.SET_BALANCE_THRESHOLD_RESET:
+            return {
+                ...state,
+                setBalanceThresholdStatus: STATUS.DEFAULT,
+                setBalanceThresholdResult: null,
+                setBalanceThresholdErrorMessage: ''
             }
 
         default:

@@ -11,7 +11,21 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
-const isNonEmpty = (value) => value !== undefined && value !== null && value !== "";
+/**
+ * A value counts as configured only if it is non-empty AND is not one of the
+ * placeholder strings that ship in .env.example.
+ *
+ * Without the placeholder check, `cp .env.example .env` turned Firebase on with
+ * values like "your_firebase_api_key_here". That reached initializeApp() in the
+ * service worker, which threw during script evaluation, and the browser then
+ * logged "ServiceWorker script evaluation failed" on every page load.
+ */
+const PLACEHOLDER_PATTERN = /^(your[_-]|changeme|placeholder|example[._-]|xxx|todo|tbd)/i;
+
+const isNonEmpty = (value) => {
+  if (value === undefined || value === null || value === "") return false;
+  return !PLACEHOLDER_PATTERN.test(String(value).trim());
+};
 
 const coreKeys = [
   "apiKey",
