@@ -35,12 +35,38 @@ export const clearRefreshToken = () => {
     }
 };
 
+const PERSIST_ROOT_KEY = 'persist:root';
+
+/**
+ * FE-03 legacy migration. Builds before FE-03 persisted the whole root store with
+ * no blacklist, so an existing browser still has the auth slice — the JWT access
+ * token and, inside `loginResult.refresh`, the refresh token — sitting in
+ * localStorage under `persist:root`. redux-persist's blacklist only stops future
+ * writes; it does not remove what is already stored. Strip the auth slice from
+ * the stored blob on boot so no token is left at rest. The store's
+ * stateReconciler separately guarantees it can never be rehydrated.
+ */
+export const scrubPersistedAuth = () => {
+    try {
+        const raw = window.localStorage.getItem(PERSIST_ROOT_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return;
+        if (!Object.prototype.hasOwnProperty.call(parsed, 'auth')) return;
+        delete parsed.auth;
+        window.localStorage.setItem(PERSIST_ROOT_KEY, JSON.stringify(parsed));
+    } catch (e) {
+        // A corrupt legacy blob is left for redux-persist to time out on; we
+        // never delete unrelated persisted slices here.
+    }
+};
+
 /** Drops every trace of the previous session from web storage. */
 export const clearAllClientStorage = () => {
     clearRefreshToken();
     clearCachedUser();
     try {
-        window.localStorage.removeItem('persist:root');
+        window.localStorage.removeItem(PERSIST_ROOT_KEY);
     } catch (e) {
         // no-op
     }

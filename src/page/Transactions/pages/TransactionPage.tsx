@@ -22,7 +22,6 @@ import {
     reverseTransactionReset
 } from "../../../store/actions"
 import { useTranslation } from "react-i18next";
-import branding from "../../../config/branding";
 
 const getTxnId = (row) => row.id ?? row.transaction_id;
 const isReversalEntry = (row) => row.transaction_type === 'reversal' || row.reversal_of != null || row.original_transaction_id != null;
@@ -161,7 +160,7 @@ const DesktopViewTable = ({ data, props }) => {
                             <th style={{ width: 70, padding: '10px 6px' }}>{t("transaction.item_name")}</th>
                             <th style={{ width: 100, padding: '10px 6px', }}>{t("transaction.student_name")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.card_number")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.amount")} ({branding.CURRENCY_SYMBOL})</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.amount")}</th>
                             <th style={{ width: 50, padding: '10px 6px', }}>{t("transaction.status")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.date")}</th>
                             {props.isAdmin && <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.reverse")}</th>}

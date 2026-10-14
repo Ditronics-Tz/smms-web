@@ -214,8 +214,8 @@ export const StudentsImportPage = ({ accessToken, schoolStatus, schoolList, impo
             setRevalidating(false);
             dispatch(importPreviewReset());
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [importPreviewStatus])
-    /* eslint-disable-next-line */
 
     // commit success/error
     useEffect(() => {
@@ -226,8 +226,8 @@ export const StudentsImportPage = ({ accessToken, schoolStatus, schoolList, impo
             toast.error(importCommitErrorMessage);
             dispatch(importCommitReset());
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [importCommitStatus])
-    /* eslint-disable-next-line */
 
     const handlePreview = () => {
         const formData = new FormData();

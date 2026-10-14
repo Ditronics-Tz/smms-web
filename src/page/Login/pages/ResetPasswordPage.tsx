@@ -30,7 +30,7 @@ import { toast } from 'react-toastify';
 import { STATUS } from '../../../constant';
 import { LoadingView } from '../../../components';
 import LanguageMenu from '../../../components/molecules/LanguageMenu';
-import { ColorSchemeToggle } from '../../../utils';
+import { ColorSchemeToggle, resolveResetToken } from '../../../utils';
 import { useTranslation } from 'react-i18next';
 
 import VisibilityRounded from '@mui/icons-material/VisibilityRounded';
@@ -89,8 +89,9 @@ const ResetPasswordPage = ({
 
     // The reset token travels in the emailed link. The same page doubles as the
     // "set your password" screen for an invited user, which is signalled by
-    // `mode=invite` on the link.
-    const resetToken = searchParams.get('token');
+    // `mode=invite` on the link. Reset links carry the token as a query param;
+    // invite links place it in the URL fragment (`#token=...`), so both are read.
+    const resetToken = resolveResetToken(searchParams.get('token'), window.location.hash);
     const isInvite = searchParams.get('mode') === 'invite';
     const hasToken = Boolean(resetToken);
 

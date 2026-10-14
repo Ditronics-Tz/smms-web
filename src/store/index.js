@@ -7,6 +7,12 @@ import {
 import storage from "redux-persist/lib/storage";
 import rootReducer from './reducers'
 import rootSaga from './sagas'
+import blacklistStateReconciler from './persistReconciler'
+import { scrubPersistedAuth } from '../utils/sessionToken'
+
+// FE-03 legacy migration: delete any auth slice that a pre-blacklist build left
+// in localStorage before the store rehydrates.
+scrubPersistedAuth()
 
 //create storage
 //
@@ -21,10 +27,16 @@ import rootSaga from './sagas'
 // FE-10: the ledger slice is blacklisted too. A persisted ledger would show a
 // stale balance after a reload and would grow localStorage with every statement
 // ever viewed; the backend is the only authority for money.
+//
+// FE-03 also customises the state reconciler: the stock redux-persist one merges
+// every key it finds in `persist:root`, including the legacy `auth` slice. The
+// blacklist-aware reconciler below refuses to rehydrate blacklisted slices, so a
+// token persisted before this change can never come back into redux.
 const persistConfig = {
     key: 'root',
     storage,
     blacklist: ['auth', 'ledger'],
+    stateReconciler: blacklistStateReconciler,
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

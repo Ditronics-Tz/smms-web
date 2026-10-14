@@ -19,9 +19,11 @@ import ListDivider from "@mui/joy/ListDivider";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
 import { toggleSidebar } from "../../utils/sideBarutils";
+import { getRefreshToken } from "../../utils/sessionToken";
+import { profilePictureSrc } from "../../utils/profilePictureSrc";
 import { logoutRequest, notificationsRequest, notificationsReset } from "../../store/actions";
 import { useColorScheme } from "@mui/joy/styles";
-import { NAVIGATE_TO_DASHBOARD, NAVIGATE_TO_PROFILEPAGE, NAVIGATE_TO_SUPPORTPAGE } from "../../route/types";
+import { NAVIGATE_TO_DASHBOARD, NAVIGATE_TO_PROFILEPAGE, NAVIGATE_TO_SETTINGSPAGE, NAVIGATE_TO_SUPPORTPAGE } from "../../route/types";
 import { DarkMode, LightMode, Notifications, Settings } from "@mui/icons-material";
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import {
@@ -77,6 +79,7 @@ function ColorSchemeToggle() {
 const Header = ({
   loginResult,
   accessToken,
+  profilePictureVersion,
 
   notificationsStatus,
   notificationsResult,
@@ -89,6 +92,14 @@ const Header = ({
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
 
+  // The account's real photo, not an empty placeholder. Version busts the cache
+  // after a new upload so the header updates without a reload.
+  const avatarSrc = profilePictureSrc(loginResult?.user?.profile_picture, profilePictureVersion);
+  const initials = [loginResult?.user?.first_name, loginResult?.user?.last_name]
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+
   useEffect(() => {
     if (loginResult !== null || loginResult !== undefined) {
       setName(loginResult.user.first_name + " " + loginResult.user.last_name)
@@ -97,10 +108,12 @@ const Header = ({
   }, [loginResult])
 
   const logOut = () => {
-    const data = {
-      "refresh": loginResult.refresh
-    }
-    doLogout(data)
+    // FE-03: after a reload `loginResult` is rebuilt from the cached display
+    // user and no longer carries the refresh token, so read it from
+    // sessionStorage or the server is asked to revoke nothing. Best effort:
+    // `logoutRequest` clears the client session regardless.
+    const refresh = getRefreshToken();
+    if (refresh) doLogout({ "refresh": refresh });
     dispatch(logoutRequest());
   };
 
@@ -392,9 +405,12 @@ const Header = ({
                 borderColor: 'background.appcolor'
               }}>
               <Avatar
+                src={avatarSrc}
                 sx={{ maxWidth: "29px", maxHeight: "29px" }}
                 size="sm"
-              />
+              >
+                {initials}
+              </Avatar>
               {/* ------------ user name  -------------*/}
               <Typography level="title-sm" sx={{ display: { xs: 'none', md: 'flex' } }}>
                 {name}
@@ -421,9 +437,12 @@ const Header = ({
                       alignItems: "center",
                     }}>
                     <Avatar
+                      src={avatarSrc}
                       sx={{ maxWidth: "29px", maxHeight: "29px" }}
                       size="sm"
-                    />
+                    >
+                      {initials}
+                    </Avatar>
                     <Box sx={{ ml: 1.5 }}>
                       <Typography level="title-sm" textColor="text.primary">
                         {name}
@@ -444,7 +463,7 @@ const Header = ({
               {/* profile and settings */}
               <MenuItem
                 component={Link}
-                to={NAVIGATE_TO_PROFILEPAGE}
+                to={NAVIGATE_TO_SETTINGSPAGE}
                 style={{ textDecoration: 'none' }}>
                 <Settings />
                 {t("header.setting")}
@@ -481,7 +500,8 @@ const mapStateToProps = ({ auth, resources }) => {
     loginStatus,
     loginResult,
     loginErrorMessage,
-    accessToken
+    accessToken,
+    profilePictureVersion,
   } = auth;
 
   const {
@@ -495,6 +515,7 @@ const mapStateToProps = ({ auth, resources }) => {
     loginResult,
     loginErrorMessage,
     accessToken,
+    profilePictureVersion,
 
     notificationsStatus,
     notificationsResult,

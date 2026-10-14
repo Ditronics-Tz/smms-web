@@ -645,6 +645,16 @@
     "4000": "Hitilafu ya Mtandao! Haiwezi kuunganishwa",
     "notAllowed": "Huruhusu kuwa na utendaji wa kitendo hiki"
   },
+  "apiErrors": {
+    "generic": "Kitu kimeenda vibaya, tafadhali jaribu tena.",
+    "INSUFFICIENT_BALANCE_PENALTY": "Salio haitoshi. Adhabu imetozwa kwenye kadi yako.",
+    "CARD_BLOCKED_STRIKES": "Kadi imefungwa. Kikomo cha makosa kimefikiwa. Wasiliana na msimamizi.",
+    "DUPLICATE_ITEM_IN_SESSION": "Bidhaa hii tayari imenunuliwa katika kikao hiki.",
+    "CARD_INACTIVE": "Kadi hii haifanyi kazi. Wasiliana na msimamizi.",
+    "SESSION_NOT_ACTIVE": "Hakuna kikao kinachoendelea. Anza kikao kabla ya kuchanganua.",
+    "DAILY_LIMIT": "Kikomo cha matumizi ya kila siku kimafikiwa kwa mwanafunzi huyu.",
+    "ITEM_BLOCKED": "Bidhaa hii imefungwa kwa mtoto wako. Wasiliana na msimamizi."
+  },
   "topUp": {
     "title": "Kujaza Balance",
     "desc": "Jaza salio la kadi ya mtoto wako.",

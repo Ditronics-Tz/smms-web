@@ -645,6 +645,16 @@
     "4000": "Network Error! Cannot connect",
     "notAllowed": "You are not allowed to do this"
   },
+  "apiErrors": {
+    "generic": "Something went wrong, please try again.",
+    "INSUFFICIENT_BALANCE_PENALTY": "Insufficient balance. A penalty has been charged to your card.",
+    "CARD_BLOCKED_STRIKES": "Card blocked. The strike limit has been reached. Contact the admin.",
+    "DUPLICATE_ITEM_IN_SESSION": "This item has already been purchased in the current session.",
+    "CARD_INACTIVE": "This card is inactive. Contact the admin.",
+    "SESSION_NOT_ACTIVE": "No active session. Start a session before scanning.",
+    "DAILY_LIMIT": "Daily spending limit reached for this student.",
+    "ITEM_BLOCKED": "This item is blocked for your child. Contact the admin."
+  },
   "topUp": {
     "title": "Top Up",
     "desc": "Recharge your child's card balance.",

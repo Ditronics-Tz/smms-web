@@ -188,7 +188,7 @@ export const BankDepositPage = ({
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!cardValue || !amountValid) return;
-        dispatch(depositRequest(accessToken, { card_number: cardValue, amount: amountValue }));
+        dispatch(depositRequest(accessToken, { card_number: cardValue, amount: amountValue, payment_method: "cash", provider: null }));
     };
 
     const retry = () => {
@@ -456,7 +456,7 @@ export const BankDepositPage = ({
                                         <th>{t("bankDeposit.date")}</th>
                                         <th>{t("bankDeposit.cardNumber")}</th>
                                         <th style={{ textAlign: "right" }}>
-                                            {t("bankDeposit.amount")} ({branding.CURRENCY_SYMBOL})
+                                            {t("bankDeposit.amount")}
                                         </th>
                                         <th>{t("bankDeposit.status")}</th>
                                     </tr>

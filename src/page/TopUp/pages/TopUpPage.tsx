@@ -11,7 +11,6 @@ import { connect, useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
-import branding from "../../../config/branding";
 import { STATUS } from "../../../constant";
 import {
     parentStudentsRequest, parentStudentsReset,
@@ -128,7 +127,7 @@ export const TopUpPage = ({
     const handleSubmit = (e) => {
         e.preventDefault()
         if (!selectedCard || !amountValid) return
-        dispatch(depositRequest(accessToken, { card_number: getCardNumber(selectedChild), amount: amountValue }))
+        dispatch(depositRequest(accessToken, { card_number: getCardNumber(selectedChild), amount: amountValue, payment_method: 'cash', provider: null }))
     }
 
     return (
@@ -227,7 +226,7 @@ export const TopUpPage = ({
                                     <tr>
                                         <th>{t("topUp.student")}</th>
                                         <th>{t("student.card_number")}</th>
-                                        <th>{t("topUp.amount")} ({branding.CURRENCY_SYMBOL})</th>
+                                        <th>{t("topUp.amount")}</th>
                                         <th>{t("topUp.status")}</th>
                                         <th>{t("topUp.date")}</th>
                                     </tr>

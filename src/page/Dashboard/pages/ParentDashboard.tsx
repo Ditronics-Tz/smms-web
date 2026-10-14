@@ -402,7 +402,7 @@ const DesktopViewTable = ({ data, props }) => {
                     <tr style={{ textAlign: 'center' }}>
                         <th style={{ width: 70, padding: '10px 6px' }}>{t("transaction.item_name")}</th>
                         <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.student_name")}</th>
-                        <th style={{ width: 60, padding: '10px 6px', }}>{t("transaction.amount")} ({branding.CURRENCY_SYMBOL})</th>
+                        <th style={{ width: 60, padding: '10px 6px', }}>{t("transaction.amount")}</th>
                         <th style={{ width: 50, padding: '10px 6px', }}>{t("transaction.status")}</th>
                         <th style={{ width: 100, padding: '10px 6px', }}>{t("transaction.date")}</th>
                     </tr>

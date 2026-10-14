@@ -52,7 +52,7 @@ const SpendChart = ({ data }) => {
                 <CartesianGrid {...gridProps} vertical={false} />
                 <XAxis dataKey="date" {...axisProps} />
                 <YAxis {...axisProps} width={56} />
-                <Tooltip {...tooltipProps} />
+                <Tooltip {...tooltipProps} formatter={(value) => formatMoney(Array.isArray(value) ? value[0] : value)} />
                 <Bar dataKey="amount" fill="url(#spendColor)" radius={[4, 4, 0, 0]} />
             </BarChart>
         </ResponsiveContainer>

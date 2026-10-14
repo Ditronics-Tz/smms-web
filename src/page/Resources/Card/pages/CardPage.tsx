@@ -32,7 +32,6 @@ import {
     deleteCardReset,
 } from "../../../../store/actions"
 import { useTranslation } from "react-i18next";
-import branding from "../../../../config/branding";
 import { doListStaffs, doListStudents } from "../../../../service/lookups";
 
 const MobileViewTable = ({ data, props }) => {
@@ -146,7 +145,7 @@ const DesktopViewTable = ({ data, props }) => {
                             <th style={{ width: 100, padding: '10px 6px', }}>{t("card.student")} /{t("card.staff")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("card.role")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("card.control_number")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("card.balance")} ({branding.CURRENCY_SYMBOL})</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("card.balance")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("card.issued")}</th>
                             <th style={{ width: 50, padding: '10px 6px', }}>{t("card.status")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("card.created")}</th>

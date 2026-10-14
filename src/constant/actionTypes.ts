@@ -96,6 +96,54 @@ export const STATE = createRequestTypes('STATE',
         'LEDGER_TRIAL_BALANCE',
         'LEDGER_INTEGRITY',
 
+        // strike management (admin)
+        'RESET_STRIKES',
+
+        // analytics (BE-42)
+        'ANALYTICS_SALES',
+        'ANALYTICS_WALLET_HEALTH',
+        'ANALYTICS_OPERATORS',
+        'ANALYTICS_CLASSES',
+        'ANALYTICS_PENALTIES',
+
+        // analytics export (BE-45)
+        'ANALYTICS_EXPORT',
+
+        // insights (BE-43)
+        'INSIGHTS_FORECAST',
+        'INSIGHTS_AT_RISK',
+        'INSIGHTS_ANOMALIES',
+        'INSIGHTS_RESOLVE_ANOMALY',
+        'INSIGHTS_DORMANT',
+
+        // daily menu (BE-80)
+        'MENU_LIST',
+        'MENU_UPDATE',
+
+        // mobile money top-up (BE-60)
+        'TOPUP_INITIATE',
+        'TOPUP_STATUS',
+
+        // parent controls (BE-90)
+        'PARENT_LIMITS',
+        'SET_PARENT_LIMIT',
+        'PARENT_BLOCKS',
+        'SET_PARENT_BLOCK',
+
+        // integrations (BE-100)
+        'API_KEYS',
+        'CREATE_API_KEY',
+        'REVOKE_API_KEY',
+        'WEBHOOKS',
+        'UPDATE_WEBHOOK',
+        'SYNC_LOG',
+
+        // reconciliation (BE-110)
+        'RECON_UPLOAD',
+        'RECON_RESOLVE',
+
+        // refund (BE-121)
+        'REFUND',
 
     ], suffixTypes);
 

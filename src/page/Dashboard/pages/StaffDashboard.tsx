@@ -1,7 +1,6 @@
 import { Avatar, Box, Button, Card, Chip, ColorPaletteProp, Divider, List, ListItem, ListItemContent, Sheet, Table, Typography } from '@mui/joy';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import branding from "../../../config/branding";
 import { connect, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FILE_BASE, STATUS } from '../../../constant';
@@ -194,7 +193,7 @@ const DesktopViewTable = ({ data, props }) => {
                 <thead>
                     <tr style={{ textAlign: 'center' }}>
                         <th style={{ width: 70, padding: '10px 6px' }}>{t("transaction.item_name")}</th>
-                        <th style={{ width: 60, padding: '10px 6px', }}>{t("transaction.amount")} ({branding.CURRENCY_SYMBOL})</th>
+                        <th style={{ width: 60, padding: '10px 6px', }}>{t("transaction.amount")}</th>
                         <th style={{ width: 50, padding: '10px 6px', }}>{t("transaction.status")}</th>
                         <th style={{ width: 100, padding: '10px 6px', }}>{t("transaction.date")}</th>
                     </tr>
