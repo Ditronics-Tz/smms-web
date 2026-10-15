@@ -12,7 +12,7 @@ FROM oven/bun:1 AS development
 WORKDIR /app
 
 # Install system dependencies for native modules
-RUN apt-get update && apt-get install -y \
+RUN printf 'Types: deb\nURIs: http://mirror.liquidtelecom.com/debian/debian\nSuites: bookworm bookworm-updates\nComponents: main\nSigned-By: /usr/share/keyrings/debian-archive-keyring.gpg\n' > /etc/apt/sources.list.d/debian.sources; : > /etc/apt/sources.list 2>/dev/null; (for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30; do echo "apt-get update attempt $i"; rm -rf /var/lib/apt/lists/* 2>/dev/null; apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=12 update; ls /var/lib/apt/lists/*bookworm*main*binary*Packages* 1>/dev/null 2>&1 && break || sleep 5; done) && ls /var/lib/apt/lists/*bookworm*main*binary*Packages* 1>/dev/null 2>&1 && apt-get -o Acquire::Retries=10 install -y \
     python3 \
     make \
     g++ \
@@ -41,7 +41,7 @@ FROM oven/bun:1 AS builder
 WORKDIR /app
 
 # Install build dependencies
-RUN apt-get update && apt-get install -y \
+RUN printf 'Types: deb\nURIs: http://mirror.liquidtelecom.com/debian/debian\nSuites: bookworm bookworm-updates\nComponents: main\nSigned-By: /usr/share/keyrings/debian-archive-keyring.gpg\n' > /etc/apt/sources.list.d/debian.sources; : > /etc/apt/sources.list 2>/dev/null; (for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30; do echo "apt-get update attempt $i"; rm -rf /var/lib/apt/lists/* 2>/dev/null; apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=12 update; ls /var/lib/apt/lists/*bookworm*main*binary*Packages* 1>/dev/null 2>&1 && break || sleep 5; done) && ls /var/lib/apt/lists/*bookworm*main*binary*Packages* 1>/dev/null 2>&1 && apt-get -o Acquire::Retries=10 install -y \
     python3 \
     make \
     g++ \
