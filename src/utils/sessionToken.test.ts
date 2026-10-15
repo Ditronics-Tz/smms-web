@@ -6,6 +6,7 @@ import {
   getCachedUser,
   clearCachedUser,
   clearAllClientStorage,
+  scrubPersistedAuth,
 } from './sessionToken';
 
 describe('sessionToken (FE-03)', () => {
@@ -81,5 +82,35 @@ describe('sessionToken (FE-03)', () => {
     setCachedUser({ id: 1, role: 'admin' });
     const dump = JSON.stringify(window.localStorage);
     expect(dump).not.toContain('refresh-abc');
+  });
+
+  it('scrubPersistedAuth removes a legacy auth slice but keeps the other slices', () => {
+    window.localStorage.setItem(
+      'persist:root',
+      JSON.stringify({
+        auth: JSON.stringify({
+          accessToken: 'legacy-access',
+          loginResult: { refresh: 'legacy-refresh' },
+        }),
+        user: JSON.stringify({ list: [1] }),
+        _persist: JSON.stringify({ version: -1, rehydrated: true }),
+      })
+    );
+
+    scrubPersistedAuth();
+
+    const raw = window.localStorage.getItem('persist:root') as string;
+    expect(raw).not.toBeNull();
+    expect(raw).not.toContain('legacy-access');
+    expect(raw).not.toContain('legacy-refresh');
+
+    const parsed = JSON.parse(raw);
+    expect(parsed).not.toHaveProperty('auth');
+    expect(parsed.user).toBeDefined();
+  });
+
+  it('scrubPersistedAuth is a no-op when there is no persisted root', () => {
+    expect(() => scrubPersistedAuth()).not.toThrow();
+    expect(window.localStorage.getItem('persist:root')).toBeNull();
   });
 });

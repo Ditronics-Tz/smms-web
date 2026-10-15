@@ -14,7 +14,6 @@ import {
 } from '../../../../store/actions'
 import { EditOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import branding from "../../../../config/branding";
 import { formatDate, formatMoney } from "../../../../utils";
 import { NAVIGATE_TO_TRANSACTIONPAGE } from "../../../../route/types";
 import { doListSchools } from "../../../../service/lookups";
@@ -116,7 +115,7 @@ const DesktopViewTable = ({ data, props }) => {
                 <thead>
                     <tr style={{ textAlign: 'center' }}>
                         <th style={{ width: 70, padding: '10px 6px' }}>{t("transaction.item_name")}</th>
-                        <th style={{ width: 60, padding: '10px 6px', }}>{t("transaction.amount")} ({branding.CURRENCY_SYMBOL})</th>
+                        <th style={{ width: 60, padding: '10px 6px', }}>{t("transaction.amount")}</th>
                         <th style={{ width: 50, padding: '10px 6px', }}>{t("transaction.status")}</th>
                         <th style={{ width: 100, padding: '10px 6px', }}>{t("transaction.date")}</th>
                     </tr>

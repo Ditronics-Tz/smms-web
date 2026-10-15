@@ -34,7 +34,6 @@ import CloseRounded from "@mui/icons-material/CloseRounded";
 import { STATUS } from "../../../constant";
 import { journalRequest, journalReset } from "../../../store/actions";
 import { PageTitle } from "../../../components";
-import branding from "../../../config/branding";
 import {
     formatDate,
     formatMoney,
@@ -479,7 +478,7 @@ const JournalTable = ({
                             <th>{t("ledger.columns.memo")}</th>
                             <th>{t("ledger.columns.cardNumber")}</th>
                             <th style={{ textAlign: "right" }}>
-                                {t("ledger.columns.total")} ({branding.CURRENCY_SYMBOL})
+                                {t("ledger.columns.total")}
                             </th>
                             <th style={{ textAlign: "center" }}>
                                 {t("ledger.columns.lines")}

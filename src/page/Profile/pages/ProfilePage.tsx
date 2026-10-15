@@ -66,7 +66,6 @@ const ProfilePage = (
             'new_password': formElements.newPassword.value,
             'confirm_password': formElements.confirmPassword.value,
         };
-        console.log(data)
         if (data.old_password === "" || data.new_password === "" || data.confirm_password === "") {
             toast.error(t("changePin.emptyErr"));
             return;

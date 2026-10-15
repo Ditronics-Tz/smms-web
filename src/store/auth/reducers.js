@@ -110,8 +110,15 @@ export default (state = INITIAL_STATE, { type, payload }) => {
             }
         }
         case STATE.TOKEN_FAILURE:
+            // A failed refresh ends the session. The saga has already wiped
+            // sessionStorage/localStorage, so drop the in-memory access token and
+            // user here too. Otherwise the route guards keep showing an
+            // authenticated app until App.tsx's TOKEN_ERROR effect catches up.
             return {
                 ...state,
+                accessToken: null,
+                loginResult: null,
+                loginStatus: STATUS.DEFAULT,
                 tokenStatus: STATUS.ERROR,
                 tokenResult: null,
                 tokenErrorMessage: payload

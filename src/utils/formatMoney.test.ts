@@ -35,6 +35,26 @@ describe('formatMoney', () => {
     expect(formatMoney('999999999.99')).toBe('TSh 1,000,000,000');
   });
 
+  it('handles very large amounts without losing grouping', () => {
+    expect(formatMoney('1000000000000')).toBe('TSh 1,000,000,000,000');
+    expect(formatMoney('1234567890123.00')).toBe('TSh 1,234,567,890,123');
+  });
+
+  it('formats negative decimal strings consistently', () => {
+    expect(formatMoney('-1234.56')).toBe('-TSh 1,235');
+    expect(formatMoney('-1000')).toBe('-TSh 1,000');
+  });
+
+  it('rounds decimal input to the nearest shilling (half up)', () => {
+    expect(formatMoney('1.4')).toBe('TSh 1');
+    expect(formatMoney('1.5')).toBe('TSh 2');
+    expect(formatMoney('2.5')).toBe('TSh 3');
+  });
+
+  it('ignores surrounding whitespace', () => {
+    expect(formatMoney('  600  ')).toBe('TSh 600');
+  });
+
   it('returns an empty string for unusable input', () => {
     expect(formatMoney(null)).toBe('');
     expect(formatMoney(undefined)).toBe('');
@@ -42,6 +62,8 @@ describe('formatMoney', () => {
     expect(formatMoney('abc')).toBe('');
     expect(formatMoney(NaN)).toBe('');
     expect(formatMoney(Infinity)).toBe('');
+    expect(formatMoney(true as unknown as number)).toBe('');
+    expect(formatMoney({} as unknown as number)).toBe('');
   });
 });
 

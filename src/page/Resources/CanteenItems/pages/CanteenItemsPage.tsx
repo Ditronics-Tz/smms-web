@@ -27,7 +27,6 @@ import {
     deleteItemReset,
 } from "../../../../store/actions"
 import { useTranslation } from "react-i18next";
-import branding from "../../../../config/branding";
 
 const MobileViewTable = ({ data, props }) => {
     const { t } = useTranslation();
@@ -112,7 +111,7 @@ const DesktopViewTable = ({ data, props }) => {
                         <tr style={{ textAlign: 'center' }}>
                             {/* <th style={{ width: 50, padding: '10px 6px' }}></th> */}
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("item.name")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("item.price")} ({branding.CURRENCY_SYMBOL})</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("item.price")}</th>
                             <th style={{ width: 80, padding: '10px 6px', }}>Actions</th>
                         </tr>
                     </thead>

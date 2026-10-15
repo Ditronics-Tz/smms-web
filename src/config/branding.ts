@@ -3,8 +3,8 @@ const isNonEmpty = (value) => value !== undefined && value !== null && value !==
 const branding = {
   APP_NAME: isNonEmpty(process.env.REACT_APP_APP_NAME) ? process.env.REACT_APP_APP_NAME : "Meal Management System",
   APP_SHORT_NAME: isNonEmpty(process.env.REACT_APP_APP_SHORT_NAME) ? process.env.REACT_APP_APP_SHORT_NAME : "MMS",
-  SUPPORT_EMAIL: isNonEmpty(process.env.REACT_APP_SUPPORT_EMAIL) ? process.env.REACT_APP_SUPPORT_EMAIL : "",
-  SUPPORT_PHONE: isNonEmpty(process.env.REACT_APP_SUPPORT_PHONE) ? process.env.REACT_APP_SUPPORT_PHONE : "",
+  SUPPORT_EMAIL: isNonEmpty(process.env.REACT_APP_SUPPORT_EMAIL) ? process.env.REACT_APP_SUPPORT_EMAIL : "support@sava.co.tz",
+  SUPPORT_PHONE: isNonEmpty(process.env.REACT_APP_SUPPORT_PHONE) ? process.env.REACT_APP_SUPPORT_PHONE : "+255 785 907 500",
   SUPPORT_CHAT_URL: isNonEmpty(process.env.REACT_APP_SUPPORT_CHAT_URL) ? process.env.REACT_APP_SUPPORT_CHAT_URL : "",
   LOGO_PATH: isNonEmpty(process.env.REACT_APP_LOGO_PATH) ? process.env.REACT_APP_LOGO_PATH : "",
   FAVICON_PATH: isNonEmpty(process.env.REACT_APP_FAVICON_PATH) ? process.env.REACT_APP_FAVICON_PATH : "",

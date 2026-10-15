@@ -8,7 +8,14 @@
 // loud warning instead of silently talking to the local backend.
 const RAW_API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-function resolveApiBaseUrl(): string {
+// Every application endpoint is served under the versioned prefix `/api/v1`
+// (API_VERSIONING.md: "single constant API_BASE_URL + /api/v1"). The version is
+// appended ONCE here, so no URL constant below repeats it and a new endpoint
+// can never silently drop it. Legacy unversioned paths remain dual-served by the
+// backend during migration, but this client always talks to the versioned API.
+const API_VERSION_PATH = '/api/v1';
+
+function resolveApiOrigin(): string {
   if (RAW_API_BASE_URL) {
     return RAW_API_BASE_URL;
   }
@@ -29,7 +36,17 @@ function resolveApiBaseUrl(): string {
   return '';
 }
 
-export const API_BASE = resolveApiBaseUrl();
+// Append the version segment exactly once. Normalizes a trailing slash and
+// leaves a base that already ends in `/api/v1` untouched, so a deployment that
+// bakes the version into REACT_APP_API_BASE_URL does not double it.
+function withApiVersion(origin: string): string {
+  const trimmed = origin.replace(/\/+$/, '');
+  return trimmed.endsWith(API_VERSION_PATH)
+    ? trimmed
+    : `${trimmed}${API_VERSION_PATH}`;
+}
+
+export const API_BASE = withApiVersion(resolveApiOrigin());
 
 // FILE_BASE derives from the SAME environment-driven value (no separate config).
 export const FILE_BASE = API_BASE;
@@ -108,6 +125,46 @@ export const RESET_STRIKES_URL = '/resources/reset-strikes';
 // ---- MOBILE MONEY TOP-UP ----
 export const TOPUP_INITIATE_URL = '/payments/topup/initiate';
 export const TOPUP_STATUS_URL = '/payments/topup';
+
+// ---- ANALYTICS (BE-42) ---- 
+export const ANALYTICS_SALES_URL = '/analytics/sales';
+export const ANALYTICS_WALLET_HEALTH_URL = '/analytics/wallet-health';
+export const ANALYTICS_OPERATORS_URL = '/analytics/operators';
+export const ANALYTICS_CLASSES_URL = '/analytics/classes';
+export const ANALYTICS_PENALTIES_URL = '/analytics/penalties';
+
+// ---- INSIGHTS (BE-43) ---- 
+export const INSIGHTS_FORECAST_URL = '/insights/forecast';
+export const INSIGHTS_AT_RISK_URL = '/insights/at-risk';
+export const INSIGHTS_ANOMALIES_URL = '/insights/anomalies';
+export const INSIGHTS_DORMANT_URL = '/insights/dormant-cards';
+export const insightsResolveAnomalyUrl = (id: string) => `/insights/anomalies/${id}/resolve`;
+
+// ---- ANALYTICS EXPORTS (BE-45) ----
+export const ANALYTICS_EXPORT_URL = '/analytics/export';
+
+// ---- DAILY MENU (BE-80) ----
+export const MENU_URL = '/menu';
+export const MENU_TODAY_URL = '/menu/today';
+
+// ---- MOBILE MONEY TOP-UP (BE-60) ----
+export const topupStatusUrl = (id: string) => `/payments/topup/${id}`;
+
+// ---- PARENT CONTROLS (BE-90) ----
+export const PARENT_LIMITS_URL = '/dashboard/student-limits';
+export const PARENT_BLOCKS_URL = '/dashboard/item-blocks';
+
+// ---- INTEGRATIONS (BE-100) ----
+export const INTEGRATIONS_API_KEYS_URL = '/integrations/api-keys';
+export const INTEGRATIONS_WEBHOOKS_URL = '/integrations/webhooks';
+export const INTEGRATIONS_SYNC_LOG_URL = '/integrations/sync-log';
+
+// ---- RECONCILIATION (BE-110) ----
+export const RECONCILIATION_UPLOAD_URL = '/reconciliation/upload';
+export const RECONCILIATION_RESOLVE_URL = '/reconciliation/resolve';
+
+// ---- REFUND (BE-121) ----
+export const REFUND_URL = '/wallet/transaction/refund';
 
 // ---- LOOKUP / REFERENCE LISTS ----
 // NOTE (FE-08): BE-03 locks these to admin. Callers on non-admin pages will get

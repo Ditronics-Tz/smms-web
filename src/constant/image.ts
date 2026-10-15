@@ -1,6 +1,6 @@
 import branding from "../config/branding";
 
-export default {
+const IMAGE_CONFIG = {
     Images: {
         icon: branding.LOGO_PATH || require("../assets/image/logo.jpeg"),
         logo: branding.LOGO_PATH || require("../assets/image/logo.jpeg"),
@@ -10,7 +10,9 @@ export default {
         flagPrimary: require("../assets/image/tanzania.png"),
         flagSecondary: require("../assets/image/uk.png"),
     }
-}
+};
+
+export default IMAGE_CONFIG;
 
 export const LOCALES = [
     { code: "en", label: "English", flagKey: "flagSecondary" },

@@ -72,7 +72,6 @@ const ForgotPasswordPage = ({
         const data = {
             'email': formElements.email.value
         };
-        console.log(data)
         if (data.email) {
             setSubmitted(false);
             dispatch(forgotPasswordRequest({"email" : data.email}));

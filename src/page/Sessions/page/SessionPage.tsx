@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
-import branding from "../../../config/branding";
 import { connect, useDispatch } from "react-redux"
 import { STATUS } from '../../../constant';
 import { toast } from 'react-toastify';
@@ -115,7 +114,7 @@ const DesktopViewTable = ({ data, props }) => {
                             <th style={{ width: 70, padding: '10px 6px' }}>{t("session.card_number")}</th>
                             <th style={{ width: 100, padding: '10px 6px', }}>{t("session.studentName")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("session.item")}</th>
-                            <th style={{ width: 70, padding: '10px 6px', }}>{t("session.price")} ({branding.CURRENCY_SYMBOL})</th>
+                            <th style={{ width: 70, padding: '10px 6px', }}>{t("session.price")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("session.scanned_at")}</th>
                             <th style={{ width: 70, padding: '10px 6px', }}>{t("transaction.reverse")}</th>
                         </tr>

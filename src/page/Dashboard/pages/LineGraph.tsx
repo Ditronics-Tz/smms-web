@@ -1,6 +1,7 @@
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { useChartTheme } from '../../../utils/chartTheme';
+import { formatMoney } from '../../../utils';
 
 function LineChart({ data }) {
   const { accent, axisProps, gridProps, tooltipProps } = useChartTheme();
@@ -17,7 +18,7 @@ function LineChart({ data }) {
         <CartesianGrid {...gridProps} vertical={false} />
         <XAxis dataKey="date" {...axisProps} />
         <YAxis {...axisProps} width={56} />
-        <Tooltip {...tooltipProps} />
+        <Tooltip {...tooltipProps} formatter={(value) => formatMoney(Array.isArray(value) ? value[0] : value)} />
         <Area
           type="monotone"
           dataKey="amount"

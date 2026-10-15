@@ -112,7 +112,6 @@ export const requestForToken = async () => {
       })
       if (token) {
         // Send the token to your server and update the UI if necessary
-        console.log("FCM Token:", token);
         localStorage.setItem("fcm_token", token)
         return token;
       } else {

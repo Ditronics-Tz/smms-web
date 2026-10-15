@@ -29,6 +29,21 @@ export const NAVIGATE_TO_BANKDEPOSITPAGE = '/bank-deposit';
 // Ledger (FE-11, admin)
 export const NAVIGATE_TO_LEDGERPAGE = '/ledger';
 
+// Analytics (FE-16/17/18, admin)
+export const NAVIGATE_TO_ANALYTICSPAGE = '/analytics';
+
+// Insights (FE-19, admin)
+export const NAVIGATE_TO_INSIGHTSPAGE = '/insights';
+
+// Daily menu (FE-23, admin)
+export const NAVIGATE_TO_MENUPAGE = '/menu';
+
+// Reconciliation (FE-26, admin)
+export const NAVIGATE_TO_RECONCILIATIONPAGE = '/reconciliation';
+
+// Integrations (FE-25, superuser)
+export const NAVIGATE_TO_INTEGRATIONSPAGE = '/integrations';
+
 // Statement (FE-14, parent)
 export const NAVIGATE_TO_STATEMENTPAGE = '/statement';
 
